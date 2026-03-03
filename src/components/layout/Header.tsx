@@ -1,28 +1,33 @@
 import { createClient } from '@/lib/supabase/server'
+import { Badge } from '@/components/ui/badge'
+import { Bell, Building2 } from 'lucide-react'
+import HeaderUserMenu from '@/components/layout/HeaderUserMenu'
 
 interface HeaderProps {
   title: string
+  subtitle?: string
 }
 
-export default async function Header({ title }: HeaderProps) {
+export default async function Header({ title, subtitle }: HeaderProps) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, organization_id')
+    .select('full_name, role, organization_id')
     .eq('id', user?.id)
     .single()
 
   const { data: org } = profile?.organization_id
     ? await supabase
         .from('organizations')
-        .select('name')
+        .select('name, plan')
         .eq('id', profile.organization_id)
         .single()
     : { data: null }
 
-  const initials = (profile?.full_name ?? user?.email ?? '?')
+  const displayName = profile?.full_name ?? user?.email ?? 'Utilisateur'
+  const initials = displayName
     .split(' ')
     .map((w: string) => w[0])
     .join('')
@@ -30,18 +35,30 @@ export default async function Header({ title }: HeaderProps) {
     .slice(0, 2)
 
   return (
-    <header className="h-16 flex items-center justify-between px-6 bg-white border-b border-gray-200">
-      <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
+    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-6 bg-white/80 backdrop-blur-sm border-b border-gray-200">
+      <div className="flex flex-col">
+        <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
+        {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
+      </div>
 
       <div className="flex items-center gap-3">
         {org && (
-          <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+          <Badge variant="secondary" className="gap-1.5 font-medium">
+            <Building2 className="w-3 h-3" />
             {org.name}
-          </span>
+          </Badge>
         )}
-        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-semibold">
-          {initials}
-        </div>
+
+        <button className="relative p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+          <Bell className="w-4.5 h-4.5" />
+        </button>
+
+        <HeaderUserMenu
+          displayName={displayName}
+          email={user?.email ?? ''}
+          initials={initials}
+          role={profile?.role}
+        />
       </div>
     </header>
   )
