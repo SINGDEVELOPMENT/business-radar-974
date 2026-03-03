@@ -8,6 +8,7 @@ interface NearbyPlace {
   name: string
   rating?: number
   user_ratings_total?: number
+  types?: string[]
 }
 
 export async function collectCompetitors(
@@ -41,14 +42,18 @@ export async function collectCompetitors(
     organization_id: organizationId,
     name: p.name,
     google_place_id: p.place_id,
+    google_rating: p.rating ?? null,
+    google_reviews_count: p.user_ratings_total ?? null,
+    category: p.types?.[0]?.replace(/_/g, ' ') ?? null,
     is_competitor: true,
   }))
 
   if (rows.length === 0) return { found: 0 }
 
+  // ignoreDuplicates: false → update rating/reviews_count à chaque collecte
   const { error } = await supabase.from('businesses').upsert(rows, {
     onConflict: 'organization_id,google_place_id',
-    ignoreDuplicates: true,
+    ignoreDuplicates: false,
   })
 
   if (error) throw new Error(`Supabase insert error: ${error.message}`)
