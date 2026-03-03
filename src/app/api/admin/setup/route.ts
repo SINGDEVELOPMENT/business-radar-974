@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { slugify } from '@/lib/utils/formatters'
 
-// Crée une organisation + business pour un nouveau client
+// Crée une organisation + business pour un nouveau client, et invite son utilisateur
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -23,11 +23,11 @@ export async function POST(request: NextRequest) {
   const {
     orgName,
     businessName,
+    clientEmail,
     googlePlaceId,
     websiteUrl,
     instagramUsername,
     facebookPageId,
-    // Champs ajoutés Jour 8 — nécessaires pour le CRON automatique
     metaAccessToken,
     lat,
     lng,
@@ -77,5 +77,45 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: bizError.message }, { status: 500 })
   }
 
-  return NextResponse.json({ organization: org, business })
+  // Invite le client par email (optionnel)
+  let invitedUser = null
+  let inviteError = null
+
+  if (clientEmail) {
+    const { data: invite, error: err } = await adminClient.auth.admin.inviteUserByEmail(
+      clientEmail,
+      {
+        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
+        data: { full_name: orgName },
+      }
+    )
+
+    if (err) {
+      inviteError = err.message
+    } else {
+      invitedUser = invite.user
+
+      // Lie l'utilisateur invité à l'organisation avec le rôle admin
+      if (invitedUser) {
+        await adminClient
+          .from('profiles')
+          .upsert({
+            id: invitedUser.id,
+            organization_id: org.id,
+            role: 'admin',
+            full_name: orgName,
+          })
+      }
+    }
+  }
+
+  return NextResponse.json({
+    organization: org,
+    business,
+    ...(clientEmail && {
+      invite: inviteError
+        ? { ok: false, error: inviteError }
+        : { ok: true, email: clientEmail },
+    }),
+  })
 }
