@@ -27,6 +27,11 @@ export async function POST(request: NextRequest) {
     websiteUrl,
     instagramUsername,
     facebookPageId,
+    // Champs ajoutés Jour 8 — nécessaires pour le CRON automatique
+    metaAccessToken,
+    lat,
+    lng,
+    instagramBusinessId,
   } = await request.json()
 
   if (!orgName || !businessName) {
@@ -38,7 +43,11 @@ export async function POST(request: NextRequest) {
   // Crée l'organisation
   const { data: org, error: orgError } = await adminClient
     .from('organizations')
-    .insert({ name: orgName, slug: slugify(orgName) })
+    .insert({
+      name: orgName,
+      slug: slugify(orgName),
+      meta_access_token: metaAccessToken ?? null,
+    })
     .select()
     .single()
 
@@ -56,6 +65,9 @@ export async function POST(request: NextRequest) {
       website_url: websiteUrl ?? null,
       instagram_username: instagramUsername ?? null,
       facebook_page_id: facebookPageId ?? null,
+      instagram_business_id: instagramBusinessId ?? null,
+      lat: lat ?? null,
+      lng: lng ?? null,
       is_competitor: false,
     })
     .select()

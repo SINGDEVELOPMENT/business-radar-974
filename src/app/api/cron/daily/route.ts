@@ -2,8 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { collectGoogleReviews } from '@/lib/collectors/google-reviews'
 import { collectSeoAudit } from '@/lib/collectors/seo-audit'
+import { collectFacebookPosts } from '@/lib/collectors/facebook'
+import { collectInstagramPosts } from '@/lib/collectors/instagram'
+import { collectCompetitors } from '@/lib/collectors/competitors'
 
-// Protégé par un secret partagé avec Vercel Cron
+// Protégé par le secret partagé avec Vercel Cron (header Authorization: Bearer <CRON_SECRET>)
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -12,10 +15,19 @@ export async function GET(request: NextRequest) {
 
   const supabase = createAdminClient()
 
-  // Récupère tous les businesses non-concurrents
+  // Dimanche (0) → collecte hebdomadaire des concurrents
+  const isWeeklyDay = new Date().getDay() === 0
+
+  // Récupère tous les businesses principaux avec le token Meta de leur organisation
   const { data: businesses, error } = await supabase
     .from('businesses')
-    .select('id, google_place_id, website_url, name')
+    .select(`
+      id, name, organization_id,
+      google_place_id, website_url,
+      facebook_page_id, instagram_business_id,
+      lat, lng,
+      organizations(meta_access_token)
+    `)
     .eq('is_competitor', false)
 
   if (error) {
@@ -25,19 +37,21 @@ export async function GET(request: NextRequest) {
   const results = []
 
   for (const business of businesses ?? []) {
+    const org = business.organizations as unknown as { meta_access_token: string | null } | null
+    const metaToken = org?.meta_access_token ?? null
+
     const result: Record<string, unknown> = { businessId: business.id, name: business.name }
 
-    // Collecte Google Reviews
+    // Google Reviews (quotidien)
     if (business.google_place_id) {
       try {
-        const r = await collectGoogleReviews(business.id, business.google_place_id)
-        result.reviews = r
+        result.reviews = await collectGoogleReviews(business.id, business.google_place_id)
       } catch (e) {
         result.reviewsError = e instanceof Error ? e.message : 'unknown'
       }
     }
 
-    // Audit SEO
+    // Audit SEO (quotidien)
     if (business.website_url) {
       try {
         const s = await collectSeoAudit(business.id, business.website_url)
@@ -47,8 +61,47 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Facebook posts (quotidien)
+    if (business.facebook_page_id && metaToken) {
+      try {
+        result.facebook = await collectFacebookPosts(business.id, business.facebook_page_id, metaToken)
+      } catch (e) {
+        result.facebookError = e instanceof Error ? e.message : 'unknown'
+      }
+    }
+
+    // Instagram posts (quotidien)
+    if (business.instagram_business_id && metaToken) {
+      try {
+        result.instagram = await collectInstagramPosts(business.id, business.instagram_business_id, metaToken)
+      } catch (e) {
+        result.instagramError = e instanceof Error ? e.message : 'unknown'
+      }
+    }
+
+    // Concurrents (hebdomadaire — dimanche uniquement)
+    if (isWeeklyDay && business.lat != null && business.lng != null) {
+      try {
+        result.competitors = await collectCompetitors(
+          business.organization_id,
+          business.lat,
+          business.lng,
+          'establishment',
+          2000,
+        )
+      } catch (e) {
+        result.competitorsError = e instanceof Error ? e.message : 'unknown'
+      }
+    }
+
     results.push(result)
   }
 
-  return NextResponse.json({ ok: true, processed: results.length, results })
+  return NextResponse.json({
+    ok: true,
+    runAt: new Date().toISOString(),
+    weeklyRun: isWeeklyDay,
+    processed: results.length,
+    results,
+  })
 }
