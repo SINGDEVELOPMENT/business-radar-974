@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { computeSeoScore } from '@/lib/utils/seo'
 
 export async function collectSeoAudit(businessId: string, websiteUrl: string) {
   const start = Date.now()
@@ -20,6 +21,7 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
 
   const loadTimeMs = Date.now() - start
   const hasSSL = websiteUrl.startsWith('https://')
+  const pageSizeKb = html ? Math.round(Buffer.byteLength(html, 'utf8') / 1024) : null
 
   let title = ''
   let metaDescription = ''
@@ -32,17 +34,24 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
     h1Count = $('h1').length
   }
 
-  const snapshot = {
-    business_id: businessId,
-    url: websiteUrl,
+  const partial = {
+    has_ssl: hasSSL,
     status_code: statusCode,
     load_time_ms: loadTimeMs,
     title: title || null,
     meta_description: metaDescription || null,
     h1_count: h1Count,
-    has_ssl: hasSSL,
-    mobile_friendly: null, // à enrichir avec PageSpeed API (V2)
-    lighthouse_score: null,
+  }
+
+  const seoScore = computeSeoScore(partial)
+
+  const snapshot = {
+    business_id: businessId,
+    url: websiteUrl,
+    ...partial,
+    page_size_kb: pageSizeKb,
+    mobile_friendly: null, // enrichi avec PageSpeed API en V2
+    lighthouse_score: seoScore,
   }
 
   const supabase = createAdminClient()
