@@ -2,12 +2,12 @@ import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import KpiCard from '@/components/dashboard/KpiCard'
 import AiInsightCard from '@/components/dashboard/AiInsightCard'
+import { Star, MessageSquare, TrendingUp, Activity } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Récupère le profil + org
   const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
@@ -56,9 +56,12 @@ export default async function DashboardPage() {
 
   const avgRating = reviews.length
     ? (reviews.reduce((sum, r) => sum + (r.rating ?? 0), 0) / reviews.length).toFixed(1)
-    : 'N/A'
+    : '--'
 
-  const totalEngagement = posts.reduce((sum, p) => sum + p.likes + p.comments + p.shares, 0)
+  const totalEngagement = posts.reduce(
+    (sum, p) => sum + (p.likes ?? 0) + (p.comments ?? 0) + (p.shares ?? 0),
+    0
+  )
 
   const reportContent = latestReport?.content as {
     score_global?: number
@@ -67,31 +70,41 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <Header title="Vue d'ensemble" />
+      <Header title="Vue d'ensemble" subtitle="Tableau de bord de votre activité" />
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
           title="Note Google"
-          value={avgRating}
-          subtitle={`sur ${reviews.length} avis`}
-          icon="★"
+          value={`${avgRating}/5`}
+          subtitle={reviews.length > 0 ? `sur ${reviews.length} avis` : 'Aucun avis'}
+          icon={Star}
+          iconColor="text-amber-500"
+          iconBg="bg-amber-50"
         />
         <KpiCard
           title="Avis collectés"
           value={reviews.length}
-          icon="💬"
+          subtitle="tous les avis"
+          icon={MessageSquare}
+          iconColor="text-blue-600"
+          iconBg="bg-blue-50"
         />
         <KpiCard
           title="Engagement social"
-          value={totalEngagement}
+          value={totalEngagement.toLocaleString('fr-FR')}
           subtitle="likes + commentaires + partages"
-          icon="◈"
+          icon={TrendingUp}
+          iconColor="text-emerald-600"
+          iconBg="bg-emerald-50"
         />
         <KpiCard
           title="Score SEO"
-          value={latestSeo?.lighthouse_score ? `${latestSeo.lighthouse_score}/100` : 'N/A'}
-          icon="◇"
+          value={latestSeo?.lighthouse_score ? `${latestSeo.lighthouse_score}/100` : '--'}
+          subtitle="dernière analyse"
+          icon={Activity}
+          iconColor="text-purple-600"
+          iconBg="bg-purple-50"
         />
       </div>
 
@@ -102,7 +115,11 @@ export default async function DashboardPage() {
         </h2>
         <AiInsightCard
           summary={latestReport?.summary ?? undefined}
-          recommendations={reportContent?.recommendations as Array<{ priority: 'haute' | 'moyenne' | 'basse'; action: string; impact: string }> | undefined}
+          recommendations={
+            reportContent?.recommendations as
+              | Array<{ priority: 'haute' | 'moyenne' | 'basse'; action: string; impact: string }>
+              | undefined
+          }
           scoreGlobal={reportContent?.score_global}
           generatedAt={latestReport?.generated_at ?? undefined}
         />
