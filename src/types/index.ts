@@ -65,6 +65,7 @@ export interface SeoSnapshot {
   has_ssl?: boolean
   mobile_friendly?: boolean
   lighthouse_score?: number
+  page_size_kb?: number
   collected_at: string
 }
 
