@@ -5,6 +5,7 @@ import Header from '@/components/layout/Header'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import AdminNewClientForm from '@/components/dashboard/AdminNewClientForm'
+import AdminTriggerButton from '@/components/dashboard/AdminTriggerButton'
 import { Building2, Globe, Facebook, Instagram, MapPin, Calendar } from 'lucide-react'
 import type { Business } from '@/types/index'
 
@@ -36,7 +37,12 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-6">
-      <Header title="Administration" subtitle="Onboarding et gestion des clients" />
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <Header title="Administration" subtitle="Onboarding et gestion des clients" />
+        <div className="pt-1">
+          <AdminTriggerButton />
+        </div>
+      </div>
 
       {/* Formulaire nouveau client */}
       <AdminNewClientForm />
