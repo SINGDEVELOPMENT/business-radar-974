@@ -4,7 +4,9 @@ import { monthlyAnalysisPrompt } from './prompts'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 function getClient(apiKey?: string): Anthropic {
-  return new Anthropic({ apiKey: apiKey ?? process.env.ANTHROPIC_API_KEY })
+  const key = apiKey ?? process.env.ANTHROPIC_API_KEY
+  if (!key) throw new Error('ANTHROPIC_API_KEY non configurée. Ajoutez-la dans les variables d\'environnement Vercel.')
+  return new Anthropic({ apiKey: key })
 }
 
 export async function analyzeMonthly(

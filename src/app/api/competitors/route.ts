@@ -21,24 +21,16 @@ export async function GET() {
   const orgId = profile?.organization_id
   if (!orgId) return NextResponse.json({ competitors: [], ownRating: null, ownReviewCount: 0 })
 
-  // Nos établissements
+  // Nos établissements (avec note Google globale)
   const { data: ownBusinesses } = await admin
     .from('businesses')
-    .select('id, name')
+    .select('id, name, google_rating, google_reviews_count')
     .eq('organization_id', orgId)
     .eq('is_competitor', false)
 
-  const ownIds = (ownBusinesses ?? []).map((b) => b.id)
-
-  // Note moyenne client
-  const { data: ownReviews } = ownIds.length > 0
-    ? await admin.from('reviews').select('rating').in('business_id', ownIds)
-    : { data: [] }
-
-  const ownReviewList = ownReviews ?? []
-  const ownRating = ownReviewList.length > 0
-    ? ownReviewList.reduce((s, r) => s + (r.rating ?? 0), 0) / ownReviewList.length
-    : null
+  const ownBusiness = (ownBusinesses ?? [])[0] ?? null
+  const ownRating = ownBusiness?.google_rating ?? null
+  const ownReviewCount = ownBusiness?.google_reviews_count ?? 0
 
   // Concurrents
   const { data: competitors, error: competitorsError } = await admin
@@ -87,7 +79,7 @@ export async function GET() {
     load_time_ms: seoMap[c.id]?.loadTime ?? null,
   }))
 
-  const clientName = (ownBusinesses ?? [])[0]?.name ?? 'Mon établissement'
+  const clientName = ownBusiness?.name ?? 'Mon établissement'
 
   // Limite basée sur le plan
   const { data: orgData } = await admin
@@ -100,7 +92,7 @@ export async function GET() {
   return NextResponse.json({
     competitors: enriched,
     ownRating,
-    ownReviewCount: ownReviewList.length,
+    ownReviewCount,
     clientName,
     freeLimit,
   })
