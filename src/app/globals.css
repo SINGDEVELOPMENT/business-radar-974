@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Dark mode via classe .dark sur <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
@@ -7,6 +10,11 @@
   --sidebar-text: #94a3b8;
   --sidebar-text-active: #ffffff;
   --sidebar-width: 240px;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
 }
 
 @theme inline {
@@ -25,3 +33,4 @@ body {
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+.dark ::-webkit-scrollbar-thumb { background: #334155; }

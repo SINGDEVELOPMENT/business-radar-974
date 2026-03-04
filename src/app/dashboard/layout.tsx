@@ -18,10 +18,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <AuthGuard>
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="flex min-h-screen bg-gray-50 dark:bg-slate-950">
         <Sidebar isSuperAdmin={isSuperAdmin} />
-        <div className="flex-1 ml-64 flex flex-col min-h-screen">
-          <main className="flex-1 p-6">
+        <div className="flex-1 md:ml-64 min-w-0 flex flex-col min-h-screen">
+          <main className="flex-1 p-4 md:p-6">
             {children}
           </main>
         </div>
