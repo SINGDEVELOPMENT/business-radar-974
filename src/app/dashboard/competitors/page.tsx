@@ -58,14 +58,13 @@ export default async function CompetitorsPage() {
       ? ownReviewList.reduce((s, r) => s + (r.rating ?? 0), 0) / ownReviewList.length
       : null
 
-  // Concurrents custom
+  // Concurrents (tous les is_competitor = true, custom_competitor est optionnel)
   const { data: competitors, count: competitorCount } = orgId
     ? await supabase
         .from('businesses')
         .select('id, name, google_rating, google_reviews_count, category, website_url, google_place_id', { count: 'exact' })
         .eq('organization_id', orgId)
         .eq('is_competitor', true)
-        .eq('custom_competitor', true)
         .order('google_rating', { ascending: false, nullsFirst: false })
     : { data: [], count: 0 }
 

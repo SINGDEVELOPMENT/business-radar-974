@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
   if (googlePlaceId) {
     const { data: existing } = await supabase
       .from('businesses')
-      .select('id, custom_competitor')
+      .select('id')
       .eq('organization_id', orgId)
       .eq('google_place_id', googlePlaceId)
       .eq('is_competitor', true)
@@ -49,7 +49,6 @@ export async function POST(request: NextRequest) {
     .select('id', { count: 'exact', head: true })
     .eq('organization_id', orgId)
     .eq('is_competitor', true)
-    .eq('custom_competitor', true)
 
   if ((count ?? 0) >= FREE_LIMIT) {
     return NextResponse.json(
