@@ -73,8 +73,15 @@ export default function AdminNewClientForm() {
       if (!res.ok) {
         setResult({ ok: false, message: data.error ?? 'Erreur inconnue' })
       } else {
-        const inviteMsg = form.clientEmail ? ' Invitation envoyée par email.' : ''
-        setResult({ ok: true, message: `Client "${data.organization.name}" créé avec succès !${inviteMsg}` })
+        let inviteMsg = ''
+        if (form.clientEmail) {
+          if (data.invite?.ok) {
+            inviteMsg = ' Invitation envoyée par email.'
+          } else {
+            inviteMsg = ` (Erreur invite : ${data.invite?.error ?? 'inconnu'})`
+          }
+        }
+        setResult({ ok: data.invite?.ok !== false, message: `Client "${data.organization.name}" créé.${inviteMsg}` })
         setForm(initialForm)
       }
     } catch {

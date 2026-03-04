@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
           .upsert({
             id: invitedUser.id,
             organization_id: org.id,
-            role: 'admin',
+            role: 'member',
             full_name: orgName,
           })
       }
