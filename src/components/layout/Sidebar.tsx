@@ -83,11 +83,11 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
         <ThemeToggle className="w-11 h-11 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 shadow-lg border border-gray-200 dark:border-slate-700 !p-0" />
 
         <button
-          onClick={() => setMobileOpen(true)}
-          className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/40"
-          aria-label="Ouvrir le menu"
+          onClick={() => setMobileOpen((v) => !v)}
+          className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/40 transition-transform duration-200"
+          aria-label={mobileOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
         >
-          <Menu className="w-5 h-5" />
+          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
@@ -107,24 +107,15 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        {/* Logo + bouton fermeture mobile */}
-        <div className="flex items-center justify-between px-5 h-16">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
-              <Radar className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-white font-semibold text-sm leading-tight">Business Radar</span>
-              <span className="text-slate-500 text-xs leading-tight">974</span>
-            </div>
+        {/* Logo */}
+        <div className="flex items-center gap-3 px-5 h-16">
+          <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+            <Radar className="w-4 h-4 text-white" />
           </div>
-          <button
-            onClick={() => setMobileOpen(false)}
-            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
-            aria-label="Fermer le menu"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex flex-col">
+            <span className="text-white font-semibold text-sm leading-tight">Business Radar</span>
+            <span className="text-slate-500 text-xs leading-tight">974</span>
+          </div>
         </div>
 
         <Separator className="bg-slate-800" />
