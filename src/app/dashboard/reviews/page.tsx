@@ -123,10 +123,9 @@ export default async function ReviewsPage() {
               icon={Star}
               iconColor="text-amber-500"
               iconBg="bg-amber-50"
-              trend={trend}
-              trendLabel={
+              trend={
                 recentAvg !== null && prevAvg !== null
-                  ? `${recentAvg > prevAvg ? '+' : ''}${(recentAvg - prevAvg).toFixed(1)} vs mois préc.`
+                  ? { value: parseFloat((recentAvg - prevAvg).toFixed(1)), label: 'vs mois préc.' }
                   : undefined
               }
             />

@@ -128,28 +128,40 @@ export default async function DashboardPage() {
   }
 
   // ── Vue Client (organisation normale) ────────────────────────────────────
-  const [reviewsRes, postsRes, seoRes, reportRes] = await Promise.all([
+  const now = new Date()
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+  const startOfPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString()
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()
+  const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString()
+
+  const [reviewsRes, postsRes, seoRes, reportRes, reviewsPrevRes, postsPrevRes, seoOldRes, reportPrevRes] = await Promise.all([
+    // Avis mois en cours
     orgId
       ? supabase
           .from('reviews')
-          .select('rating, business_id, businesses!inner(organization_id)')
+          .select('rating, business_id, published_at, businesses!inner(organization_id)')
           .eq('businesses.organization_id', orgId)
+          .gte('published_at', startOfMonth)
       : Promise.resolve({ data: [] }),
+    // Social mois en cours
     orgId
       ? supabase
           .from('social_posts')
-          .select('likes, comments, shares, business_id, businesses!inner(organization_id)')
+          .select('likes, comments, shares, published_at, business_id, businesses!inner(organization_id)')
           .eq('businesses.organization_id', orgId)
+          .gte('published_at', startOfMonth)
       : Promise.resolve({ data: [] }),
+    // SEO actuel
     orgId
       ? supabase
           .from('seo_snapshots')
-          .select('lighthouse_score, business_id, businesses!inner(organization_id, is_competitor)')
+          .select('lighthouse_score, collected_at, business_id, businesses!inner(organization_id, is_competitor)')
           .eq('businesses.organization_id', orgId)
           .eq('businesses.is_competitor', false)
           .order('collected_at', { ascending: false })
           .limit(1)
       : Promise.resolve({ data: [] }),
+    // Rapport le plus récent
     orgId
       ? supabase
           .from('ai_reports')
@@ -159,18 +171,68 @@ export default async function DashboardPage() {
           .limit(1)
           .single()
       : Promise.resolve({ data: null }),
+    // Avis mois précédent (pour delta)
+    orgId
+      ? supabase
+          .from('reviews')
+          .select('rating, published_at, businesses!inner(organization_id)')
+          .eq('businesses.organization_id', orgId)
+          .gte('published_at', startOfPrevMonth)
+          .lt('published_at', startOfMonth)
+      : Promise.resolve({ data: [] }),
+    // Social mois précédent
+    orgId
+      ? supabase
+          .from('social_posts')
+          .select('likes, comments, shares, published_at, businesses!inner(organization_id)')
+          .eq('businesses.organization_id', orgId)
+          .gte('published_at', startOfPrevMonth)
+          .lt('published_at', startOfMonth)
+      : Promise.resolve({ data: [] }),
+    // SEO il y a ~30 jours
+    orgId
+      ? supabase
+          .from('seo_snapshots')
+          .select('lighthouse_score, collected_at, businesses!inner(organization_id, is_competitor)')
+          .eq('businesses.organization_id', orgId)
+          .eq('businesses.is_competitor', false)
+          .gte('collected_at', sixtyDaysAgo)
+          .lte('collected_at', thirtyDaysAgo)
+          .order('collected_at', { ascending: false })
+          .limit(1)
+      : Promise.resolve({ data: [] }),
+    // Rapport avant-dernier
+    orgId
+      ? supabase
+          .from('ai_reports')
+          .select('content')
+          .eq('organization_id', orgId)
+          .order('generated_at', { ascending: false })
+          .range(1, 1)
+      : Promise.resolve({ data: [] }),
   ])
 
   const reviews = reviewsRes.data ?? []
   const posts = postsRes.data ?? []
   const latestSeo = seoRes.data?.[0] ?? null
   const latestReport = reportRes.data ?? null
+  const reviewsPrev = reviewsPrevRes.data ?? []
+  const postsPrev = postsPrevRes.data ?? []
+  const seoOld = seoOldRes.data?.[0] ?? null
+  const reportPrev = (reportPrevRes.data ?? [])[0] ?? null
 
   const avgRating = reviews.length
-    ? (reviews.reduce((sum, r) => sum + (r.rating ?? 0), 0) / reviews.length).toFixed(1)
-    : '--'
+    ? reviews.reduce((sum, r) => sum + (r.rating ?? 0), 0) / reviews.length
+    : null
+  const avgRatingPrev = reviewsPrev.length
+    ? reviewsPrev.reduce((sum, r) => sum + (r.rating ?? 0), 0) / reviewsPrev.length
+    : null
 
   const totalEngagement = posts.reduce(
+    (sum, p) => sum + (p.likes ?? 0) + (p.comments ?? 0) + (p.shares ?? 0),
+    0
+  )
+  const totalEngagementPrev = postsPrev.reduce(
     (sum, p) => sum + (p.likes ?? 0) + (p.comments ?? 0) + (p.shares ?? 0),
     0
   )
@@ -179,6 +241,21 @@ export default async function DashboardPage() {
     score_global?: number
     recommendations?: Array<{ priority: string; action: string; impact: string }>
   } | null
+  const reportPrevContent = reportPrev?.content as { score_global?: number } | null
+
+  // Calcul des deltas
+  const ratingDelta = avgRating !== null && avgRatingPrev !== null
+    ? parseFloat((avgRating - avgRatingPrev).toFixed(1))
+    : null
+  const engagementDelta = postsPrev.length > 0 || posts.length > 0
+    ? totalEngagement - totalEngagementPrev
+    : null
+  const seoDelta = latestSeo?.lighthouse_score != null && seoOld?.lighthouse_score != null
+    ? latestSeo.lighthouse_score - seoOld.lighthouse_score
+    : null
+  const reportDelta = reportContent?.score_global != null && reportPrevContent?.score_global != null
+    ? reportContent.score_global - reportPrevContent.score_global
+    : null
 
   return (
     <div className="space-y-6">
@@ -188,8 +265,9 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
           title="Note Google"
-          value={`${avgRating}/5`}
-          subtitle={reviews.length > 0 ? `sur ${reviews.length} avis` : 'Aucun avis'}
+          value={avgRating !== null ? `${avgRating.toFixed(1)}/5` : '--'}
+          subtitle={reviews.length > 0 ? `sur ${reviews.length} avis ce mois` : 'Aucun avis ce mois'}
+          trend={ratingDelta !== null ? { value: ratingDelta, label: 'vs mois préc.' } : undefined}
           icon={Star}
           iconColor="text-amber-500"
           iconBg="bg-amber-50"
@@ -197,7 +275,7 @@ export default async function DashboardPage() {
         <KpiCard
           title="Avis collectés"
           value={reviews.length}
-          subtitle="tous les avis"
+          subtitle="ce mois"
           icon={MessageSquare}
           iconColor="text-blue-600"
           iconBg="bg-blue-50"
@@ -205,7 +283,8 @@ export default async function DashboardPage() {
         <KpiCard
           title="Engagement social"
           value={totalEngagement.toLocaleString('fr-FR')}
-          subtitle="likes + commentaires + partages"
+          subtitle="ce mois"
+          trend={engagementDelta !== null ? { value: engagementDelta, label: 'vs mois préc.' } : undefined}
           icon={TrendingUp}
           iconColor="text-emerald-600"
           iconBg="bg-emerald-50"
@@ -214,6 +293,7 @@ export default async function DashboardPage() {
           title="Score SEO"
           value={latestSeo?.lighthouse_score ? `${latestSeo.lighthouse_score}/100` : '--'}
           subtitle="dernière analyse"
+          trend={seoDelta !== null ? { value: seoDelta, label: 'vs 30j' } : undefined}
           icon={Activity}
           iconColor="text-purple-600"
           iconBg="bg-purple-50"
