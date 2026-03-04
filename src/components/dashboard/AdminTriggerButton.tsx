@@ -33,8 +33,8 @@ export default function AdminTriggerButton() {
         setDetails(data.error ?? 'Erreur inconnue')
       } else {
         setStatus('success')
-        setDetails('Collecte lancée — données disponibles dans ~1 minute')
-        setTimeout(() => setStatus('idle'), 10000)
+        setDetails(`Terminé en ${elapsed}s — ${data.processed ?? 0} business(es) traités`)
+        setTimeout(() => setStatus('idle'), 8000)
       }
     } catch {
       setStatus('error')

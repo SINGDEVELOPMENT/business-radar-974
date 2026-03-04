@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+export const maxDuration = 300 // Attend la fin complète du CRON (PageSpeed = 30-40s/site)
+
 // Déclenche le CRON manuellement — superadmin uniquement
-// Fire-and-forget : cron/daily est une fonction indépendante (maxDuration=300s)
-// qui tourne seule sur Vercel. Le trigger retourne immédiatement.
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -27,14 +27,19 @@ export async function POST(request: NextRequest) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
   const cronUrl = `${appUrl}/api/cron/daily`
 
-  // Lance le CRON en arrière-plan (indépendant, ~60-90s avec PageSpeed)
-  void fetch(cronUrl, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${cronSecret}`,
-      'x-force-weekly': 'true',
-    },
-  }).catch((err) => console.error('[trigger-cron] fetch error:', err))
-
-  return NextResponse.json({ ok: true })
+  try {
+    const cronRes = await fetch(cronUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${cronSecret}`,
+        'x-force-weekly': 'true',
+      },
+      signal: AbortSignal.timeout(290000),
+    })
+    const cronData = await cronRes.json().catch(() => ({}))
+    return NextResponse.json({ ok: true, processed: cronData.processed ?? 0 })
+  } catch (err) {
+    console.error('[trigger-cron] error:', err)
+    return NextResponse.json({ ok: false, error: String(err) }, { status: 500 })
+  }
 }
