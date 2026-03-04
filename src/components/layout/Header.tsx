@@ -36,7 +36,7 @@ export default async function Header({ title, subtitle }: HeaderProps) {
     .slice(0, 2)
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between h-14 md:h-16 pl-14 pr-4 md:px-6 bg-white/80 backdrop-blur-sm border-b border-gray-200 dark:bg-slate-900/80 dark:border-slate-800">
+    <header className="sticky top-0 z-30 flex items-center justify-between h-14 md:h-16 px-4 md:px-6 bg-white/80 backdrop-blur-sm border-b border-gray-200 dark:bg-slate-900/80 dark:border-slate-800">
       <div className="flex flex-col min-w-0">
         <h1 className="text-base md:text-lg font-semibold text-gray-900 truncate">{title}</h1>
         {subtitle && <p className="text-xs md:text-sm text-gray-500 truncate">{subtitle}</p>}
@@ -50,11 +50,12 @@ export default async function Header({ title, subtitle }: HeaderProps) {
           </Badge>
         )}
 
-        <ThemeToggle />
-
-        <button className="relative p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors">
-          <Bell className="w-4.5 h-4.5" />
-        </button>
+        <div className="hidden md:flex items-center gap-2">
+          <ThemeToggle />
+          <button className="relative p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors">
+            <Bell className="w-4.5 h-4.5" />
+          </button>
+        </div>
 
         <HeaderUserMenu
           displayName={displayName}

@@ -18,8 +18,10 @@ import {
   ShieldCheck,
   Menu,
   X,
+  Bell,
 } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 
 const navItems = [
   { href: '/dashboard', label: "Vue d'ensemble", icon: LayoutDashboard },
@@ -69,14 +71,25 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
 
   return (
     <>
-      {/* Bouton hamburger — mobile uniquement, visible quand sidebar fermée */}
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="fixed top-3.5 left-4 z-50 md:hidden p-2 rounded-lg bg-slate-900 text-white shadow-md"
-        aria-label="Ouvrir le menu"
-      >
-        <Menu className="w-5 h-5" />
-      </button>
+      {/* FAB mobile — bas droite — Bell + ThemeToggle + Menu */}
+      <div className="fixed bottom-6 right-4 z-50 md:hidden flex flex-col items-center gap-2">
+        <button
+          className="w-11 h-11 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 shadow-lg border border-gray-200 dark:border-slate-700"
+          aria-label="Notifications"
+        >
+          <Bell className="w-5 h-5" />
+        </button>
+
+        <ThemeToggle className="w-11 h-11 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 shadow-lg border border-gray-200 dark:border-slate-700 !p-0" />
+
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/40"
+          aria-label="Ouvrir le menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      </div>
 
       {/* Backdrop mobile */}
       {mobileOpen && (
