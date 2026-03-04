@@ -233,8 +233,8 @@ export default function CompetitorsPageClient() {
         )}
 
         {remaining === 0 && !showForm && (
-          <p className="text-xs text-gray-400">
-            Limite atteinte. Contactez votre administrateur pour débloquer des emplacements supplémentaires.
+          <p className="text-xs text-gray-500 dark:text-slate-400">
+            Limite de {freeLimit} concurrents gratuits atteinte. Contactez-nous pour ajouter des concurrents supplémentaires.
           </p>
         )}
 
