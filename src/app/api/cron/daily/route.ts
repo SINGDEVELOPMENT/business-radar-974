@@ -170,7 +170,7 @@ export async function GET(request: NextRequest) {
     for (const comp of competitorsWithSite ?? []) {
       if (!comp.website_url) continue
       try {
-        await collectSeoAudit(comp.id, comp.website_url)
+        await collectSeoAudit(comp.id, comp.website_url, { skipPageSpeed: true })
       } catch {
         // Ne pas bloquer le reste
       }

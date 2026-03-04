@@ -13,7 +13,7 @@ const OPPORTUNITY_KEYS = [
   'uses-responsive-images',
 ]
 
-export async function collectSeoAudit(businessId: string, websiteUrl: string) {
+export async function collectSeoAudit(businessId: string, websiteUrl: string, { skipPageSpeed = false } = {}) {
   const start = Date.now()
 
   let statusCode = 0
@@ -62,6 +62,24 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
   const seoScore = computeSeoScore(partial)
 
   // ── PageSpeed Insights API — rapport complet ─────────────────────────────
+  if (skipPageSpeed) {
+    const snapshot = {
+      business_id: businessId,
+      url: websiteUrl,
+      ...partial,
+      page_size_kb: pageSizeKb,
+      mobile_friendly: mobileFriendly,
+      lighthouse_score: seoScore,
+      fcp_ms: null, lcp_ms: null, cls_score: null, tbt_ms: null, speed_index_ms: null,
+      accessibility_score: null, seo_audit_score: null, best_practices_score: null,
+      opportunities: null,
+    }
+    const supabase = createAdminClient()
+    const { error } = await supabase.from('seo_snapshots').insert(snapshot)
+    if (error) throw new Error(`Supabase insert error: ${error.message}`)
+    return snapshot
+  }
+
   let lighthouseScore = seoScore
 
   // Core Web Vitals
