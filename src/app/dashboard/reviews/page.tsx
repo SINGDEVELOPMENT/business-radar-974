@@ -3,9 +3,8 @@ import Header from '@/components/layout/Header'
 import EmptyState from '@/components/dashboard/EmptyState'
 import KpiCard from '@/components/dashboard/KpiCard'
 import ReviewsChart from '@/components/dashboard/ReviewsChart'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Star, MessageSquareText, ThumbsUp, ThumbsDown, Activity } from 'lucide-react'
+import ReviewsFilterList from '@/components/dashboard/ReviewsFilterList'
 
 export default async function ReviewsPage() {
   const supabase = await createClient()
@@ -100,9 +99,6 @@ export default async function ReviewsPage() {
       count: v.count,
     }))
 
-  // ── Display list: first 50 ───────────────────────────────────────────────
-  const displayedReviews = reviewsList.slice(0, 50)
-
   return (
     <div className="space-y-6">
       <Header title="Avis Google" subtitle="Suivi et analyse de vos avis clients" />
@@ -169,62 +165,18 @@ export default async function ReviewsPage() {
             </div>
           )}
 
-          {/* Reviews list */}
-          <div className="space-y-3">
-            {displayedReviews.map((review) => (
-              <Card key={review.id} className="p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="font-medium text-sm text-gray-900">
-                        {review.author_name ?? 'Anonyme'}
-                      </span>
-                      <RatingBadge rating={review.rating ?? 0} />
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] uppercase tracking-wide"
-                      >
-                        {review.source}
-                      </Badge>
-                    </div>
-                    {review.text && (
-                      <p className="text-sm text-gray-600 line-clamp-2">{review.text}</p>
-                    )}
-                    {review.published_at && (
-                      <p className="text-xs text-gray-400 mt-1.5">
-                        {new Date(review.published_at).toLocaleDateString('fr-FR', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
-                        })}
-                      </p>
-                    )}
-                  </div>
-                  <MessageSquareText className="w-4 h-4 text-gray-300 shrink-0 mt-1" />
-                </div>
-              </Card>
-            ))}
-          </div>
+          {/* Reviews list avec filtres */}
+          <ReviewsFilterList reviews={reviewsList.map((r) => ({
+            id: r.id,
+            author_name: r.author_name ?? null,
+            rating: r.rating ?? null,
+            text: r.text ?? null,
+            published_at: r.published_at ?? null,
+            source: r.source ?? null,
+          }))} />
         </>
       )}
     </div>
   )
 }
 
-function RatingBadge({ rating }: { rating: number }) {
-  const color =
-    rating >= 4
-      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-      : rating === 3
-        ? 'bg-amber-50 text-amber-700 border-amber-200'
-        : 'bg-red-50 text-red-700 border-red-200'
-
-  return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${color}`}
-    >
-      <Star className="w-3 h-3 fill-current" />
-      {rating}/5
-    </span>
-  )
-}
