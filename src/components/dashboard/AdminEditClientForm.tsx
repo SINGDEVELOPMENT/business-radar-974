@@ -1,0 +1,140 @@
+'use client'
+
+import { useState } from 'react'
+import { Pencil, X, Check, Loader2 } from 'lucide-react'
+
+interface Business {
+  id: string
+  name: string
+  google_place_id: string | null
+  website_url: string | null
+  facebook_page_id: string | null
+  instagram_username: string | null
+  instagram_business_id: string | null
+  lat: number | null
+  lng: number | null
+}
+
+interface Props {
+  orgId: string
+  orgApiKeyClaude: string | null
+  orgMetaToken: string | null
+  business: Business
+}
+
+export default function AdminEditClientForm({ orgId, orgApiKeyClaude, orgMetaToken, business }: Props) {
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
+
+  const [form, setForm] = useState({
+    googlePlaceId: business.google_place_id ?? '',
+    websiteUrl: business.website_url ?? '',
+    facebookPageId: business.facebook_page_id ?? '',
+    instagramUsername: business.instagram_username ?? '',
+    instagramBusinessId: business.instagram_business_id ?? '',
+    metaAccessToken: orgMetaToken ?? '',
+    apiKeyClaude: orgApiKeyClaude ?? '',
+    lat: business.lat?.toString() ?? '',
+    lng: business.lng?.toString() ?? '',
+  })
+
+  function set(key: keyof typeof form) {
+    return (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm((prev) => ({ ...prev, [key]: e.target.value }))
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    setSuccess(false)
+
+    const res = await fetch('/api/admin/client', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        businessId: business.id,
+        orgId,
+        ...form,
+      }),
+    })
+
+    setLoading(false)
+    if (!res.ok) {
+      const data = await res.json()
+      setError(data.error ?? 'Erreur inconnue')
+    } else {
+      setSuccess(true)
+      setTimeout(() => { setOpen(false); setSuccess(false) }, 1200)
+    }
+  }
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="flex items-center gap-1.5 text-xs text-blue-500 hover:text-blue-400 transition-colors px-2 py-1 rounded-md hover:bg-blue-500/10"
+      >
+        <Pencil className="w-3 h-3" /> Modifier
+      </button>
+    )
+  }
+
+  return (
+    <div className="mt-3 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-sm font-semibold text-white">{business.name}</p>
+        <button onClick={() => setOpen(false)} className="text-slate-400 hover:text-white">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <EditField label="Google Place ID" value={form.googlePlaceId} onChange={set('googlePlaceId')} placeholder="ChIJxxx..." />
+          <EditField label="URL Site web" value={form.websiteUrl} onChange={set('websiteUrl')} placeholder="https://..." />
+          <EditField label="Facebook Page ID" value={form.facebookPageId} onChange={set('facebookPageId')} placeholder="123456789" />
+          <EditField label="Instagram @username" value={form.instagramUsername} onChange={set('instagramUsername')} placeholder="monbusiness" />
+          <EditField label="Instagram Business ID" value={form.instagramBusinessId} onChange={set('instagramBusinessId')} placeholder="ID numérique" />
+          <EditField label="Meta Access Token" value={form.metaAccessToken} onChange={set('metaAccessToken')} placeholder="EAAxxxxxxx" />
+          <EditField label="Latitude" value={form.lat} onChange={set('lat')} placeholder="-21.115" />
+          <EditField label="Longitude" value={form.lng} onChange={set('lng')} placeholder="55.536" />
+          <EditField label="Clé API Claude (optionnel)" value={form.apiKeyClaude} onChange={set('apiKeyClaude')} placeholder="sk-ant-..." />
+        </div>
+
+        {error && <p className="text-xs text-red-400">{error}</p>}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : success ? <Check className="w-3.5 h-3.5" /> : null}
+          {success ? 'Sauvegardé !' : 'Sauvegarder'}
+        </button>
+      </form>
+    </div>
+  )
+}
+
+function EditField({ label, value, onChange, placeholder }: {
+  label: string
+  value: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  placeholder?: string
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="block text-xs font-medium text-slate-400">{label}</label>
+      <input
+        type="text"
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className="w-full px-3 py-1.5 text-sm bg-slate-900 border border-slate-700 rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+      />
+    </div>
+  )
+}

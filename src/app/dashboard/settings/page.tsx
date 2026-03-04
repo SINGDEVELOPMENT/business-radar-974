@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import RgpdConsentCard from '@/components/dashboard/RgpdConsentCard'
 import ChangePasswordCard from '@/components/dashboard/ChangePasswordCard'
+import CustomCompetitorsCard from '@/components/dashboard/CustomCompetitorsCard'
 import {
   Settings,
   Building2,
@@ -42,6 +43,16 @@ export default async function SettingsPage() {
         .eq('is_competitor', false)
         .order('name')
     : { data: [] }
+
+  const { data: customCompetitors, count: customCompetitorCount } = orgId
+    ? await supabase
+        .from('businesses')
+        .select('id, name, google_place_id, website_url, google_rating, google_reviews_count', { count: 'exact' })
+        .eq('organization_id', orgId)
+        .eq('is_competitor', true)
+        .eq('custom_competitor', true)
+        .order('name')
+    : { data: [], count: 0 }
 
   const businessList = businesses ?? []
 
@@ -113,6 +124,22 @@ export default async function SettingsPage() {
 
       {/* Changer le mot de passe */}
       <ChangePasswordCard />
+
+      {/* Concurrents personnalisés */}
+      {orgId && (
+        <CustomCompetitorsCard
+          competitors={(customCompetitors ?? []).map((c) => ({
+            id: c.id,
+            name: c.name,
+            google_place_id: c.google_place_id ?? null,
+            website_url: c.website_url ?? null,
+            google_rating: (c as { google_rating?: number | null }).google_rating ?? null,
+            google_reviews_count: (c as { google_reviews_count?: number | null }).google_reviews_count ?? null,
+          }))}
+          usedSlots={customCompetitorCount ?? 0}
+          freeLimit={2}
+        />
+      )}
 
       {/* Consentement RGPD */}
       {businessList.length > 0 && (

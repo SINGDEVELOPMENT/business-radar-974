@@ -122,18 +122,19 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          <p className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
-            Navigation
-          </p>
-          {navItems.map((item) => navLink(item.href, item.label, item.icon))}
-
-          {isSuperAdmin && (
+          {isSuperAdmin ? (
             <>
-              <Separator className="bg-slate-800 my-3" />
               <p className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Admin
+                Administration
               </p>
               {navLink('/dashboard/admin', 'Clients', ShieldCheck)}
+            </>
+          ) : (
+            <>
+              <p className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                Navigation
+              </p>
+              {navItems.map((item) => navLink(item.href, item.label, item.icon))}
             </>
           )}
         </nav>
