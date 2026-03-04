@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import {
@@ -40,6 +40,17 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [recentReports, setRecentReports] = useState(0)
+
+  useEffect(() => {
+    const supabase = createClient()
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+    supabase
+      .from('ai_reports')
+      .select('id', { count: 'exact', head: true })
+      .gte('generated_at', sevenDaysAgo)
+      .then(({ count }) => { if (count) setRecentReports(count) })
+  }, [])
 
   async function handleLogout() {
     const supabase = createClient()
@@ -64,7 +75,12 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
         )}
       >
         <Icon className={cn('w-4 h-4 shrink-0', isActive && 'text-blue-400')} />
-        {label}
+        <span className="flex-1">{label}</span>
+        {href === '/dashboard/reports' && recentReports > 0 && (
+          <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold leading-none">
+            {recentReports}
+          </span>
+        )}
       </Link>
     )
   }
