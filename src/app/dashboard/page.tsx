@@ -144,8 +144,9 @@ export default async function DashboardPage() {
     orgId
       ? supabase
           .from('seo_snapshots')
-          .select('lighthouse_score, business_id, businesses!inner(organization_id)')
+          .select('lighthouse_score, business_id, businesses!inner(organization_id, is_competitor)')
           .eq('businesses.organization_id', orgId)
+          .eq('businesses.is_competitor', false)
           .order('collected_at', { ascending: false })
           .limit(1)
       : Promise.resolve({ data: [] }),

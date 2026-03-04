@@ -14,8 +14,9 @@ import {
   TrendingDown,
   Minus,
   Globe,
-  MapPin,
+  Clock,
   Gauge,
+  ExternalLink,
 } from 'lucide-react'
 
 export default async function CompetitorsPage() {
@@ -70,21 +71,23 @@ export default async function CompetitorsPage() {
 
   const competitorList = competitors ?? []
 
-  // Derniers scores SEO pour chaque concurrent avec un site
+  // Derniers scores SEO + vitesse pour chaque concurrent avec un site
   const competitorIds = competitorList.map((c) => c.id)
-  const seoMap: Record<string, number> = {}
+  const seoMap: Record<string, { score: number | null; loadTime: number | null }> = {}
 
   if (competitorIds.length > 0) {
     const { data: snapshots } = await supabase
       .from('seo_snapshots')
-      .select('business_id, lighthouse_score, collected_at')
+      .select('business_id, lighthouse_score, load_time_ms, collected_at')
       .in('business_id', competitorIds)
       .order('collected_at', { ascending: false })
 
-    // Garder seulement le plus récent par business_id
     for (const snap of snapshots ?? []) {
-      if (snap.business_id && !(snap.business_id in seoMap) && snap.lighthouse_score != null) {
-        seoMap[snap.business_id] = snap.lighthouse_score
+      if (snap.business_id && !(snap.business_id in seoMap)) {
+        seoMap[snap.business_id] = {
+          score: snap.lighthouse_score ?? null,
+          loadTime: snap.load_time_ms ?? null,
+        }
       }
     }
   }
@@ -98,12 +101,12 @@ export default async function CompetitorsPage() {
     google_reviews_count: c.google_reviews_count ?? null,
     category: c.category ?? null,
     website_url: c.website_url ?? null,
-    seo_score: seoMap[c.id] ?? null,
+    seo_score: seoMap[c.id]?.score ?? null,
+    load_time_ms: seoMap[c.id]?.loadTime ?? null,
   }))
 
   // ── KPI ────────────────────────────────────────────────────────────────
   const ratingsWithValue = enrichedCompetitors.filter((c) => c.google_rating != null)
-  const bestCompetitor = ratingsWithValue[0] ?? null
   const avgCompetitorRating =
     ratingsWithValue.length > 0
       ? ratingsWithValue.reduce((s, c) => s + (c.google_rating ?? 0), 0) / ratingsWithValue.length
@@ -114,9 +117,8 @@ export default async function CompetitorsPage() {
     positionDelta = clientRating - avgCompetitorRating
   }
 
-  // ── Données graphique ──────────────────────────────────────────────────
+  // ── Graphique ──────────────────────────────────────────────────────────
   const clientName = (ownBusinesses ?? []).map((b) => b.name)[0] ?? 'Mon établissement'
-
   const chartData: CompetitorPoint[] = []
   if (clientRating != null) {
     chartData.push({
@@ -157,7 +159,7 @@ export default async function CompetitorsPage() {
       {/* Stats — uniquement si des concurrents existent */}
       {enrichedCompetitors.length > 0 && (
         <>
-          {/* KPI cards */}
+          {/* KPI comparaison */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <KpiCard
               title="Concurrents surveillés"
@@ -167,7 +169,7 @@ export default async function CompetitorsPage() {
               iconBg="bg-indigo-50"
             />
             <KpiCard
-              title="Votre note (avis)"
+              title="Votre note"
               value={clientRating != null ? clientRating.toFixed(1) : '--'}
               icon={Star}
               iconColor="text-amber-500"
@@ -191,166 +193,160 @@ export default async function CompetitorsPage() {
                 positionDelta == null ? Minus : positionDelta >= 0 ? TrendingUp : TrendingDown
               }
               iconColor={
-                positionDelta == null
-                  ? 'text-gray-400'
-                  : positionDelta >= 0
-                  ? 'text-green-500'
-                  : 'text-red-500'
+                positionDelta == null ? 'text-gray-400' : positionDelta >= 0 ? 'text-green-500' : 'text-red-500'
               }
               iconBg={
-                positionDelta == null
-                  ? 'bg-gray-100'
-                  : positionDelta >= 0
-                  ? 'bg-green-50'
-                  : 'bg-red-50'
+                positionDelta == null ? 'bg-gray-100' : positionDelta >= 0 ? 'bg-green-50' : 'bg-red-50'
               }
             />
           </div>
 
+          {/* Cartes individuelles par concurrent */}
+          <div>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              Fiche par concurrent
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {enrichedCompetitors.map((comp) => {
+                const delta =
+                  clientRating != null && comp.google_rating != null
+                    ? clientRating - comp.google_rating
+                    : null
+
+                return (
+                  <Card key={comp.id} className="p-5 space-y-4">
+                    {/* En-tête */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="font-semibold text-gray-900 truncate">{comp.name}</p>
+                        {comp.website_url && (
+                          <a
+                            href={comp.website_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-xs text-blue-500 hover:underline mt-0.5"
+                          >
+                            <Globe className="w-3 h-3" />
+                            {comp.website_url.replace(/https?:\/\//, '').replace(/\/$/, '')}
+                            <ExternalLink className="w-2.5 h-2.5" />
+                          </a>
+                        )}
+                      </div>
+                      {delta != null && (
+                        <span
+                          className={`flex items-center gap-0.5 text-xs font-semibold shrink-0 px-2 py-1 rounded-full ${
+                            delta > 0
+                              ? 'bg-green-50 text-green-700'
+                              : delta < 0
+                              ? 'bg-red-50 text-red-600'
+                              : 'bg-gray-100 text-gray-500'
+                          }`}
+                        >
+                          {delta > 0 ? <TrendingDown className="w-3 h-3" /> : delta < 0 ? <TrendingUp className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
+                          {delta > 0 ? `+${delta.toFixed(2)} en votre faveur` : delta < 0 ? `${delta.toFixed(2)} à combler` : 'Égalité'}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Stats grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* Note Google */}
+                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10">
+                        <div className="flex items-center gap-1.5">
+                          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                          <span className="text-xs font-medium text-amber-700 dark:text-amber-400">Note Google</span>
+                        </div>
+                        <p className="text-2xl font-bold text-amber-700 dark:text-amber-400">
+                          {comp.google_rating != null ? comp.google_rating.toFixed(1) : '--'}
+                        </p>
+                        <p className="text-xs text-amber-600 dark:text-amber-500">
+                          {comp.google_reviews_count != null
+                            ? `${comp.google_reviews_count.toLocaleString('fr-FR')} avis`
+                            : 'Aucun avis'}
+                        </p>
+                      </div>
+
+                      {/* Score SEO */}
+                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-blue-50 dark:bg-blue-500/10">
+                        <div className="flex items-center gap-1.5">
+                          <Gauge className="w-4 h-4 text-blue-500" />
+                          <span className="text-xs font-medium text-blue-700 dark:text-blue-400">Score SEO</span>
+                        </div>
+                        <p className={`text-2xl font-bold ${
+                          comp.seo_score == null
+                            ? 'text-gray-300'
+                            : comp.seo_score >= 70
+                            ? 'text-emerald-600'
+                            : comp.seo_score >= 40
+                            ? 'text-orange-500'
+                            : 'text-red-500'
+                        }`}>
+                          {comp.seo_score ?? '--'}
+                        </p>
+                        <p className="text-xs text-blue-600 dark:text-blue-500">
+                          {comp.seo_score == null ? 'En attente' : 'sur 100'}
+                        </p>
+                      </div>
+
+                      {/* Vitesse */}
+                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-purple-50 dark:bg-purple-500/10">
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-4 h-4 text-purple-500" />
+                          <span className="text-xs font-medium text-purple-700 dark:text-purple-400">Vitesse site</span>
+                        </div>
+                        <p className={`text-2xl font-bold ${
+                          comp.load_time_ms == null
+                            ? 'text-gray-300'
+                            : comp.load_time_ms < 2000
+                            ? 'text-emerald-600'
+                            : comp.load_time_ms < 5000
+                            ? 'text-orange-500'
+                            : 'text-red-500'
+                        }`}>
+                          {comp.load_time_ms != null ? `${(comp.load_time_ms / 1000).toFixed(1)}s` : '--'}
+                        </p>
+                        <p className="text-xs text-purple-600 dark:text-purple-500">
+                          {comp.load_time_ms == null
+                            ? 'En attente'
+                            : comp.load_time_ms < 2000
+                            ? 'Rapide'
+                            : comp.load_time_ms < 5000
+                            ? 'Moyen'
+                            : 'Lent'}
+                        </p>
+                      </div>
+
+                      {/* Avis */}
+                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 dark:bg-slate-800">
+                        <div className="flex items-center gap-1.5">
+                          <Users className="w-4 h-4 text-gray-400" />
+                          <span className="text-xs font-medium text-gray-500">Total avis</span>
+                        </div>
+                        <p className="text-2xl font-bold text-gray-700 dark:text-white">
+                          {comp.google_reviews_count != null
+                            ? comp.google_reviews_count.toLocaleString('fr-FR')
+                            : '--'}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {comp.google_place_id ? 'Google Places' : 'Non lié'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Badge statut collecte */}
+                    {!comp.google_rating && !comp.seo_score && (
+                      <p className="text-xs text-gray-400 text-center">
+                        Données collectées lors du prochain cron hebdomadaire
+                      </p>
+                    )}
+                  </Card>
+                )
+              })}
+            </div>
+          </div>
+
           {/* Graphique comparatif */}
-          {chartData.length > 0 && <CompetitorChart data={chartData} />}
-
-          {/* Leader du marché */}
-          {bestCompetitor && (
-            <Card className="p-5 border-orange-200 bg-orange-50/30">
-              <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2 text-sm">
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                Leader du marché
-              </h3>
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <div>
-                  <p className="font-semibold text-gray-900">{bestCompetitor.name}</p>
-                  {bestCompetitor.category && (
-                    <p className="text-xs text-gray-500 capitalize mt-0.5">{bestCompetitor.category}</p>
-                  )}
-                </div>
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="flex items-center gap-1 font-bold text-gray-900">
-                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                    {bestCompetitor.google_rating?.toFixed(1)}
-                  </span>
-                  <span className="text-gray-500">
-                    {bestCompetitor.google_reviews_count?.toLocaleString('fr-FR') ?? '--'} avis
-                  </span>
-                  {bestCompetitor.seo_score != null && (
-                    <span className="flex items-center gap-1 text-gray-500">
-                      <Gauge className="w-3.5 h-3.5 text-blue-500" />
-                      SEO {bestCompetitor.seo_score}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* Tableau comparatif */}
-          <Card className="p-0 overflow-hidden">
-            <div className="px-5 py-4 border-b border-gray-100">
-              <h3 className="font-semibold text-gray-900 text-sm">
-                Tableau comparatif — {enrichedCompetitors.length} concurrent
-                {enrichedCompetitors.length > 1 ? 's' : ''}
-              </h3>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
-                    <th className="px-5 py-3 text-left font-medium">Établissement</th>
-                    <th className="px-5 py-3 text-center font-medium">Note</th>
-                    <th className="px-5 py-3 text-center font-medium">Avis</th>
-                    <th className="px-5 py-3 text-center font-medium">SEO</th>
-                    <th className="px-5 py-3 text-center font-medium">vs vous</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {enrichedCompetitors.map((comp, i) => {
-                    const delta =
-                      clientRating != null && comp.google_rating != null
-                        ? clientRating - comp.google_rating
-                        : null
-                    return (
-                      <tr key={comp.id} className="hover:bg-gray-50/50 transition-colors">
-                        <td className="px-5 py-3.5">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-300 font-bold w-4">{i + 1}</span>
-                            <div>
-                              <p className="font-medium text-gray-900">{comp.name}</p>
-                              {comp.website_url ? (
-                                <a
-                                  href={comp.website_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-xs text-blue-500 hover:underline flex items-center gap-1 mt-0.5"
-                                >
-                                  <Globe className="w-3 h-3" />
-                                  {comp.website_url.replace(/https?:\/\//, '').replace(/\/$/, '')}
-                                </a>
-                              ) : comp.category ? (
-                                <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-                                  <MapPin className="w-3 h-3" />
-                                  <span className="capitalize">{comp.category}</span>
-                                </p>
-                              ) : null}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-5 py-3.5 text-center">
-                          {comp.google_rating != null ? (
-                            <span className="inline-flex items-center gap-1 font-semibold text-gray-900">
-                              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                              {comp.google_rating.toFixed(1)}
-                            </span>
-                          ) : (
-                            <span className="text-gray-300">--</span>
-                          )}
-                        </td>
-                        <td className="px-5 py-3.5 text-center text-gray-600">
-                          {comp.google_reviews_count?.toLocaleString('fr-FR') ?? '--'}
-                        </td>
-                        <td className="px-5 py-3.5 text-center">
-                          {comp.seo_score != null ? (
-                            <Badge
-                              variant={comp.seo_score >= 70 ? 'success' : comp.seo_score >= 40 ? 'secondary' : 'destructive'}
-                              className="text-xs"
-                            >
-                              {comp.seo_score}
-                            </Badge>
-                          ) : (
-                            <span className="text-gray-300 text-xs">--</span>
-                          )}
-                        </td>
-                        <td className="px-5 py-3.5 text-center">
-                          {delta != null ? (
-                            <span
-                              className={`inline-flex items-center gap-0.5 text-xs font-semibold ${
-                                delta > 0
-                                  ? 'text-green-600'
-                                  : delta < 0
-                                  ? 'text-red-500'
-                                  : 'text-gray-400'
-                              }`}
-                            >
-                              {delta > 0 ? (
-                                <TrendingUp className="w-3 h-3" />
-                              ) : delta < 0 ? (
-                                <TrendingDown className="w-3 h-3" />
-                              ) : (
-                                <Minus className="w-3 h-3" />
-                              )}
-                              {delta >= 0 ? '+' : ''}
-                              {delta.toFixed(2)}
-                            </span>
-                          ) : (
-                            <span className="text-gray-300">--</span>
-                          )}
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </Card>
+          {chartData.length > 1 && <CompetitorChart data={chartData} />}
         </>
       )}
     </div>

@@ -37,8 +37,9 @@ export default async function SeoPage() {
   const { data: snapshots } = orgId
     ? await supabase
         .from('seo_snapshots')
-        .select('*, businesses!inner(name, organization_id)')
+        .select('*, businesses!inner(name, organization_id, is_competitor)')
         .eq('businesses.organization_id', orgId)
+        .eq('businesses.is_competitor', false)
         .order('collected_at', { ascending: false })
         .limit(30)
     : { data: [] }
