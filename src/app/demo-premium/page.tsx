@@ -3,6 +3,7 @@ import KpiCard from '@/components/dashboard/KpiCard'
 import AiInsightCard from '@/components/dashboard/AiInsightCard'
 import { Star, MessageSquare, TrendingUp, Activity } from 'lucide-react'
 import { DEMO_BUSINESS, DEMO_REVIEWS, DEMO_SOCIAL_POSTS, DEMO_SEO_LATEST, DEMO_REPORT } from '@/lib/demo-data'
+import type { AiRecommendation } from '@/types'
 
 export default function DemoPremiumPage() {
   const avgRating = DEMO_BUSINESS.googleRating
@@ -57,7 +58,7 @@ export default function DemoPremiumPage() {
         </h2>
         <AiInsightCard
           summary={DEMO_REPORT.summary}
-          recommendations={DEMO_REPORT.recommendations}
+          recommendations={DEMO_REPORT.recommendations as AiRecommendation[]}
           scoreGlobal={DEMO_REPORT.score_global}
           generatedAt={DEMO_REPORT.generated_at}
         />
