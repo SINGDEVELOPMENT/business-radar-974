@@ -143,8 +143,20 @@ export default async function DashboardPage() {
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()
   const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString()
 
-  const [reviewsRes, postsRes, seoRes, reportRes, reviewsPrevRes, postsPrevRes, seoOldRes, reportPrevRes] = await Promise.all([
-    // Avis mois en cours
+  const [businessRes, reviewsRes, postsRes, seoRes, reportRes, reviewsPrevRes, postsPrevRes, seoOldRes, reportPrevRes] = await Promise.all([
+    // Note Google globale (depuis businesses)
+    orgId
+      ? supabase
+          .from('businesses')
+          .select('google_rating, google_reviews_count')
+          .eq('organization_id', orgId)
+          .eq('is_competitor', false)
+          .not('google_rating', 'is', null)
+          .order('google_rating', { ascending: false })
+          .limit(1)
+          .single()
+      : Promise.resolve({ data: null }),
+    // Avis mois en cours (pour le compteur)
     orgId
       ? supabase
           .from('reviews')
@@ -221,6 +233,8 @@ export default async function DashboardPage() {
       : Promise.resolve({ data: [] }),
   ])
 
+  const googleRating = businessRes.data?.google_rating ?? null
+  const googleReviewsCount = businessRes.data?.google_reviews_count ?? null
   const reviews = reviewsRes.data ?? []
   const posts = postsRes.data ?? []
   const latestSeo = seoRes.data?.[0] ?? null
@@ -230,9 +244,6 @@ export default async function DashboardPage() {
   const seoOld = seoOldRes.data?.[0] ?? null
   const reportPrev = (reportPrevRes.data ?? [])[0] ?? null
 
-  const avgRating = reviews.length
-    ? reviews.reduce((sum, r) => sum + (r.rating ?? 0), 0) / reviews.length
-    : null
   const avgRatingPrev = reviewsPrev.length
     ? reviewsPrev.reduce((sum, r) => sum + (r.rating ?? 0), 0) / reviewsPrev.length
     : null
@@ -253,9 +264,6 @@ export default async function DashboardPage() {
   const reportPrevContent = reportPrev?.content as { score_global?: number } | null
 
   // Calcul des deltas
-  const ratingDelta = avgRating !== null && avgRatingPrev !== null
-    ? parseFloat((avgRating - avgRatingPrev).toFixed(1))
-    : null
   const engagementDelta = postsPrev.length > 0 || posts.length > 0
     ? totalEngagement - totalEngagementPrev
     : null
@@ -291,9 +299,8 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
           title="Note Google"
-          value={avgRating !== null ? `${avgRating.toFixed(1)}/5` : '--'}
-          subtitle={reviews.length > 0 ? `sur ${reviews.length} avis ce mois` : 'Aucun avis ce mois'}
-          trend={ratingDelta !== null ? { value: ratingDelta, label: 'vs mois préc.' } : undefined}
+          value={googleRating !== null ? `${Number(googleRating).toFixed(1)}/5` : '--'}
+          subtitle={googleReviewsCount !== null ? `sur ${googleReviewsCount.toLocaleString('fr-FR')} avis` : 'Aucune donnée'}
           icon={Star}
           iconColor="text-amber-500"
           iconBg="bg-amber-50"

@@ -48,7 +48,15 @@ export async function collectGoogleReviews(businessId: string, placeId: string) 
     source: 'google' as const,
   }))
 
-  if (rows.length === 0) return { inserted: 0 }
+  // Mettre à jour la note globale sur le business (même s'il n'y a pas de nouveaux avis)
+  if (place.rating != null) {
+    await supabase.from('businesses').update({
+      google_rating: place.rating,
+      google_reviews_count: place.user_ratings_total ?? null,
+    }).eq('id', businessId)
+  }
+
+  if (rows.length === 0) return { inserted: 0, avgRating: place.rating, totalReviews: place.user_ratings_total }
 
   const { error } = await supabase.from('reviews').upsert(rows, {
     onConflict: 'business_id,author_name,published_at',
