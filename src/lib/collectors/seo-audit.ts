@@ -82,7 +82,7 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
         psUrl.searchParams.append('category', cat)
       )
 
-      const psRes = await fetch(psUrl.toString(), { signal: AbortSignal.timeout(25000) })
+      const psRes = await fetch(psUrl.toString(), { signal: AbortSignal.timeout(40000) })
       if (!psRes.ok) {
         const errText = await psRes.text().catch(() => '')
         console.error('[seo-audit] PageSpeed HTTP error:', psRes.status, errText.slice(0, 300))

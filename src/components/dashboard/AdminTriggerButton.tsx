@@ -1,12 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Play, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 
 export default function AdminTriggerButton() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [details, setDetails] = useState<string | null>(null)
+  const [elapsed, setElapsed] = useState(0)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (status === 'loading') {
+      setElapsed(0)
+      timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000)
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [status])
 
   async function handleTrigger() {
     setStatus('loading')
@@ -21,8 +33,8 @@ export default function AdminTriggerButton() {
         setDetails(data.error ?? 'Erreur inconnue')
       } else {
         setStatus('success')
-        setDetails(`${data.processed ?? 0} business(es) traités`)
-        setTimeout(() => setStatus('idle'), 5000)
+        setDetails('Collecte lancée — données disponibles dans ~1 minute')
+        setTimeout(() => setStatus('idle'), 10000)
       }
     } catch {
       setStatus('error')
@@ -44,7 +56,7 @@ export default function AdminTriggerButton() {
         ) : (
           <Play className="w-4 h-4" />
         )}
-        {status === 'loading' ? 'Collecte en cours...' : 'Déclencher la collecte'}
+        {status === 'loading' ? `Collecte en cours... ${elapsed}s` : 'Déclencher la collecte'}
       </Button>
 
       {status === 'success' && (
