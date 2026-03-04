@@ -16,7 +16,6 @@ interface Competitor {
   google_place_id: string | null
   google_rating: number | null
   google_reviews_count: number | null
-  category: string | null
   website_url: string | null
   seo_score: number | null
   load_time_ms: number | null

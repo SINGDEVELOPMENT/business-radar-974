@@ -43,7 +43,7 @@ export async function GET() {
   // Concurrents
   const { data: competitors, error: competitorsError } = await admin
     .from('businesses')
-    .select('id, name, google_rating, google_reviews_count, category, website_url, google_place_id')
+    .select('id, name, google_rating, google_reviews_count, website_url, google_place_id')
     .eq('organization_id', orgId)
     .eq('is_competitor', true)
     .order('google_rating', { ascending: false })
@@ -82,7 +82,6 @@ export async function GET() {
     google_place_id: c.google_place_id ?? null,
     google_rating: c.google_rating ?? null,
     google_reviews_count: c.google_reviews_count ?? null,
-    category: c.category ?? null,
     website_url: c.website_url ?? null,
     seo_score: seoMap[c.id]?.score ?? null,
     load_time_ms: seoMap[c.id]?.loadTime ?? null,
