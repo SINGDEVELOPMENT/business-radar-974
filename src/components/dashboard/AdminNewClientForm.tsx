@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { UserPlus, ChevronDown, ChevronUp } from 'lucide-react'
+import { UserPlus, ChevronDown, ChevronUp, Check } from 'lucide-react'
 
 interface FormData {
   orgName: string
@@ -37,6 +37,7 @@ export default function AdminNewClientForm() {
   const [form, setForm] = useState<FormData>(initialForm)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; message: string } | null>(null)
+  const [invitationSent, setInvitationSent] = useState(false)
   const [open, setOpen] = useState(true)
 
   function set(key: keyof FormData) {
@@ -81,6 +82,7 @@ export default function AdminNewClientForm() {
             inviteMsg = ` (Erreur invite : ${data.invite?.error ?? 'inconnu'})`
           }
         }
+        setInvitationSent(!!data.invite?.ok)
         setResult({ ok: data.invite?.ok !== false, message: `Client "${data.organization.name}" créé.${inviteMsg}` })
         setForm(initialForm)
       }
@@ -224,14 +226,21 @@ export default function AdminNewClientForm() {
           </fieldset>
 
           {result && (
-            <div
-              className={`p-3 rounded-lg text-sm ${
-                result.ok
-                  ? 'bg-green-50 text-green-700 border border-green-200'
-                  : 'bg-red-50 text-red-700 border border-red-200'
-              }`}
-            >
-              {result.message}
+            <div className="space-y-2">
+              <div
+                className={`p-3 rounded-lg text-sm ${
+                  result.ok
+                    ? 'bg-green-50 text-green-700 border border-green-200'
+                    : 'bg-red-50 text-red-700 border border-red-200'
+                }`}
+              >
+                {result.message}
+              </div>
+              {invitationSent && (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 border border-green-200">
+                  <Check className="w-3 h-3" /> Invitation envoyée
+                </span>
+              )}
             </div>
           )}
 
