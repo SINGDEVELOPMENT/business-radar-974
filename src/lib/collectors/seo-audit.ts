@@ -13,7 +13,7 @@ const OPPORTUNITY_KEYS = [
   'uses-responsive-images',
 ]
 
-export async function collectSeoAudit(businessId: string, websiteUrl: string, { skipPageSpeed = false } = {}) {
+export async function collectSeoAudit(businessId: string, websiteUrl: string) {
   const start = Date.now()
 
   let statusCode = 0
@@ -37,7 +37,6 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string, { 
   let title = ''
   let metaDescription = ''
   let h1Count = 0
-
   let mobileFriendly: boolean | null = null
 
   if (html) {
@@ -45,7 +44,6 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string, { 
     title = $('title').first().text().trim()
     metaDescription = $('meta[name="description"]').attr('content') ?? ''
     h1Count = $('h1').length
-    // Mobile friendly depuis la balise viewport (fallback si PageSpeed indisponible)
     const viewport = $('meta[name="viewport"]').attr('content') ?? ''
     mobileFriendly = viewport.includes('width=device-width')
   }
@@ -61,56 +59,30 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string, { 
 
   const seoScore = computeSeoScore(partial)
 
-  // ── PageSpeed Insights API — rapport complet ─────────────────────────────
-  if (skipPageSpeed) {
-    const snapshot = {
-      business_id: businessId,
-      url: websiteUrl,
-      ...partial,
-      page_size_kb: pageSizeKb,
-      mobile_friendly: mobileFriendly,
-      lighthouse_score: seoScore,
-      fcp_ms: null, lcp_ms: null, cls_score: null, tbt_ms: null, speed_index_ms: null,
-      accessibility_score: null, seo_audit_score: null, best_practices_score: null,
-      opportunities: null,
-    }
-    const supabase = createAdminClient()
-    const { error } = await supabase.from('seo_snapshots').insert(snapshot)
-    if (error) throw new Error(`Supabase insert error: ${error.message}`)
-    return snapshot
-  }
-
+  // ── PageSpeed Insights API ────────────────────────────────────────────────
   let lighthouseScore = seoScore
-
-  // Core Web Vitals
   let fcpMs: number | null = null
   let lcpMs: number | null = null
   let clsScore: number | null = null
   let tbtMs: number | null = null
   let speedIndexMs: number | null = null
-
-  // Scores catégories
   let accessibilityScore: number | null = null
   let seoAuditScore: number | null = null
   let bestPracticesScore: number | null = null
-
-  // Opportunités d'optimisation
   let opportunities: { id: string; title: string; displayValue: string; score: number }[] = []
 
-  // PageSpeed Insights — fonctionne sans clé API (25k req/jour gratuit)
   if (statusCode > 0) {
     try {
       const psUrl = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed')
       psUrl.searchParams.set('url', websiteUrl)
       psUrl.searchParams.set('strategy', 'mobile')
-      // Clé optionnelle dédiée PageSpeed (NE PAS réutiliser GOOGLE_PLACES_API_KEY)
       const psKey = process.env.PAGESPEED_API_KEY
       if (psKey) psUrl.searchParams.set('key', psKey)
       ;['performance', 'accessibility', 'best-practices', 'seo'].forEach(cat =>
         psUrl.searchParams.append('category', cat)
       )
 
-      const psRes = await fetch(psUrl.toString(), { signal: AbortSignal.timeout(12000) })
+      const psRes = await fetch(psUrl.toString(), { signal: AbortSignal.timeout(25000) })
       if (!psRes.ok) {
         const errText = await psRes.text().catch(() => '')
         console.error('[seo-audit] PageSpeed HTTP error:', psRes.status, errText.slice(0, 300))
@@ -119,43 +91,28 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string, { 
         const audits = psData?.lighthouseResult?.audits
         const categories = psData?.lighthouseResult?.categories
 
-        // Score performance (Lighthouse)
-        if (categories?.performance?.score != null) {
+        if (categories?.performance?.score != null)
           lighthouseScore = Math.round(categories.performance.score * 100)
-        }
-
-        // Autres scores catégories
-        if (categories?.accessibility?.score != null) {
+        if (categories?.accessibility?.score != null)
           accessibilityScore = Math.round(categories.accessibility.score * 100)
-        }
-        if (categories?.seo?.score != null) {
+        if (categories?.seo?.score != null)
           seoAuditScore = Math.round(categories.seo.score * 100)
-        }
-        if (categories?.['best-practices']?.score != null) {
+        if (categories?.['best-practices']?.score != null)
           bestPracticesScore = Math.round(categories['best-practices'].score * 100)
-        }
 
-        // Core Web Vitals
-        if (audits?.['first-contentful-paint']?.numericValue != null) {
+        if (audits?.['first-contentful-paint']?.numericValue != null)
           fcpMs = Math.round(audits['first-contentful-paint'].numericValue)
-        }
-        if (audits?.['largest-contentful-paint']?.numericValue != null) {
+        if (audits?.['largest-contentful-paint']?.numericValue != null)
           lcpMs = Math.round(audits['largest-contentful-paint'].numericValue)
-        }
-        if (audits?.['cumulative-layout-shift']?.numericValue != null) {
+        if (audits?.['cumulative-layout-shift']?.numericValue != null)
           clsScore = audits['cumulative-layout-shift'].numericValue
-        }
-        if (audits?.['total-blocking-time']?.numericValue != null) {
+        if (audits?.['total-blocking-time']?.numericValue != null)
           tbtMs = Math.round(audits['total-blocking-time'].numericValue)
-        }
-        if (audits?.['speed-index']?.numericValue != null) {
+        if (audits?.['speed-index']?.numericValue != null)
           speedIndexMs = Math.round(audits['speed-index'].numericValue)
-        }
 
-        // Mobile friendly
         mobileFriendly = audits?.['viewport']?.score === 1
 
-        // Opportunités
         if (audits) {
           opportunities = OPPORTUNITY_KEYS
             .filter(key => audits[key]?.score != null && (audits[key].score as number) < 1)
