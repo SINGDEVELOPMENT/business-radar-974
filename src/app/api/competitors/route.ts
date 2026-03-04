@@ -1,0 +1,95 @@
+import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+
+export const dynamic = 'force-dynamic'
+
+export async function GET() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const admin = createAdminClient()
+
+  // Récupérer l'org du user via admin client (bypass RLS profiles)
+  const { data: profile } = await admin
+    .from('profiles')
+    .select('organization_id')
+    .eq('id', user.id)
+    .single()
+
+  const orgId = profile?.organization_id
+  if (!orgId) return NextResponse.json({ competitors: [], ownRating: null, ownReviewCount: 0 })
+
+  // Nos établissements
+  const { data: ownBusinesses } = await admin
+    .from('businesses')
+    .select('id, name')
+    .eq('organization_id', orgId)
+    .eq('is_competitor', false)
+
+  const ownIds = (ownBusinesses ?? []).map((b) => b.id)
+
+  // Note moyenne client
+  const { data: ownReviews } = ownIds.length > 0
+    ? await admin.from('reviews').select('rating').in('business_id', ownIds)
+    : { data: [] }
+
+  const ownReviewList = ownReviews ?? []
+  const ownRating = ownReviewList.length > 0
+    ? ownReviewList.reduce((s, r) => s + (r.rating ?? 0), 0) / ownReviewList.length
+    : null
+
+  // Concurrents
+  const { data: competitors } = await admin
+    .from('businesses')
+    .select('id, name, google_rating, google_reviews_count, category, website_url, google_place_id')
+    .eq('organization_id', orgId)
+    .eq('is_competitor', true)
+    .order('google_rating', { ascending: false })
+
+  const competitorList = competitors ?? []
+
+  // SEO snapshots pour les concurrents
+  const competitorIds = competitorList.map((c) => c.id)
+  const seoMap: Record<string, { score: number | null; loadTime: number | null }> = {}
+
+  if (competitorIds.length > 0) {
+    const { data: snapshots } = await admin
+      .from('seo_snapshots')
+      .select('business_id, lighthouse_score, load_time_ms, collected_at')
+      .in('business_id', competitorIds)
+      .order('collected_at', { ascending: false })
+
+    for (const snap of snapshots ?? []) {
+      if (snap.business_id && !(snap.business_id in seoMap)) {
+        seoMap[snap.business_id] = {
+          score: snap.lighthouse_score ?? null,
+          loadTime: snap.load_time_ms ?? null,
+        }
+      }
+    }
+  }
+
+  const enriched = competitorList.map((c) => ({
+    id: c.id,
+    name: c.name,
+    google_place_id: c.google_place_id ?? null,
+    google_rating: c.google_rating ?? null,
+    google_reviews_count: c.google_reviews_count ?? null,
+    category: c.category ?? null,
+    website_url: c.website_url ?? null,
+    seo_score: seoMap[c.id]?.score ?? null,
+    load_time_ms: seoMap[c.id]?.loadTime ?? null,
+  }))
+
+  const clientName = (ownBusinesses ?? [])[0]?.name ?? 'Mon établissement'
+
+  return NextResponse.json({
+    competitors: enriched,
+    ownRating,
+    ownReviewCount: ownReviewList.length,
+    clientName,
+    freeLimit: 2,
+  })
+}
