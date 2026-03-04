@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import AdminNewClientForm from '@/components/dashboard/AdminNewClientForm'
 import AdminTriggerButton from '@/components/dashboard/AdminTriggerButton'
 import AdminEditClientForm from '@/components/dashboard/AdminEditClientForm'
+import AdminCompetitorsManager from '@/components/dashboard/AdminCompetitorsManager'
 import { Building2, Globe, Facebook, Instagram, MapPin, Calendar } from 'lucide-react'
 import type { Business } from '@/types/index'
 
@@ -30,7 +31,7 @@ export default async function AdminPage() {
     .from('organizations')
     .select(`
       id, name, slug, plan, created_at, api_key_claude, meta_access_token,
-      businesses(id, name, google_place_id, website_url, facebook_page_id, instagram_username, instagram_business_id, lat, lng, is_competitor)
+      businesses(id, name, google_place_id, website_url, facebook_page_id, instagram_username, instagram_business_id, lat, lng, is_competitor, custom_competitor, google_rating, google_reviews_count)
     `)
     .order('created_at', { ascending: false })
 
@@ -60,11 +61,12 @@ export default async function AdminPage() {
         ) : (
           <div className="space-y-2">
             {orgList.map((org) => {
-              const businesses = org.businesses as unknown as Business[]
+              const businesses = org.businesses as unknown as (Business & { custom_competitor: boolean; google_rating: number | null; google_reviews_count: number | null })[]
               const mainBiz = businesses.find((b) => !b.is_competitor)
-              const competitorCount = businesses.filter((b) => b.is_competitor).length
+              const customCompetitors = businesses.filter((b) => b.is_competitor && b.custom_competitor)
+              const competitorCount = customCompetitors.length
 
-              const mainBizFull = mainBiz as Business & { instagram_business_id: string | null; lat: number | null; lng: number | null }
+              const mainBizFull = mainBiz as unknown as Business & { instagram_business_id: string | null; lat: number | null; lng: number | null }
 
               return (
                 <div
@@ -114,6 +116,18 @@ export default async function AdminPage() {
                       {new Date(org.created_at).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
+
+                  <AdminCompetitorsManager
+                    orgId={org.id}
+                    competitors={customCompetitors.map((c) => ({
+                      id: c.id,
+                      name: c.name,
+                      google_place_id: c.google_place_id ?? null,
+                      website_url: c.website_url ?? null,
+                      google_rating: c.google_rating ?? null,
+                      google_reviews_count: c.google_reviews_count ?? null,
+                    }))}
+                  />
 
                   {mainBizFull && (
                     <AdminEditClientForm

@@ -4,7 +4,7 @@ import { collectGoogleReviews } from '@/lib/collectors/google-reviews'
 import { collectSeoAudit } from '@/lib/collectors/seo-audit'
 import { collectFacebookPosts } from '@/lib/collectors/facebook'
 import { collectInstagramPosts } from '@/lib/collectors/instagram'
-import { collectCompetitors, refreshCustomCompetitors } from '@/lib/collectors/competitors'
+import { refreshCustomCompetitors } from '@/lib/collectors/competitors'
 
 // Protégé par le secret partagé avec Vercel Cron (header Authorization: Bearer <CRON_SECRET>)
 export async function GET(request: NextRequest) {
@@ -27,7 +27,6 @@ export async function GET(request: NextRequest) {
       google_place_id, website_url,
       facebook_page_id, instagram_business_id,
       social_consent_given,
-      lat, lng,
       organizations(meta_access_token)
     `)
     .eq('is_competitor', false)
@@ -81,31 +80,34 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Concurrents (hebdomadaire — dimanche uniquement)
-    if (isWeeklyDay && business.lat != null && business.lng != null) {
-      try {
-        result.competitors = await collectCompetitors(
-          business.organization_id,
-          business.lat,
-          business.lng,
-          'establishment',
-          2000,
-        )
-      } catch (e) {
-        result.competitorsError = e instanceof Error ? e.message : 'unknown'
-      }
-    }
-
     results.push(result)
   }
 
-  // Rafraîchir les concurrents custom (Place Details API)
+  // Rafraîchir les concurrents custom — hebdomadaire
   let customCompetitorsRefresh = null
   if (isWeeklyDay) {
+    // Rafraîchit notes/avis Google via Place Details API
     try {
       customCompetitorsRefresh = await refreshCustomCompetitors()
     } catch (e) {
       customCompetitorsRefresh = { error: e instanceof Error ? e.message : 'unknown' }
+    }
+
+    // Audit SEO pour les concurrents avec un site web
+    const { data: competitorsWithSite } = await supabase
+      .from('businesses')
+      .select('id, website_url')
+      .eq('is_competitor', true)
+      .eq('custom_competitor', true)
+      .not('website_url', 'is', null)
+
+    for (const comp of competitorsWithSite ?? []) {
+      if (!comp.website_url) continue
+      try {
+        await collectSeoAudit(comp.id, comp.website_url)
+      } catch {
+        // Ne pas bloquer le reste
+      }
     }
   }
 
