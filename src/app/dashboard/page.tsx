@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import Header from '@/components/layout/Header'
 import KpiCard from '@/components/dashboard/KpiCard'
 import AiInsightCard from '@/components/dashboard/AiInsightCard'
+import OnboardingBanner from '@/components/dashboard/OnboardingBanner'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -257,9 +258,26 @@ export default async function DashboardPage() {
     ? reportContent.score_global - reportPrevContent.score_global
     : null
 
+  // Bannière onboarding
+  const hasReviews = reviews.length > 0
+  const hasSeo = latestSeo !== null
+  const hasSocial = posts.length > 0
+  const hasReport = latestReport !== null
+  const falseCount = [hasReviews, hasSeo, hasSocial, hasReport].filter((v) => !v).length
+  const showOnboarding = falseCount >= 2
+
   return (
     <div className="space-y-6">
       <Header title="Vue d'ensemble" subtitle="Tableau de bord de votre activité" />
+
+      {showOnboarding && (
+        <OnboardingBanner
+          hasReviews={hasReviews}
+          hasSeo={hasSeo}
+          hasSocial={hasSocial}
+          hasReport={hasReport}
+        />
+      )}
 
       {/* KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
