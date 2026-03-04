@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+
+export const maxDuration = 60 // Vercel Pro : 60s max pour le CRON
 import { createAdminClient } from '@/lib/supabase/admin'
 import { collectGoogleReviews } from '@/lib/collectors/google-reviews'
 import { collectSeoAudit } from '@/lib/collectors/seo-audit'

@@ -25,18 +25,15 @@ export async function POST(request: NextRequest) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
   const cronUrl = `${appUrl}/api/cron/daily`
 
-  try {
-    const res = await fetch(cronUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${cronSecret}`,
-        'x-force-weekly': 'true',
-      },
-    })
-    const data = await res.json()
-    return NextResponse.json(data, { status: res.status })
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Erreur inconnue'
-    return NextResponse.json({ error: message }, { status: 500 })
-  }
+  // Fire-and-forget : on lance le CRON sans attendre qu'il termine
+  // (PageSpeed peut prendre 20-30s, on ne bloque pas l'UI admin)
+  fetch(cronUrl, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${cronSecret}`,
+      'x-force-weekly': 'true',
+    },
+  }).catch((err) => console.error('[trigger-cron] fetch error:', err))
+
+  return NextResponse.json({ ok: true, message: 'CRON lancé en arrière-plan (30-60s)' })
 }
