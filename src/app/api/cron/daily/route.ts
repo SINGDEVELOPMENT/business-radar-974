@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
       id, name, organization_id,
       google_place_id, website_url,
       facebook_page_id, instagram_business_id,
+      social_consent_given,
       lat, lng,
       organizations(meta_access_token)
     `)
@@ -61,8 +62,8 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Facebook posts (quotidien)
-    if (business.facebook_page_id && metaToken) {
+    // Facebook posts (quotidien) — consentement RGPD requis
+    if (business.facebook_page_id && metaToken && business.social_consent_given) {
       try {
         result.facebook = await collectFacebookPosts(business.id, business.facebook_page_id, metaToken)
       } catch (e) {
@@ -70,8 +71,8 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Instagram posts (quotidien)
-    if (business.instagram_business_id && metaToken) {
+    // Instagram posts (quotidien) — consentement RGPD requis
+    if (business.instagram_business_id && metaToken && business.social_consent_given) {
       try {
         result.instagram = await collectInstagramPosts(business.id, business.instagram_business_id, metaToken)
       } catch (e) {

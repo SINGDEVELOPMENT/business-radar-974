@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import RgpdConsentCard from '@/components/dashboard/RgpdConsentCard'
 import {
   Settings,
   Building2,
@@ -35,7 +36,7 @@ export default async function SettingsPage() {
   const { data: businesses } = orgId
     ? await supabase
         .from('businesses')
-        .select('*')
+        .select('id, name, google_place_id, facebook_page_id, instagram_username, website_url, social_consent_given, social_consent_date')
         .eq('organization_id', orgId)
         .eq('is_competitor', false)
         .order('name')
@@ -108,6 +109,18 @@ export default async function SettingsPage() {
           </div>
         </div>
       </Card>
+
+      {/* Consentement RGPD */}
+      {businessList.length > 0 && (
+        <RgpdConsentCard businesses={businessList.map((b) => ({
+          id: b.id,
+          name: b.name,
+          facebook_page_id: b.facebook_page_id ?? null,
+          instagram_username: b.instagram_username ?? null,
+          social_consent_given: b.social_consent_given ?? false,
+          social_consent_date: b.social_consent_date ?? null,
+        }))} />
+      )}
 
       {/* Business surveillés */}
       <Card className="p-5">

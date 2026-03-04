@@ -34,3 +34,28 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+/* ─── Dark mode — overrides Tailwind utilities ─────────────────────────────
+   Les sélecteurs .dark .class ont une spécificité supérieure aux @layer
+   utilities de Tailwind, ce qui permet de les surcharger sans !important.
+─────────────────────────────────────────────────────────────────────────── */
+.dark .text-gray-950, .dark .text-gray-900 { color: #f1f5f9; }
+.dark .text-gray-800, .dark .text-gray-700 { color: #e2e8f0; }
+.dark .text-gray-600 { color: #94a3b8; }
+.dark .text-gray-500 { color: #94a3b8; }
+.dark .text-gray-400 { color: #64748b; }
+
+.dark .bg-gray-50  { background-color: #1e293b; }
+.dark .bg-gray-100 { background-color: #334155; }
+
+.dark .border-gray-200 { border-color: #334155; }
+.dark .border-gray-100 { border-color: #1e293b; }
+.dark .border-gray-50  { border-color: #0f172a; }
+
+/* Fonds colorés icônes / badges (KpiCards, etc.) */
+.dark .bg-blue-50    { background-color: rgb(59 130 246 / 0.15); }
+.dark .bg-emerald-50 { background-color: rgb(16 185 129 / 0.15); }
+.dark .bg-amber-50   { background-color: rgb(245 158 11  / 0.15); }
+.dark .bg-red-50     { background-color: rgb(239 68  68  / 0.15); }
+.dark .bg-purple-50  { background-color: rgb(168 85  247 / 0.15); }
+.dark .bg-orange-50  { background-color: rgb(249 115 22  / 0.15); }
