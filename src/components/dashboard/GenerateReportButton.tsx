@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Brain, Loader2 } from 'lucide-react'
+import { Brain, Loader2, CheckCircle2 } from 'lucide-react'
 
 interface GenerateReportButtonProps {
   remaining?: number
@@ -12,23 +12,38 @@ interface GenerateReportButtonProps {
 export default function GenerateReportButton({ remaining = 5 }: GenerateReportButtonProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [elapsed, setElapsed] = useState(0)
+  const [details, setDetails] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const elapsedRef = useRef(0)
 
   const isDisabled = loading || remaining <= 0
 
   async function handleGenerate() {
     setLoading(true)
     setError(null)
+    setDetails(null)
+    setElapsed(0)
+    elapsedRef.current = 0
+
+    timerRef.current = setInterval(() => {
+      elapsedRef.current += 1
+      setElapsed(elapsedRef.current)
+    }, 1000)
+
     try {
       const res = await fetch('/api/analyze', { method: 'POST' })
       if (!res.ok) {
         const body = await res.json().catch(() => ({}))
         throw new Error(body.error ?? `Erreur ${res.status}`)
       }
+      setDetails(`Terminé en ${elapsedRef.current}s`)
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue')
     } finally {
+      if (timerRef.current) clearInterval(timerRef.current)
       setLoading(false)
     }
   }
@@ -37,15 +52,19 @@ export default function GenerateReportButton({ remaining = 5 }: GenerateReportBu
     <div className="flex flex-col items-end gap-2">
       <Button onClick={handleGenerate} disabled={isDisabled} className="gap-2">
         {loading ? (
-          <><Loader2 className="w-4 h-4 animate-spin" />Analyse en cours…</>
+          <><Loader2 className="w-4 h-4 animate-spin" />Analyse en cours… {elapsed}s</>
         ) : remaining <= 0 ? (
           <><Brain className="w-4 h-4" />Limite atteinte</>
         ) : (
           <><Brain className="w-4 h-4" />Générer un rapport</>
         )}
       </Button>
-      {loading && <p className="text-xs text-gray-400">L&apos;analyse Claude peut prendre 30 à 60 secondes.</p>}
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {details && !error && (
+        <p className="flex items-center gap-1 text-xs text-emerald-600">
+          <CheckCircle2 className="w-3 h-3" />{details}
+        </p>
+      )}
+      {error && <p className="text-xs text-red-500 max-w-xs text-right">{error}</p>}
     </div>
   )
 }

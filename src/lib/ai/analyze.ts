@@ -25,11 +25,14 @@ export async function analyzeMonthly(
 
   const rawText = message.content[0].type === 'text' ? message.content[0].text : ''
 
+  // Supprimer les éventuelles balises markdown ```json ... ```
+  const cleaned = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim()
+
   let parsed: AiReportContent
   try {
-    parsed = JSON.parse(rawText)
+    parsed = JSON.parse(cleaned)
   } catch {
-    throw new Error('Claude a retourné un JSON invalide')
+    throw new Error(`Claude a retourné un JSON invalide : ${cleaned.slice(0, 200)}`)
   }
 
   // Persistance en BDD
