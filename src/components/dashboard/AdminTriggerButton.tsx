@@ -9,11 +9,16 @@ export default function AdminTriggerButton() {
   const [details, setDetails] = useState<string | null>(null)
   const [elapsed, setElapsed] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const elapsedRef = useRef(0)
 
   useEffect(() => {
     if (status === 'loading') {
+      elapsedRef.current = 0
       setElapsed(0)
-      timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000)
+      timerRef.current = setInterval(() => {
+        elapsedRef.current += 1
+        setElapsed(elapsedRef.current)
+      }, 1000)
     } else {
       if (timerRef.current) clearInterval(timerRef.current)
     }
@@ -33,7 +38,7 @@ export default function AdminTriggerButton() {
         setDetails(data.error ?? 'Erreur inconnue')
       } else {
         setStatus('success')
-        setDetails(`Terminé en ${elapsed}s — ${data.processed ?? 0} business(es) traités`)
+        setDetails(`Terminé en ${elapsedRef.current}s — ${data.processed ?? 0} business(es) traités`)
         setTimeout(() => setStatus('idle'), 8000)
       }
     } catch {
