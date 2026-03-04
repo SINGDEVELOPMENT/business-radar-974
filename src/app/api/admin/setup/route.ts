@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
     const { data: invite, error: err } = await adminClient.auth.admin.inviteUserByEmail(
       clientEmail,
       {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
+        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
         data: { full_name: orgName },
       }
     )

@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import RgpdConsentCard from '@/components/dashboard/RgpdConsentCard'
+import ChangePasswordCard from '@/components/dashboard/ChangePasswordCard'
 import {
   Settings,
   Building2,
@@ -109,6 +110,9 @@ export default async function SettingsPage() {
           </div>
         </div>
       </Card>
+
+      {/* Changer le mot de passe */}
+      <ChangePasswordCard />
 
       {/* Consentement RGPD */}
       {businessList.length > 0 && (
