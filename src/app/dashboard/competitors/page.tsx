@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import Header from '@/components/layout/Header'
@@ -32,10 +34,17 @@ export default async function CompetitorsPage() {
     .eq('id', user!.id)
     .single()
 
-  const orgId = profile?.organization_id
-
-  // Admin client pour bypasser RLS sur la table businesses
+  // Admin client — bypass RLS sur toutes les tables
   const adminSupabase = createAdminClient()
+
+  // Lire le profile via admin client pour éviter tout blocage RLS sur profiles
+  const { data: adminProfile } = await adminSupabase
+    .from('profiles')
+    .select('organization_id')
+    .eq('id', user!.id)
+    .single()
+
+  const orgId = adminProfile?.organization_id ?? profile?.organization_id
 
   // Nos établissements (non-concurrents)
   const { data: ownBusinesses } = orgId

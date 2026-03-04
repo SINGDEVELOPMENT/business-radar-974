@@ -1,14 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const FREE_LIMIT = 2
 
 export async function POST(request: NextRequest) {
+  // Auth via cookie (lecture seule du JWT)
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: profile } = await supabase
+  // Toutes les opérations DB via admin client (bypass RLS)
+  const admin = createAdminClient()
+
+  const { data: profile } = await admin
     .from('profiles')
     .select('organization_id')
     .eq('id', user.id)
@@ -20,9 +26,9 @@ export async function POST(request: NextRequest) {
   const { name, googlePlaceId, websiteUrl } = await request.json()
   if (!name?.trim()) return NextResponse.json({ error: 'Nom requis' }, { status: 400 })
 
-  // Si un Place ID est fourni, vérifier si ce concurrent existe déjà pour cette org
+  // Si Place ID fourni → vérifier si déjà présent
   if (googlePlaceId) {
-    const { data: existing } = await supabase
+    const { data: existing } = await admin
       .from('businesses')
       .select('id')
       .eq('organization_id', orgId)
@@ -31,20 +37,20 @@ export async function POST(request: NextRequest) {
       .maybeSingle()
 
     if (existing) {
-      // Déjà présent → juste marquer comme custom et mettre à jour
-      const { data: updated, error: updateErr } = await supabase
+      const { data: updated, error: updateErr } = await admin
         .from('businesses')
         .update({ custom_competitor: true, name: name.trim(), website_url: websiteUrl || null })
         .eq('id', existing.id)
         .select()
         .single()
       if (updateErr) return NextResponse.json({ error: updateErr.message }, { status: 500 })
+      revalidatePath('/dashboard/competitors')
       return NextResponse.json({ ok: true, competitor: updated })
     }
   }
 
-  // Vérifier la limite (seulement pour un nouveau concurrent)
-  const { count } = await supabase
+  // Vérifier la limite
+  const { count } = await admin
     .from('businesses')
     .select('id', { count: 'exact', head: true })
     .eq('organization_id', orgId)
@@ -57,7 +63,7 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await admin
     .from('businesses')
     .insert({
       organization_id: orgId,
@@ -72,6 +78,7 @@ export async function POST(request: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
+  revalidatePath('/dashboard/competitors')
   return NextResponse.json({ ok: true, competitor: data })
 }
 
@@ -80,7 +87,9 @@ export async function DELETE(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: profile } = await supabase
+  const admin = createAdminClient()
+
+  const { data: profile } = await admin
     .from('profiles')
     .select('organization_id')
     .eq('id', user.id)
@@ -92,15 +101,16 @@ export async function DELETE(request: NextRequest) {
   const { id } = await request.json()
   if (!id) return NextResponse.json({ error: 'id requis' }, { status: 400 })
 
-  // Vérifie que le concurrent appartient bien à l'org ET est custom
-  const { error } = await supabase
+  // Supprimer uniquement si appartient à l'org du user
+  const { error } = await admin
     .from('businesses')
     .delete()
     .eq('id', id)
     .eq('organization_id', orgId)
-    .eq('custom_competitor', true)
+    .eq('is_competitor', true)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
+  revalidatePath('/dashboard/competitors')
   return NextResponse.json({ ok: true })
 }

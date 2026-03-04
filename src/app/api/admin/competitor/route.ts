@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -7,7 +8,9 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: profile } = await supabase
+  const admin = createAdminClient()
+
+  const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
@@ -22,9 +25,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'orgId et nom requis' }, { status: 400 })
   }
 
-  const admin = createAdminClient()
-
-  // Si un Place ID est fourni, vérifier si ce concurrent existe déjà
+  // Si Place ID fourni → vérifier si déjà présent
   if (googlePlaceId) {
     const { data: existing } = await admin
       .from('businesses')
@@ -42,6 +43,7 @@ export async function POST(request: NextRequest) {
         .select()
         .single()
       if (updateErr) return NextResponse.json({ error: updateErr.message }, { status: 500 })
+      revalidatePath('/dashboard/competitors')
       return NextResponse.json({ ok: true, competitor: updated })
     }
   }
@@ -61,6 +63,7 @@ export async function POST(request: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
+  revalidatePath('/dashboard/competitors')
   return NextResponse.json({ ok: true, competitor: data })
 }
 
@@ -69,7 +72,9 @@ export async function DELETE(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data: profile } = await supabase
+  const admin = createAdminClient()
+
+  const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
@@ -82,7 +87,6 @@ export async function DELETE(request: NextRequest) {
   const { id } = await request.json()
   if (!id) return NextResponse.json({ error: 'id requis' }, { status: 400 })
 
-  const admin = createAdminClient()
   const { error } = await admin
     .from('businesses')
     .delete()
@@ -91,5 +95,6 @@ export async function DELETE(request: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
+  revalidatePath('/dashboard/competitors')
   return NextResponse.json({ ok: true })
 }
