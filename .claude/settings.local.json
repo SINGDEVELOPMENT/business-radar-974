@@ -3,7 +3,12 @@
     "allow": [
       "Bash(ls C:Userselodibusiness-radar-974tailwind*:*)",
       "Bash(npm run:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npx tsc:*)",
+      "Bash(powershell:*)",
+      "Bash(rm:*)",
+      "Bash(npm install:*)",
+      "Bash(mv:*)"
     ]
   }
 }
