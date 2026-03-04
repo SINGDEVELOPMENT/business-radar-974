@@ -37,11 +37,9 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <Header title="Administration" subtitle="Onboarding et gestion des clients" />
-        <div className="pt-1">
-          <AdminTriggerButton />
-        </div>
+      <Header title="Administration" subtitle="Onboarding et gestion des clients" />
+      <div className="flex justify-end">
+        <AdminTriggerButton />
       </div>
 
       {/* Formulaire nouveau client */}

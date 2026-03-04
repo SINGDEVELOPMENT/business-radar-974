@@ -46,11 +46,8 @@ export default async function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <Header
-          title="Rapports AI"
-          subtitle="Analyses et recommandations générées par Claude"
-        />
+      <Header title="Rapports AI" subtitle="Analyses et recommandations générées par Claude" />
+      <div className="flex justify-end">
         <GenerateReportButton />
       </div>
 
