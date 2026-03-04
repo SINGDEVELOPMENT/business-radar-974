@@ -9,6 +9,7 @@ interface FormData {
   orgName: string
   businessName: string
   clientEmail: string
+  plan: 'standard' | 'premium'
   googlePlaceId: string
   websiteUrl: string
   facebookPageId: string
@@ -23,6 +24,7 @@ const initialForm: FormData = {
   orgName: '',
   businessName: '',
   clientEmail: '',
+  plan: 'standard',
   googlePlaceId: '',
   websiteUrl: '',
   facebookPageId: '',
@@ -58,6 +60,7 @@ export default function AdminNewClientForm() {
           orgName: form.orgName,
           businessName: form.businessName,
           clientEmail: form.clientEmail || undefined,
+          plan: form.plan,
           googlePlaceId: form.googlePlaceId || undefined,
           websiteUrl: form.websiteUrl || undefined,
           facebookPageId: form.facebookPageId || undefined,
@@ -140,6 +143,33 @@ export default function AdminNewClientForm() {
                 placeholder="client@example.com"
                 type="email"
               />
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-gray-600">Plan</label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setForm((p) => ({ ...p, plan: 'standard' }))}
+                    className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${
+                      form.plan === 'standard'
+                        ? 'bg-blue-600 text-white border-blue-600'
+                        : 'border-gray-200 text-gray-600 hover:border-blue-400'
+                    }`}
+                  >
+                    Standard
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm((p) => ({ ...p, plan: 'premium' }))}
+                    className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${
+                      form.plan === 'premium'
+                        ? 'bg-amber-500 text-white border-amber-500'
+                        : 'border-gray-200 text-gray-600 hover:border-amber-400'
+                    }`}
+                  >
+                    ✦ Premium
+                  </button>
+                </div>
+              </div>
             </div>
           </fieldset>
 

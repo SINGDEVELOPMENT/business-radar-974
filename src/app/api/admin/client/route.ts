@@ -29,6 +29,7 @@ export async function PATCH(request: NextRequest) {
     lng,
     orgId,
     apiKeyClaude,
+    plan,
   } = await request.json()
 
   if (!businessId) return NextResponse.json({ error: 'businessId requis' }, { status: 400 })
@@ -54,6 +55,7 @@ export async function PATCH(request: NextRequest) {
     const orgUpdate: Record<string, string | null> = {}
     if (metaAccessToken !== undefined) orgUpdate.meta_access_token = metaAccessToken || null
     if (apiKeyClaude !== undefined) orgUpdate.api_key_claude = apiKeyClaude || null
+    if (plan === 'premium' || plan === 'standard') orgUpdate.plan = plan
 
     if (Object.keys(orgUpdate).length > 0) {
       await adminClient.from('organizations').update(orgUpdate).eq('id', orgId)

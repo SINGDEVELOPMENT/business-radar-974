@@ -89,11 +89,19 @@ export async function GET() {
 
   const clientName = (ownBusinesses ?? [])[0]?.name ?? 'Mon établissement'
 
+  // Limite basée sur le plan
+  const { data: orgData } = await admin
+    .from('organizations')
+    .select('plan')
+    .eq('id', orgId)
+    .single()
+  const freeLimit = orgData?.plan === 'premium' ? 5 : 2
+
   return NextResponse.json({
     competitors: enriched,
     ownRating,
     ownReviewCount: ownReviewList.length,
     clientName,
-    freeLimit: 2,
+    freeLimit,
   })
 }

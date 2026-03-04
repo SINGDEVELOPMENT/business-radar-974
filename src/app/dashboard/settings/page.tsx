@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import RgpdConsentCard from '@/components/dashboard/RgpdConsentCard'
 import ChangePasswordCard from '@/components/dashboard/ChangePasswordCard'
-import ManualCollectCard from '@/components/dashboard/ManualCollectCard'
 import {
   Settings,
   Building2,
@@ -46,34 +45,6 @@ export default async function SettingsPage() {
 
   const businessList = businesses ?? []
   const mainBiz = businessList[0] ?? null
-
-  // Dernier audit SEO
-  const { data: lastSeo } = mainBiz
-    ? await supabase
-        .from('seo_snapshots')
-        .select('collected_at')
-        .eq('business_id', mainBiz.id)
-        .order('collected_at', { ascending: false })
-        .limit(1)
-        .single()
-    : { data: null }
-
-  // Dernier rapport AI
-  const { data: lastReport } = orgId
-    ? await supabase
-        .from('ai_reports')
-        .select('generated_at')
-        .eq('organization_id', orgId)
-        .order('generated_at', { ascending: false })
-        .limit(1)
-        .single()
-    : { data: null }
-
-  // Calcul de nextAllowedAt depuis last_manual_collect_at
-  const lastManualAt = (org as { last_manual_collect_at?: string | null } | null)?.last_manual_collect_at ?? null
-  const nextAllowedAt = lastManualAt
-    ? new Date(new Date(lastManualAt).getTime() + 24 * 60 * 60 * 1000).toISOString()
-    : null
 
   return (
     <div className="space-y-6">
@@ -140,13 +111,6 @@ export default async function SettingsPage() {
           </div>
         </div>
       </Card>
-
-      {/* Collecte manuelle */}
-      <ManualCollectCard
-        lastSeoDate={lastSeo?.collected_at ?? null}
-        lastReportDate={lastReport?.generated_at ?? null}
-        nextAllowedAt={nextAllowedAt}
-      />
 
       {/* Changer le mot de passe */}
       <ChangePasswordCard />

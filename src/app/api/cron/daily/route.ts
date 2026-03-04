@@ -5,6 +5,8 @@ import { collectSeoAudit } from '@/lib/collectors/seo-audit'
 import { collectFacebookPosts } from '@/lib/collectors/facebook'
 import { collectInstagramPosts } from '@/lib/collectors/instagram'
 import { refreshCustomCompetitors } from '@/lib/collectors/competitors'
+import { analyzeMonthly } from '@/lib/ai/analyze'
+import type { BusinessData } from '@/types'
 
 // Protégé par le secret partagé avec Vercel Cron (header Authorization: Bearer <CRON_SECRET>)
 export async function GET(request: NextRequest) {
@@ -83,6 +85,68 @@ export async function GET(request: NextRequest) {
     results.push(result)
   }
 
+  // ── Rapports AI hebdomadaires pour les clients Premium ─────────────────
+  const weeklyReports: Record<string, unknown>[] = []
+  if (isWeeklyDay) {
+    const { data: premiumOrgs } = await supabase
+      .from('organizations')
+      .select('id, api_key_claude')
+      .eq('plan', 'premium')
+
+    for (const org of premiumOrgs ?? []) {
+      try {
+        // Business principal de l'org
+        const { data: biz } = await supabase
+          .from('businesses')
+          .select('id, name')
+          .eq('organization_id', org.id)
+          .eq('is_competitor', false)
+          .limit(1)
+          .single()
+
+        if (!biz) continue
+
+        const { data: reviews } = await supabase.from('reviews').select('rating, text, published_at, author_name, source').eq('business_id', biz.id).order('published_at', { ascending: false }).limit(100)
+        const reviewList = reviews ?? []
+        const avgRating = reviewList.length > 0 ? reviewList.reduce((s, r) => s + (r.rating ?? 0), 0) / reviewList.length : 0
+        const { data: posts } = await supabase.from('social_posts').select('content, likes, comments, shares').eq('business_id', biz.id).order('published_at', { ascending: false }).limit(50)
+        const postList = posts ?? []
+        const totalEngagement = postList.reduce((s, p) => s + (p.likes ?? 0) + (p.comments ?? 0) + (p.shares ?? 0), 0)
+        const avgEngagement = postList.length > 0 ? Math.round(totalEngagement / postList.length) : 0
+        const { data: seoRows } = await supabase.from('seo_snapshots').select('lighthouse_score, has_ssl, meta_description, mobile_friendly, load_time_ms, h1_count').eq('business_id', biz.id).order('collected_at', { ascending: false }).limit(1)
+        const seo = seoRows?.[0]
+        const seoIssues: string[] = []
+        if (seo) {
+          if (!seo.has_ssl) seoIssues.push('Pas de HTTPS')
+          if (!seo.meta_description) seoIssues.push('Meta description manquante')
+          if (!seo.mobile_friendly) seoIssues.push('Non optimisé mobile')
+          if (seo.load_time_ms && seo.load_time_ms > 3000) seoIssues.push(`Temps de chargement élevé`)
+          if (seo.h1_count === 0) seoIssues.push('Balise H1 manquante')
+        }
+        const { data: competitors } = await supabase.from('businesses').select('name, google_rating, google_reviews_count').eq('organization_id', org.id).eq('is_competitor', true).not('google_rating', 'is', null).limit(10)
+
+        const businessData: BusinessData = {
+          businessName: biz.name,
+          avgRating: Math.round(avgRating * 10) / 10,
+          totalReviews: reviewList.length,
+          ratingTrend: 'stable',
+          negativeReviews: reviewList.filter(r => r.rating <= 2).map(r => ({ id: '', business_id: biz.id, rating: r.rating, author_name: r.author_name ?? undefined, text: r.text ?? undefined, published_at: r.published_at ?? undefined, source: (r.source ?? 'google') as 'google' | 'tripadvisor' | 'facebook', collected_at: '' })),
+          postsCount: postList.length,
+          avgEngagement,
+          bestPost: `Engagement total : ${totalEngagement} interactions`,
+          competitors: (competitors ?? []).map(c => ({ name: c.name, rating: c.google_rating ?? 0, reviews: c.google_reviews_count ?? 0 })),
+          seoScore: seo?.lighthouse_score ?? 0,
+          seoIssues,
+        }
+
+        await analyzeMonthly(org.id, businessData, org.api_key_claude ?? undefined)
+        weeklyReports.push({ orgId: org.id, bizName: biz.name, ok: true })
+      } catch (e) {
+        weeklyReports.push({ orgId: org.id, error: e instanceof Error ? e.message : 'unknown' })
+      }
+    }
+  }
+
   // Rafraîchir les concurrents custom — hebdomadaire
   let customCompetitorsRefresh = null
   if (isWeeklyDay) {
@@ -118,5 +182,6 @@ export async function GET(request: NextRequest) {
     processed: results.length,
     results,
     customCompetitorsRefresh,
+    weeklyReports,
   })
 }

@@ -2,6 +2,17 @@ import * as cheerio from 'cheerio'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { computeSeoScore } from '@/lib/utils/seo'
 
+const OPPORTUNITY_KEYS = [
+  'render-blocking-resources',
+  'unused-css-rules',
+  'unused-javascript',
+  'uses-optimized-images',
+  'uses-webp-images',
+  'offscreen-images',
+  'uses-text-compression',
+  'uses-responsive-images',
+]
+
 export async function collectSeoAudit(businessId: string, websiteUrl: string) {
   const start = Date.now()
 
@@ -45,9 +56,25 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
 
   const seoScore = computeSeoScore(partial)
 
-  // PageSpeed Insights API (gratuit, vrai score Lighthouse)
+  // ── PageSpeed Insights API — rapport complet ─────────────────────────────
   let lighthouseScore = seoScore
   let mobileFriendly: boolean | null = null
+
+  // Core Web Vitals
+  let fcpMs: number | null = null
+  let lcpMs: number | null = null
+  let clsScore: number | null = null
+  let tbtMs: number | null = null
+  let speedIndexMs: number | null = null
+
+  // Scores catégories
+  let accessibilityScore: number | null = null
+  let seoAuditScore: number | null = null
+  let bestPracticesScore: number | null = null
+
+  // Opportunités d'optimisation
+  let opportunities: { id: string; title: string; displayValue: string; score: number }[] = []
+
   const psKey = process.env.GOOGLE_PLACES_API_KEY
   if (psKey && statusCode > 0) {
     try {
@@ -55,15 +82,67 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
       psUrl.searchParams.set('url', websiteUrl)
       psUrl.searchParams.set('strategy', 'mobile')
       psUrl.searchParams.set('key', psKey)
-      const psRes = await fetch(psUrl.toString(), { signal: AbortSignal.timeout(15000) })
+      // Demander toutes les catégories
+      ;['performance', 'accessibility', 'best-practices', 'seo'].forEach(cat =>
+        psUrl.searchParams.append('category', cat)
+      )
+
+      const psRes = await fetch(psUrl.toString(), { signal: AbortSignal.timeout(30000) })
       if (psRes.ok) {
         const psData = await psRes.json()
-        const lhScore = psData?.lighthouseResult?.categories?.performance?.score
-        if (lhScore != null) lighthouseScore = Math.round(lhScore * 100)
-        mobileFriendly = psData?.lighthouseResult?.audits?.['viewport']?.score === 1
+        const audits = psData?.lighthouseResult?.audits
+        const categories = psData?.lighthouseResult?.categories
+
+        // Score performance (Lighthouse)
+        if (categories?.performance?.score != null) {
+          lighthouseScore = Math.round(categories.performance.score * 100)
+        }
+
+        // Autres scores catégories
+        if (categories?.accessibility?.score != null) {
+          accessibilityScore = Math.round(categories.accessibility.score * 100)
+        }
+        if (categories?.seo?.score != null) {
+          seoAuditScore = Math.round(categories.seo.score * 100)
+        }
+        if (categories?.['best-practices']?.score != null) {
+          bestPracticesScore = Math.round(categories['best-practices'].score * 100)
+        }
+
+        // Core Web Vitals
+        if (audits?.['first-contentful-paint']?.numericValue != null) {
+          fcpMs = Math.round(audits['first-contentful-paint'].numericValue)
+        }
+        if (audits?.['largest-contentful-paint']?.numericValue != null) {
+          lcpMs = Math.round(audits['largest-contentful-paint'].numericValue)
+        }
+        if (audits?.['cumulative-layout-shift']?.numericValue != null) {
+          clsScore = audits['cumulative-layout-shift'].numericValue
+        }
+        if (audits?.['total-blocking-time']?.numericValue != null) {
+          tbtMs = Math.round(audits['total-blocking-time'].numericValue)
+        }
+        if (audits?.['speed-index']?.numericValue != null) {
+          speedIndexMs = Math.round(audits['speed-index'].numericValue)
+        }
+
+        // Mobile friendly
+        mobileFriendly = audits?.['viewport']?.score === 1
+
+        // Opportunités
+        if (audits) {
+          opportunities = OPPORTUNITY_KEYS
+            .filter(key => audits[key]?.score != null && (audits[key].score as number) < 1)
+            .map(key => ({
+              id: key,
+              title: (audits[key].title ?? key) as string,
+              displayValue: (audits[key].displayValue ?? '') as string,
+              score: Math.round(((audits[key].score as number) ?? 0) * 100),
+            }))
+        }
       }
     } catch {
-      // PageSpeed timeout ou erreur — on garde le score calculé localement
+      // PageSpeed timeout ou erreur — on garde les valeurs calculées localement
     }
   }
 
@@ -74,6 +153,15 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
     page_size_kb: pageSizeKb,
     mobile_friendly: mobileFriendly,
     lighthouse_score: lighthouseScore,
+    fcp_ms: fcpMs,
+    lcp_ms: lcpMs,
+    cls_score: clsScore,
+    tbt_ms: tbtMs,
+    speed_index_ms: speedIndexMs,
+    accessibility_score: accessibilityScore,
+    seo_audit_score: seoAuditScore,
+    best_practices_score: bestPracticesScore,
+    opportunities: opportunities.length > 0 ? opportunities : null,
   }
 
   const supabase = createAdminClient()

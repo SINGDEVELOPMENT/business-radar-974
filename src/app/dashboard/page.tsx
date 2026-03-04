@@ -15,6 +15,8 @@ import {
   Briefcase,
   ShieldCheck,
   ArrowRight,
+  Lock,
+  Brain,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -30,6 +32,12 @@ export default async function DashboardPage() {
 
   const isSuperAdmin = profile?.role === 'superadmin'
   const orgId = profile?.organization_id
+
+  // Plan du client (pour gating premium)
+  const { data: orgInfo } = orgId
+    ? await supabase.from('organizations').select('plan').eq('id', orgId).single()
+    : { data: null }
+  const isPremium = orgInfo?.plan === 'premium'
 
   // ── Vue Superadmin ────────────────────────────────────────────────────────
   if (isSuperAdmin && !orgId) {
@@ -323,16 +331,48 @@ export default async function DashboardPage() {
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
           Dernière analyse AI
         </h2>
-        <AiInsightCard
-          summary={latestReport?.summary ?? undefined}
-          recommendations={
-            reportContent?.recommendations as
-              | Array<{ priority: 'haute' | 'moyenne' | 'basse'; action: string; impact: string }>
-              | undefined
-          }
-          scoreGlobal={reportContent?.score_global}
-          generatedAt={latestReport?.generated_at ?? undefined}
-        />
+        {isPremium ? (
+          <AiInsightCard
+            summary={latestReport?.summary ?? undefined}
+            recommendations={
+              reportContent?.recommendations as
+                | Array<{ priority: 'haute' | 'moyenne' | 'basse'; action: string; impact: string }>
+                | undefined
+            }
+            scoreGlobal={reportContent?.score_global}
+            generatedAt={latestReport?.generated_at ?? undefined}
+          />
+        ) : (
+          <div className="relative">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-xl">
+              <Lock className="w-7 h-7 text-blue-400" />
+              <p className="text-sm font-semibold text-gray-700 dark:text-slate-300">Disponible en Premium</p>
+              <p className="text-xs text-gray-500 dark:text-slate-400">Contactez votre administrateur pour passer en Premium.</p>
+            </div>
+            <div className="pointer-events-none select-none opacity-25">
+              <Card className="p-6 space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-12 h-12 rounded-full border-4 border-emerald-500 flex items-center justify-center shrink-0">
+                    <Brain className="w-5 h-5 text-emerald-500" />
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 bg-gray-200 rounded w-3/4" />
+                    <div className="h-3 bg-gray-200 rounded w-full" />
+                    <div className="h-3 bg-gray-200 rounded w-5/6" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {[1, 2].map(i => (
+                    <div key={i} className="space-y-1.5">
+                      <div className="h-2.5 bg-gray-200 rounded w-1/2" />
+                      {[1, 2].map(j => <div key={j} className="h-2 bg-gray-100 rounded w-full" />)}
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

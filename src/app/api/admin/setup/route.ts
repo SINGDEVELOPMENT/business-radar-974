@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
     lat,
     lng,
     instagramBusinessId,
+    plan,
   } = await request.json()
 
   if (!orgName || !businessName) {
@@ -46,6 +47,7 @@ export async function POST(request: NextRequest) {
     .insert({
       name: orgName,
       slug: slugify(orgName),
+      plan: plan === 'premium' ? 'premium' : 'standard',
       meta_access_token: metaAccessToken ?? null,
     })
     .select()

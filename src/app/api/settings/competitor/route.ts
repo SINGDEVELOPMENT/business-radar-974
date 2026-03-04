@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-const FREE_LIMIT = 2
+// Limite dynamique selon le plan — récupérée depuis la DB
 
 export async function POST(request: NextRequest) {
   // Auth via cookie (lecture seule du JWT)
@@ -22,6 +22,10 @@ export async function POST(request: NextRequest) {
 
   const orgId = profile?.organization_id
   if (!orgId) return NextResponse.json({ error: 'Organisation introuvable' }, { status: 400 })
+
+  // Limite selon le plan
+  const { data: orgData } = await admin.from('organizations').select('plan').eq('id', orgId).single()
+  const FREE_LIMIT = orgData?.plan === 'premium' ? 5 : 2
 
   const { name, googlePlaceId, websiteUrl } = await request.json()
   if (!name?.trim()) return NextResponse.json({ error: 'Nom requis' }, { status: 400 })

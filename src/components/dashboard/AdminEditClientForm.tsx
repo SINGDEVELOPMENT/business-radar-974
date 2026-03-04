@@ -17,18 +17,20 @@ interface Business {
 
 interface Props {
   orgId: string
+  orgPlan: string | null
   orgApiKeyClaude: string | null
   orgMetaToken: string | null
   business: Business
 }
 
-export default function AdminEditClientForm({ orgId, orgApiKeyClaude, orgMetaToken, business }: Props) {
+export default function AdminEditClientForm({ orgId, orgPlan, orgApiKeyClaude, orgMetaToken, business }: Props) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
   const [form, setForm] = useState({
+    plan: (orgPlan === 'premium' ? 'premium' : 'standard') as 'standard' | 'premium',
     googlePlaceId: business.google_place_id ?? '',
     websiteUrl: business.website_url ?? '',
     facebookPageId: business.facebook_page_id ?? '',
@@ -83,15 +85,44 @@ export default function AdminEditClientForm({ orgId, orgApiKeyClaude, orgMetaTok
   }
 
   return (
-    <div className="mt-3 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+    <div className="mt-3 p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-200 dark:border-slate-700">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm font-semibold text-white">{business.name}</p>
-        <button onClick={() => setOpen(false)} className="text-slate-400 hover:text-white">
+        <p className="text-sm font-semibold text-gray-900 dark:text-white">{business.name}</p>
+        <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-700 dark:text-slate-400 dark:hover:text-white">
           <X className="w-4 h-4" />
         </button>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
+        {/* Plan */}
+        <div className="space-y-1 pb-2 border-b border-gray-200 dark:border-slate-700">
+          <label className="block text-xs font-medium text-gray-600 dark:text-slate-400">Plan</label>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setForm((p) => ({ ...p, plan: 'standard' }))}
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${
+                form.plan === 'standard'
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'border-gray-200 dark:border-slate-600 text-gray-600 dark:text-slate-400 hover:border-blue-400 dark:hover:border-blue-500'
+              }`}
+            >
+              Standard
+            </button>
+            <button
+              type="button"
+              onClick={() => setForm((p) => ({ ...p, plan: 'premium' }))}
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${
+                form.plan === 'premium'
+                  ? 'bg-amber-500 text-white border-amber-500'
+                  : 'border-gray-200 dark:border-slate-600 text-gray-600 dark:text-slate-400 hover:border-amber-400 dark:hover:border-amber-500'
+              }`}
+            >
+              ✦ Premium
+            </button>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <EditField label="Google Place ID" value={form.googlePlaceId} onChange={set('googlePlaceId')} placeholder="ChIJxxx..." />
           <EditField label="URL Site web" value={form.websiteUrl} onChange={set('websiteUrl')} placeholder="https://..." />
@@ -99,15 +130,15 @@ export default function AdminEditClientForm({ orgId, orgApiKeyClaude, orgMetaTok
           <EditField label="Instagram @username" value={form.instagramUsername} onChange={set('instagramUsername')} placeholder="monbusiness" />
           <div className="space-y-1 sm:col-span-2">
             <EditField label="Instagram Business ID" value={form.instagramBusinessId} onChange={set('instagramBusinessId')} placeholder="ID numérique" />
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-gray-400 dark:text-slate-500">
               Dans Meta Graph API Explorer, appelez{' '}
-              <code className="bg-slate-700 px-1 rounded text-slate-300">GET /&#123;page-id&#125;?fields=instagram_business_account</code>{' '}
+              <code className="bg-gray-100 dark:bg-slate-700 px-1 rounded text-gray-600 dark:text-slate-300">GET /&#123;page-id&#125;?fields=instagram_business_account</code>{' '}
               avec un token valide.{' '}
               <a
                 href="https://developers.facebook.com/tools/explorer"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-400 hover:underline"
+                className="text-blue-500 hover:underline"
               >
                 Ouvrir Graph API Explorer →
               </a>
@@ -119,7 +150,7 @@ export default function AdminEditClientForm({ orgId, orgApiKeyClaude, orgMetaTok
           <EditField label="Clé API Claude (optionnel)" value={form.apiKeyClaude} onChange={set('apiKeyClaude')} placeholder="sk-ant-..." />
         </div>
 
-        {error && <p className="text-xs text-red-400">{error}</p>}
+        {error && <p className="text-xs text-red-500">{error}</p>}
 
         <button
           type="submit"
@@ -142,13 +173,13 @@ function EditField({ label, value, onChange, placeholder }: {
 }) {
   return (
     <div className="space-y-1">
-      <label className="block text-xs font-medium text-slate-400">{label}</label>
+      <label className="block text-xs font-medium text-gray-600 dark:text-slate-400">{label}</label>
       <input
         type="text"
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full px-3 py-1.5 text-sm bg-slate-900 border border-slate-700 rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+        className="w-full px-3 py-1.5 text-sm bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
       />
     </div>
   )

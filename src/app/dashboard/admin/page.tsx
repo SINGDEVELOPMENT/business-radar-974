@@ -132,6 +132,7 @@ export default async function AdminPage() {
                   {mainBizFull && (
                     <AdminEditClientForm
                       orgId={org.id}
+                      orgPlan={org.plan}
                       orgApiKeyClaude={(org as { api_key_claude: string | null }).api_key_claude}
                       orgMetaToken={(org as { meta_access_token: string | null }).meta_access_token}
                       business={{

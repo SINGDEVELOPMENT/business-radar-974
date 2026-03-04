@@ -5,24 +5,16 @@ import GenerateReportButton from '@/components/dashboard/GenerateReportButton'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
-  Brain,
-  Calendar,
-  CheckCircle2,
-  XCircle,
-  ArrowRight,
-  Users,
-  TrendingUp,
-  TrendingDown,
-  Minus,
-  FileDown,
+  Brain, Calendar, CheckCircle2, XCircle, ArrowRight, Users,
+  TrendingUp, TrendingDown, Minus, FileDown, Lock, Sparkles,
 } from 'lucide-react'
 import type { AiReportContent, AiRecommendation } from '@/types'
 
+const MANUAL_LIMIT = 5
+
 export default async function ReportsPage() {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -31,6 +23,35 @@ export default async function ReportsPage() {
     .single()
 
   const orgId = profile?.organization_id
+
+  // Query 1 : plan seul (toujours disponible, même sans migration 007)
+  const { data: orgPlan } = orgId
+    ? await supabase.from('organizations').select('plan').eq('id', orgId).single()
+    : { data: null }
+
+  const isPremium = orgPlan?.plan === 'premium'
+
+  // Query 2 : compteur mensuel (requiert migration 007 — fallback si colonnes absentes)
+  const now = new Date()
+  let usedThisMonth = 0
+  let remaining = MANUAL_LIMIT
+
+  if (isPremium && orgId) {
+    const { data: orgCounter } = await supabase
+      .from('organizations')
+      .select('manual_reports_this_month, manual_reports_reset_at')
+      .eq('id', orgId)
+      .single()
+
+    if (orgCounter) {
+      const resetAt = orgCounter.manual_reports_reset_at ? new Date(orgCounter.manual_reports_reset_at) : null
+      const needsReset = !resetAt ||
+        now.getFullYear() > resetAt.getFullYear() ||
+        (now.getFullYear() === resetAt.getFullYear() && now.getMonth() > resetAt.getMonth())
+      usedThisMonth = needsReset ? 0 : (orgCounter.manual_reports_this_month ?? 0)
+      remaining = Math.max(0, MANUAL_LIMIT - usedThisMonth)
+    }
+  }
 
   const { data: reports } = orgId
     ? await supabase
@@ -45,74 +66,142 @@ export default async function ReportsPage() {
   const latest = reportsList[0] ?? null
   const latestContent = latest?.content as AiReportContent | null
 
+  // Grace period : compte standard mais rapports récents (< 30j) = ancien premium
+  const GRACE_DAYS = 30
+  const latestDate = latest ? new Date(latest.generated_at) : null
+  const daysSince = latestDate
+    ? Math.floor((now.getTime() - latestDate.getTime()) / (1000 * 60 * 60 * 24))
+    : null
+  const gracePeriodEnd = latestDate
+    ? new Date(latestDate.getTime() + GRACE_DAYS * 24 * 60 * 60 * 1000)
+    : null
+  const isInGracePeriod = !isPremium && reportsList.length > 0 && daysSince !== null && daysSince < GRACE_DAYS
+
   return (
     <div className="space-y-6">
       <Header title="Rapports AI" subtitle="Analyses et recommandations générées par Claude" />
-      <div className="flex items-center justify-end gap-3">
-        {reportsList.length > 0 && (
-          <a
-            href="/api/reports/pdf"
-            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
-          >
-            <FileDown className="w-4 h-4" />
-            Télécharger PDF
-          </a>
-        )}
-        <GenerateReportButton />
-      </div>
 
+      {/* ── Gate standard (sans grace period) ── */}
+      {!isPremium && !isInGracePeriod && (
+        <Card className="p-6 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40">
+          <div className="flex items-start gap-4">
+            <div className="p-3 rounded-xl bg-blue-600 shrink-0">
+              <Lock className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="font-semibold text-gray-900 dark:text-white">Fonctionnalité Premium</h3>
+                <Badge className="bg-blue-600">Premium</Badge>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-slate-300 mb-3">
+                La génération de rapports AI est réservée aux abonnés Premium. Passez au plan Premium pour accéder à :
+              </p>
+              <ul className="space-y-1.5 text-sm text-gray-700 dark:text-slate-300">
+                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-blue-500 shrink-0" /> 1 rapport AI automatique chaque semaine</li>
+                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-blue-500 shrink-0" /> 5 rapports manuels par mois</li>
+                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-blue-500 shrink-0" /> Jusqu'à 5 concurrents surveillés (vs 2 en standard)</li>
+              </ul>
+              <p className="text-xs text-gray-500 mt-3">Contactez votre administrateur pour passer en Premium.</p>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* ── Grace period : ancien premium récemment rétrogradé ── */}
+      {isInGracePeriod && gracePeriodEnd && (
+        <Card className="p-5 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
+          <div className="flex items-start gap-4">
+            <div className="p-3 rounded-xl bg-amber-500 shrink-0">
+              <FileDown className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="font-semibold text-gray-900 dark:text-white">Abonnement Premium expiré</h3>
+                <Badge className="bg-amber-500">Accès limité</Badge>
+              </div>
+              <p className="text-sm text-gray-700 dark:text-slate-300 mb-3">
+                Votre abonnement Premium a expiré. Vos rapports AI sont consultables jusqu'au{' '}
+                <span className="font-semibold">
+                  {gracePeriodEnd.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                </span>{' '}
+                puis seront masqués. Téléchargez-les avant cette date.
+              </p>
+              <a
+                href="/api/reports/pdf"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                <FileDown className="w-4 h-4" /> Télécharger mes rapports en PDF
+              </a>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* ── Barre actions (premium uniquement) ── */}
+      {isPremium && (
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-2">
+            <Badge variant={remaining > 0 ? 'secondary' : 'destructive'} className="text-xs">
+              {usedThisMonth}/{MANUAL_LIMIT} rapports manuels ce mois
+            </Badge>
+            {remaining > 0 && (
+              <span className="text-xs text-gray-500">{remaining} restant{remaining > 1 ? 's' : ''}</span>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            {reportsList.length > 0 && (
+              <a href="/api/reports/pdf"
+                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
+                <FileDown className="w-4 h-4" />
+                Télécharger PDF
+              </a>
+            )}
+            <GenerateReportButton remaining={remaining} />
+          </div>
+        </div>
+      )}
+
+      {/* ── Contenu rapports ── */}
       {reportsList.length === 0 ? (
-        <EmptyState
-          icon={Brain}
-          title="Aucun rapport AI généré"
-          description="Cliquez sur « Générer un nouveau rapport » pour lancer votre première analyse."
+        <EmptyState icon={Brain} title="Aucun rapport AI généré"
+          description={isPremium ? 'Cliquez sur « Générer un nouveau rapport » pour lancer votre première analyse.' : 'Les rapports seront générés automatiquement chaque semaine dès votre passage en Premium.'}
         />
-      ) : (
+      ) : !isPremium && !isInGracePeriod ? null : (
         <div className="space-y-6">
-          {/* Rapport le plus récent : affichage complet */}
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <ReportTypeBadge type={latest.report_type} />
               <span className="text-xs text-gray-400 flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
-                {new Date(latest.generated_at).toLocaleDateString('fr-FR', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
+                {new Date(latest.generated_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
               </span>
             </div>
 
             {latestContent && (
               <div className="space-y-4">
-                {/* Score global + résumé */}
                 <Card className="p-5">
                   <div className="flex items-start gap-5">
                     <ScoreCircle score={latestContent.score_global} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
                         <Brain className="w-4 h-4 text-blue-600" />
-                        <h3 className="font-semibold text-gray-900">Synthèse</h3>
+                        <h3 className="font-semibold text-gray-900 dark:text-white">Synthèse</h3>
                       </div>
-                      <p className="text-sm text-gray-700 leading-relaxed">
-                        {latestContent.summary}
-                      </p>
+                      <p className="text-sm text-gray-700 dark:text-slate-300 leading-relaxed">{latestContent.summary}</p>
                     </div>
                   </div>
                 </Card>
 
-                {/* Points forts / Faiblesses */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Card className="p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
-                      <h3 className="font-semibold text-gray-900 text-sm">Points forts</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Points forts</h3>
                     </div>
                     <ul className="space-y-2">
                       {latestContent.strengths.map((s, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                          <span className="text-green-500 mt-0.5 shrink-0">&#10003;</span>
-                          {s}
+                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-slate-300">
+                          <span className="text-green-500 mt-0.5 shrink-0">&#10003;</span>{s}
                         </li>
                       ))}
                     </ul>
@@ -121,24 +210,20 @@ export default async function ReportsPage() {
                   <Card className="p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <XCircle className="w-4 h-4 text-red-400" />
-                      <h3 className="font-semibold text-gray-900 text-sm">
-                        Axes d&apos;amélioration
-                      </h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Axes d&apos;amélioration</h3>
                     </div>
                     <ul className="space-y-2">
                       {latestContent.weaknesses.map((w, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                          <span className="text-red-400 mt-0.5 shrink-0">&#10007;</span>
-                          {w}
+                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-slate-300">
+                          <span className="text-red-400 mt-0.5 shrink-0">&#10007;</span>{w}
                         </li>
                       ))}
                     </ul>
                   </Card>
                 </div>
 
-                {/* Recommandations */}
                 <Card className="p-5">
-                  <h3 className="font-semibold text-gray-900 text-sm mb-4 flex items-center gap-2">
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-4 flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-gray-400" />
                     Recommandations prioritaires
                   </h3>
@@ -149,32 +234,24 @@ export default async function ReportsPage() {
                   </div>
                 </Card>
 
-                {/* Analyse concurrentielle */}
                 {latestContent.competitor_analysis && (
                   <Card className="p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <Users className="w-4 h-4 text-gray-400" />
-                      <h3 className="font-semibold text-gray-900 text-sm">
-                        Analyse concurrentielle
-                      </h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Analyse concurrentielle</h3>
                     </div>
-                    <p className="text-sm text-gray-700 leading-relaxed">
-                      {latestContent.competitor_analysis}
-                    </p>
+                    <p className="text-sm text-gray-700 dark:text-slate-300 leading-relaxed">{latestContent.competitor_analysis}</p>
                   </Card>
                 )}
               </div>
             )}
           </div>
 
-          {/* Rapports précédents : liste compacte */}
           {reportsList.length > 1 && (
             <div className="space-y-2">
-              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
-                Rapports précédents
-              </h2>
+              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Rapports précédents</h2>
               <div className="space-y-2">
-                {reportsList.slice(1).map((report) => {
+                {reportsList.slice(1).map(report => {
                   const c = report.content as AiReportContent | null
                   return (
                     <Card key={report.id} className="p-4">
@@ -183,24 +260,14 @@ export default async function ReportsPage() {
                           <ReportTypeBadge type={report.report_type} />
                           <span className="text-xs text-gray-400 flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            {new Date(report.generated_at).toLocaleDateString('fr-FR', {
-                              day: 'numeric',
-                              month: 'long',
-                              year: 'numeric',
-                            })}
+                            {new Date(report.generated_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                           </span>
                         </div>
                         {c?.score_global != null && (
-                          <span className="text-sm font-bold text-blue-600 shrink-0">
-                            {c.score_global}/100
-                          </span>
+                          <span className="text-sm font-bold text-blue-600 shrink-0">{c.score_global}/100</span>
                         )}
                       </div>
-                      {report.summary && (
-                        <p className="text-sm text-gray-600 mt-2 line-clamp-2">
-                          {report.summary}
-                        </p>
-                      )}
+                      {report.summary && <p className="text-sm text-gray-600 dark:text-slate-400 mt-2 line-clamp-2">{report.summary}</p>}
                     </Card>
                   )
                 })}
@@ -214,14 +281,8 @@ export default async function ReportsPage() {
 }
 
 function ReportTypeBadge({ type }: { type: string }) {
-  const label =
-    type === 'monthly' ? 'Mensuel' : type === 'weekly' ? 'Hebdomadaire' : 'Alerte'
-  const variant =
-    type === 'monthly'
-      ? ('default' as const)
-      : type === 'weekly'
-      ? ('secondary' as const)
-      : ('destructive' as const)
+  const label = type === 'monthly' ? 'Mensuel' : type === 'weekly' ? 'Hebdomadaire' : 'Alerte'
+  const variant = type === 'monthly' ? 'default' as const : type === 'weekly' ? 'secondary' as const : 'destructive' as const
   return <Badge variant={variant}>{label}</Badge>
 }
 
@@ -229,48 +290,25 @@ function ScoreCircle({ score }: { score: number }) {
   const color = score >= 75 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444'
   const TrendIcon = score >= 60 ? TrendingUp : score >= 40 ? Minus : TrendingDown
   return (
-    <div
-      className="flex flex-col items-center justify-center w-20 h-20 rounded-full border-4 shrink-0"
-      style={{ borderColor: color }}
-    >
-      <span className="text-xl font-bold" style={{ color }}>
-        {score}
-      </span>
+    <div className="flex flex-col items-center justify-center w-20 h-20 rounded-full border-4 shrink-0" style={{ borderColor: color }}>
+      <span className="text-xl font-bold" style={{ color }}>{score}</span>
       <TrendIcon className="w-4 h-4" style={{ color }} />
     </div>
   )
 }
 
 function RecommendationRow({ rec, index }: { rec: AiRecommendation; index: number }) {
-  const priorityColor =
-    rec.priority === 'haute'
-      ? 'bg-red-50 border-red-200'
-      : rec.priority === 'moyenne'
-      ? 'bg-amber-50 border-amber-200'
-      : 'bg-gray-50 border-gray-200'
-
-  const priorityBadge =
-    rec.priority === 'haute'
-      ? ('destructive' as const)
-      : rec.priority === 'moyenne'
-      ? ('warning' as const)
-      : ('secondary' as const)
-
+  const priorityColor = rec.priority === 'haute' ? 'bg-red-50 border-red-200' : rec.priority === 'moyenne' ? 'bg-amber-50 border-amber-200' : 'bg-gray-50 border-gray-200'
+  const priorityBadge = rec.priority === 'haute' ? 'destructive' as const : rec.priority === 'moyenne' ? 'warning' as const : 'secondary' as const
   return (
     <div className={`rounded-lg border p-3.5 ${priorityColor}`}>
       <div className="flex items-center gap-2 mb-1.5">
         <span className="text-xs font-bold text-gray-400 w-4">{index}.</span>
-        <Badge variant={priorityBadge} className="text-[10px] px-1.5 py-0">
-          {rec.priority}
-        </Badge>
+        <Badge variant={priorityBadge} className="text-[10px] px-1.5 py-0">{rec.priority}</Badge>
         <ArrowRight className="w-3 h-3 text-gray-400 shrink-0" />
         <p className="text-sm font-medium text-gray-900 flex-1">{rec.action}</p>
       </div>
-      {rec.impact && (
-        <p className="text-xs text-gray-500 pl-6">
-          <span className="font-medium text-gray-600">Impact :</span> {rec.impact}
-        </p>
-      )}
+      {rec.impact && <p className="text-xs text-gray-500 pl-6"><span className="font-medium text-gray-600">Impact :</span> {rec.impact}</p>}
     </div>
   )
 }

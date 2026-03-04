@@ -228,13 +228,15 @@ export default function CompetitorsPageClient() {
           <button onClick={() => setShowForm(true)}
             className="flex items-center gap-2 text-sm text-blue-500 hover:text-blue-400 transition-colors">
             <Plus className="w-4 h-4" />
-            Ajouter ({remaining} emplacement{remaining > 1 ? 's' : ''} gratuit{remaining > 1 ? 's' : ''})
+            Ajouter un concurrent ({remaining} emplacement{remaining > 1 ? 's' : ''} disponible{remaining > 1 ? 's' : ''})
           </button>
         )}
 
         {remaining === 0 && !showForm && (
           <p className="text-xs text-gray-500 dark:text-slate-400">
-            Limite de {freeLimit} concurrents gratuits atteinte. Contactez-nous pour ajouter des concurrents supplémentaires.
+            {freeLimit >= 5
+              ? `Limite de ${freeLimit} concurrents (plan Premium) atteinte.`
+              : `Limite de ${freeLimit} concurrents (plan Standard) atteinte. Contactez votre administrateur pour passer en Premium et surveiller jusqu'à 5 concurrents.`}
           </p>
         )}
 
@@ -292,6 +294,8 @@ export default function CompetitorsPageClient() {
               iconBg={positionDelta == null ? 'bg-gray-100' : positionDelta >= 0 ? 'bg-green-50' : 'bg-red-50'}
             />
           </div>
+
+          {chartData.length > 1 && <CompetitorChart data={chartData} />}
 
           {/* Cartes détaillées par concurrent */}
           <div>
@@ -382,7 +386,6 @@ export default function CompetitorsPageClient() {
             </div>
           </div>
 
-          {chartData.length > 1 && <CompetitorChart data={chartData} />}
         </>
       )}
     </div>
