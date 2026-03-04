@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls C:Userselodibusiness-radar-974tailwind*:*)",
+      "Bash(npm run:*)",
+      "Bash(grep:*)"
+    ]
+  }
+}

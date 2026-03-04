@@ -107,7 +107,7 @@ export default async function SocialPage() {
         <EmptyState
           icon={Share2}
           title="Aucun post collecté"
-          description="Connectez vos pages Facebook et Instagram dans les paramètres pour suivre votre engagement."
+          description="Les données Facebook et Instagram apparaîtront ici une fois l'accès Meta configuré par votre administrateur."
         />
       ) : (
         <>

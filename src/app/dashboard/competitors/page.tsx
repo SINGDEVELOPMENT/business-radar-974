@@ -118,8 +118,8 @@ export default async function CompetitorsPage() {
       {competitorList.length === 0 ? (
         <EmptyState
           icon={Users}
-          title="Aucun concurrent surveillé"
-          description="Déclenchez la collecte via l'API /api/collect/competitors ou le panel admin pour analyser votre marché."
+          title="Aucun concurrent détecté"
+          description="La surveillance des concurrents locaux sera disponible prochainement. La collecte est effectuée automatiquement chaque semaine."
         />
       ) : (
         <>

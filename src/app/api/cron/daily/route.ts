@@ -15,8 +15,9 @@ export async function GET(request: NextRequest) {
 
   const supabase = createAdminClient()
 
-  // Dimanche (0) → collecte hebdomadaire des concurrents
-  const isWeeklyDay = new Date().getDay() === 0
+  // Dimanche (0) ou trigger forcé → collecte hebdomadaire des concurrents
+  const forceWeekly = request.headers.get('x-force-weekly') === 'true'
+  const isWeeklyDay = new Date().getDay() === 0 || forceWeekly
 
   // Récupère tous les businesses principaux avec le token Meta de leur organisation
   const { data: businesses, error } = await supabase

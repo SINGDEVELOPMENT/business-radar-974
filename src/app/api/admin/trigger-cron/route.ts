@@ -28,7 +28,10 @@ export async function POST(request: NextRequest) {
   try {
     const res = await fetch(cronUrl, {
       method: 'GET',
-      headers: { Authorization: `Bearer ${cronSecret}` },
+      headers: {
+        Authorization: `Bearer ${cronSecret}`,
+        'x-force-weekly': 'true',
+      },
     })
     const data = await res.json()
     return NextResponse.json(data, { status: res.status })
