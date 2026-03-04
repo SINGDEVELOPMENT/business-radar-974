@@ -33,6 +33,7 @@ interface ApiData {
 export default function CompetitorsPageClient() {
   const [data, setData] = useState<ApiData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [fetchError, setFetchError] = useState<string | null>(null)
 
   // Formulaire ajout
   const [showForm, setShowForm] = useState(false)
@@ -45,9 +46,19 @@ export default function CompetitorsPageClient() {
 
   const fetchData = useCallback(async () => {
     setLoading(true)
+    setFetchError(null)
     try {
       const res = await fetch('/api/competitors', { cache: 'no-store' })
-      if (res.ok) setData(await res.json())
+      const json = await res.json()
+      if (res.ok) {
+        setData(json)
+      } else {
+        setFetchError(`Erreur ${res.status}: ${json.error ?? 'inconnue'}`)
+        console.error('[CompetitorsPageClient] API error:', json)
+      }
+    } catch (err) {
+      setFetchError('Erreur réseau')
+      console.error('[CompetitorsPageClient] Fetch error:', err)
     } finally {
       setLoading(false)
     }
@@ -103,6 +114,20 @@ export default function CompetitorsPageClient() {
         </div>
         <div className="flex items-center justify-center py-16">
           <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+        </div>
+      </div>
+    )
+  }
+
+  if (fetchError) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Concurrents</h1>
+        </div>
+        <div className="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg">
+          <p className="text-sm text-red-600 dark:text-red-400 font-medium">Erreur de chargement</p>
+          <p className="text-xs text-red-500 mt-1">{fetchError}</p>
         </div>
       </div>
     )

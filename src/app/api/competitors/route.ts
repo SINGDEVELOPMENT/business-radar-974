@@ -41,12 +41,17 @@ export async function GET() {
     : null
 
   // Concurrents
-  const { data: competitors } = await admin
+  const { data: competitors, error: competitorsError } = await admin
     .from('businesses')
     .select('id, name, google_rating, google_reviews_count, category, website_url, google_place_id')
     .eq('organization_id', orgId)
     .eq('is_competitor', true)
     .order('google_rating', { ascending: false })
+
+  if (competitorsError) {
+    console.error('[GET /api/competitors] DB error:', competitorsError)
+    return NextResponse.json({ error: competitorsError.message, _debug: { orgId } }, { status: 500 })
+  }
 
   const competitorList = competitors ?? []
 
