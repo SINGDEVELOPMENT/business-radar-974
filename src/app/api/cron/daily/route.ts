@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       social_consent_given,
       organizations(meta_access_token)
     `)
-    .eq('is_competitor', false)
+    .not('is_competitor', 'is', true)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
