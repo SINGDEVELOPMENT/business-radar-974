@@ -38,11 +38,16 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
   let metaDescription = ''
   let h1Count = 0
 
+  let mobileFriendly: boolean | null = null
+
   if (html) {
     const $ = cheerio.load(html)
     title = $('title').first().text().trim()
     metaDescription = $('meta[name="description"]').attr('content') ?? ''
     h1Count = $('h1').length
+    // Mobile friendly depuis la balise viewport (fallback si PageSpeed indisponible)
+    const viewport = $('meta[name="viewport"]').attr('content') ?? ''
+    mobileFriendly = viewport.includes('width=device-width')
   }
 
   const partial = {
@@ -58,7 +63,6 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
 
   // ── PageSpeed Insights API — rapport complet ─────────────────────────────
   let lighthouseScore = seoScore
-  let mobileFriendly: boolean | null = null
 
   // Core Web Vitals
   let fcpMs: number | null = null
@@ -75,14 +79,15 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
   // Opportunités d'optimisation
   let opportunities: { id: string; title: string; displayValue: string; score: number }[] = []
 
-  const psKey = process.env.GOOGLE_PLACES_API_KEY
-  if (psKey && statusCode > 0) {
+  // PageSpeed Insights — fonctionne sans clé API (25k req/jour gratuit)
+  if (statusCode > 0) {
     try {
       const psUrl = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed')
       psUrl.searchParams.set('url', websiteUrl)
       psUrl.searchParams.set('strategy', 'mobile')
-      psUrl.searchParams.set('key', psKey)
-      // Demander toutes les catégories
+      // Clé optionnelle — augmente les quotas mais n'est pas obligatoire
+      const psKey = process.env.PAGESPEED_API_KEY ?? process.env.GOOGLE_PLACES_API_KEY
+      if (psKey) psUrl.searchParams.set('key', psKey)
       ;['performance', 'accessibility', 'best-practices', 'seo'].forEach(cat =>
         psUrl.searchParams.append('category', cat)
       )
@@ -141,8 +146,8 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
             }))
         }
       }
-    } catch {
-      // PageSpeed timeout ou erreur — on garde les valeurs calculées localement
+    } catch (err) {
+      console.error('[seo-audit] PageSpeed error:', err)
     }
   }
 
