@@ -17,7 +17,33 @@ export async function POST(request: NextRequest) {
   const orgId = profile?.organization_id
   if (!orgId) return NextResponse.json({ error: 'Organisation introuvable' }, { status: 400 })
 
-  // Vérifier la limite
+  const { name, googlePlaceId, websiteUrl } = await request.json()
+  if (!name?.trim()) return NextResponse.json({ error: 'Nom requis' }, { status: 400 })
+
+  // Si un Place ID est fourni, vérifier si ce concurrent existe déjà pour cette org
+  if (googlePlaceId) {
+    const { data: existing } = await supabase
+      .from('businesses')
+      .select('id, custom_competitor')
+      .eq('organization_id', orgId)
+      .eq('google_place_id', googlePlaceId)
+      .eq('is_competitor', true)
+      .maybeSingle()
+
+    if (existing) {
+      // Déjà présent → juste marquer comme custom et mettre à jour
+      const { data: updated, error: updateErr } = await supabase
+        .from('businesses')
+        .update({ custom_competitor: true, name: name.trim(), website_url: websiteUrl || null })
+        .eq('id', existing.id)
+        .select()
+        .single()
+      if (updateErr) return NextResponse.json({ error: updateErr.message }, { status: 500 })
+      return NextResponse.json({ ok: true, competitor: updated })
+    }
+  }
+
+  // Vérifier la limite (seulement pour un nouveau concurrent)
   const { count } = await supabase
     .from('businesses')
     .select('id', { count: 'exact', head: true })
@@ -31,9 +57,6 @@ export async function POST(request: NextRequest) {
       { status: 403 }
     )
   }
-
-  const { name, googlePlaceId, websiteUrl } = await request.json()
-  if (!name?.trim()) return NextResponse.json({ error: 'Nom requis' }, { status: 400 })
 
   const { data, error } = await supabase
     .from('businesses')

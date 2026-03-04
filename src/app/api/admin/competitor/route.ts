@@ -23,6 +23,29 @@ export async function POST(request: NextRequest) {
   }
 
   const admin = createAdminClient()
+
+  // Si un Place ID est fourni, vérifier si ce concurrent existe déjà
+  if (googlePlaceId) {
+    const { data: existing } = await admin
+      .from('businesses')
+      .select('id')
+      .eq('organization_id', orgId)
+      .eq('google_place_id', googlePlaceId)
+      .eq('is_competitor', true)
+      .maybeSingle()
+
+    if (existing) {
+      const { data: updated, error: updateErr } = await admin
+        .from('businesses')
+        .update({ custom_competitor: true, name: name.trim(), website_url: websiteUrl || null })
+        .eq('id', existing.id)
+        .select()
+        .single()
+      if (updateErr) return NextResponse.json({ error: updateErr.message }, { status: 500 })
+      return NextResponse.json({ ok: true, competitor: updated })
+    }
+  }
+
   const { data, error } = await admin
     .from('businesses')
     .insert({
