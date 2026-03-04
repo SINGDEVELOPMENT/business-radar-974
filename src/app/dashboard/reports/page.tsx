@@ -14,6 +14,7 @@ import {
   TrendingUp,
   TrendingDown,
   Minus,
+  FileDown,
 } from 'lucide-react'
 import type { AiReportContent, AiRecommendation } from '@/types'
 
@@ -47,7 +48,16 @@ export default async function ReportsPage() {
   return (
     <div className="space-y-6">
       <Header title="Rapports AI" subtitle="Analyses et recommandations générées par Claude" />
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end gap-3">
+        {reportsList.length > 0 && (
+          <a
+            href="/api/reports/pdf"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            <FileDown className="w-4 h-4" />
+            Télécharger PDF
+          </a>
+        )}
         <GenerateReportButton />
       </div>
 
