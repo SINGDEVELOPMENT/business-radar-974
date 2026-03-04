@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import Header from '@/components/layout/Header'
 import KpiCard from '@/components/dashboard/KpiCard'
 import CompetitorChart, {
@@ -33,9 +34,12 @@ export default async function CompetitorsPage() {
 
   const orgId = profile?.organization_id
 
+  // Admin client pour bypasser RLS sur la table businesses
+  const adminSupabase = createAdminClient()
+
   // Nos établissements (non-concurrents)
   const { data: ownBusinesses } = orgId
-    ? await supabase
+    ? await adminSupabase
         .from('businesses')
         .select('id, name')
         .eq('organization_id', orgId)
@@ -46,7 +50,7 @@ export default async function CompetitorsPage() {
 
   // Note moyenne client calculée depuis les avis
   const { data: ownReviews } = ownIds.length > 0
-    ? await supabase
+    ? await adminSupabase
         .from('reviews')
         .select('rating')
         .in('business_id', ownIds)
@@ -58,9 +62,9 @@ export default async function CompetitorsPage() {
       ? ownReviewList.reduce((s, r) => s + (r.rating ?? 0), 0) / ownReviewList.length
       : null
 
-  // Concurrents (tous les is_competitor = true, custom_competitor est optionnel)
+  // Concurrents — admin client pour bypasser RLS
   const { data: competitors, count: competitorCount } = orgId
-    ? await supabase
+    ? await adminSupabase
         .from('businesses')
         .select('id, name, google_rating, google_reviews_count, category, website_url, google_place_id', { count: 'exact' })
         .eq('organization_id', orgId)
@@ -75,7 +79,7 @@ export default async function CompetitorsPage() {
   const seoMap: Record<string, { score: number | null; loadTime: number | null }> = {}
 
   if (competitorIds.length > 0) {
-    const { data: snapshots } = await supabase
+    const { data: snapshots } = await adminSupabase
       .from('seo_snapshots')
       .select('business_id, lighthouse_score, load_time_ms, collected_at')
       .in('business_id', competitorIds)
