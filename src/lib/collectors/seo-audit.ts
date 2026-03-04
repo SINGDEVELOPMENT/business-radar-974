@@ -85,15 +85,18 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
       const psUrl = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed')
       psUrl.searchParams.set('url', websiteUrl)
       psUrl.searchParams.set('strategy', 'mobile')
-      // Clé optionnelle — augmente les quotas mais n'est pas obligatoire
-      const psKey = process.env.PAGESPEED_API_KEY ?? process.env.GOOGLE_PLACES_API_KEY
+      // Clé optionnelle dédiée PageSpeed (NE PAS réutiliser GOOGLE_PLACES_API_KEY)
+      const psKey = process.env.PAGESPEED_API_KEY
       if (psKey) psUrl.searchParams.set('key', psKey)
       ;['performance', 'accessibility', 'best-practices', 'seo'].forEach(cat =>
         psUrl.searchParams.append('category', cat)
       )
 
       const psRes = await fetch(psUrl.toString(), { signal: AbortSignal.timeout(30000) })
-      if (psRes.ok) {
+      if (!psRes.ok) {
+        const errText = await psRes.text().catch(() => '')
+        console.error('[seo-audit] PageSpeed HTTP error:', psRes.status, errText.slice(0, 300))
+      } else {
         const psData = await psRes.json()
         const audits = psData?.lighthouseResult?.audits
         const categories = psData?.lighthouseResult?.categories
