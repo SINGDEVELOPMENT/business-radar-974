@@ -4,7 +4,7 @@ import { collectGoogleReviews } from '@/lib/collectors/google-reviews'
 import { collectSeoAudit } from '@/lib/collectors/seo-audit'
 import { collectFacebookPosts } from '@/lib/collectors/facebook'
 import { collectInstagramPosts } from '@/lib/collectors/instagram'
-import { collectCompetitors } from '@/lib/collectors/competitors'
+import { collectCompetitors, refreshCustomCompetitors } from '@/lib/collectors/competitors'
 
 // Protégé par le secret partagé avec Vercel Cron (header Authorization: Bearer <CRON_SECRET>)
 export async function GET(request: NextRequest) {
@@ -99,11 +99,22 @@ export async function GET(request: NextRequest) {
     results.push(result)
   }
 
+  // Rafraîchir les concurrents custom (Place Details API)
+  let customCompetitorsRefresh = null
+  if (isWeeklyDay) {
+    try {
+      customCompetitorsRefresh = await refreshCustomCompetitors()
+    } catch (e) {
+      customCompetitorsRefresh = { error: e instanceof Error ? e.message : 'unknown' }
+    }
+  }
+
   return NextResponse.json({
     ok: true,
     runAt: new Date().toISOString(),
     weeklyRun: isWeeklyDay,
     processed: results.length,
     results,
+    customCompetitorsRefresh,
   })
 }

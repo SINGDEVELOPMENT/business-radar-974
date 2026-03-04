@@ -45,13 +45,35 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
 
   const seoScore = computeSeoScore(partial)
 
+  // PageSpeed Insights API (gratuit, vrai score Lighthouse)
+  let lighthouseScore = seoScore
+  let mobileFriendly: boolean | null = null
+  const psKey = process.env.GOOGLE_PLACES_API_KEY
+  if (psKey && statusCode > 0) {
+    try {
+      const psUrl = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed')
+      psUrl.searchParams.set('url', websiteUrl)
+      psUrl.searchParams.set('strategy', 'mobile')
+      psUrl.searchParams.set('key', psKey)
+      const psRes = await fetch(psUrl.toString(), { signal: AbortSignal.timeout(15000) })
+      if (psRes.ok) {
+        const psData = await psRes.json()
+        const lhScore = psData?.lighthouseResult?.categories?.performance?.score
+        if (lhScore != null) lighthouseScore = Math.round(lhScore * 100)
+        mobileFriendly = psData?.lighthouseResult?.audits?.['viewport']?.score === 1
+      }
+    } catch {
+      // PageSpeed timeout ou erreur — on garde le score calculé localement
+    }
+  }
+
   const snapshot = {
     business_id: businessId,
     url: websiteUrl,
     ...partial,
     page_size_kb: pageSizeKb,
-    mobile_friendly: null, // enrichi avec PageSpeed API en V2
-    lighthouse_score: seoScore,
+    mobile_friendly: mobileFriendly,
+    lighthouse_score: lighthouseScore,
   }
 
   const supabase = createAdminClient()
