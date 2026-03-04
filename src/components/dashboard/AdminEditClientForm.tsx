@@ -97,7 +97,22 @@ export default function AdminEditClientForm({ orgId, orgApiKeyClaude, orgMetaTok
           <EditField label="URL Site web" value={form.websiteUrl} onChange={set('websiteUrl')} placeholder="https://..." />
           <EditField label="Facebook Page ID" value={form.facebookPageId} onChange={set('facebookPageId')} placeholder="123456789" />
           <EditField label="Instagram @username" value={form.instagramUsername} onChange={set('instagramUsername')} placeholder="monbusiness" />
-          <EditField label="Instagram Business ID" value={form.instagramBusinessId} onChange={set('instagramBusinessId')} placeholder="ID numérique" />
+          <div className="space-y-1 sm:col-span-2">
+            <EditField label="Instagram Business ID" value={form.instagramBusinessId} onChange={set('instagramBusinessId')} placeholder="ID numérique" />
+            <p className="text-xs text-slate-500">
+              Dans Meta Graph API Explorer, appelez{' '}
+              <code className="bg-slate-700 px-1 rounded text-slate-300">GET /&#123;page-id&#125;?fields=instagram_business_account</code>{' '}
+              avec un token valide.{' '}
+              <a
+                href="https://developers.facebook.com/tools/explorer"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:underline"
+              >
+                Ouvrir Graph API Explorer →
+              </a>
+            </p>
+          </div>
           <EditField label="Meta Access Token" value={form.metaAccessToken} onChange={set('metaAccessToken')} placeholder="EAAxxxxxxx" />
           <EditField label="Latitude" value={form.lat} onChange={set('lat')} placeholder="-21.115" />
           <EditField label="Longitude" value={form.lng} onChange={set('lng')} placeholder="55.536" />

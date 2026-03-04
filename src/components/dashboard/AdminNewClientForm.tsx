@@ -172,12 +172,27 @@ export default function AdminNewClientForm() {
                 onChange={set('instagramUsername')}
                 placeholder="monrestaurant"
               />
-              <Field
-                label="Instagram Business ID"
-                value={form.instagramBusinessId}
-                onChange={set('instagramBusinessId')}
-                placeholder="ID numérique (Graph API)"
-              />
+              <div className="space-y-1 md:col-span-2">
+                <Field
+                  label="Instagram Business ID"
+                  value={form.instagramBusinessId}
+                  onChange={set('instagramBusinessId')}
+                  placeholder="ID numérique (Graph API)"
+                />
+                <p className="text-xs text-gray-400">
+                  Pour trouver l&apos;Instagram Business ID : dans Meta Graph API Explorer, appelez{' '}
+                  <code className="bg-gray-100 px-1 rounded text-gray-600">GET /&#123;page-id&#125;?fields=instagram_business_account</code>{' '}
+                  avec un token valide. L&apos;id retourné est l&apos;Instagram Business ID.{' '}
+                  <a
+                    href="https://developers.facebook.com/tools/explorer"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    Ouvrir Graph API Explorer →
+                  </a>
+                </p>
+              </div>
               <Field
                 label="Meta Access Token"
                 value={form.metaAccessToken}
