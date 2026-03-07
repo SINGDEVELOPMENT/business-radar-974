@@ -22,7 +22,7 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
   try {
     const res = await fetch(websiteUrl, {
       signal: AbortSignal.timeout(10000),
-      headers: { 'User-Agent': 'BusinessRadar974/1.0' },
+      headers: { 'User-Agent': 'Axora/1.0' },
     })
     statusCode = res.status
     html = await res.text()
@@ -216,8 +216,8 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
     })()
 
     const [robotsRes, sitemapRes] = await Promise.allSettled([
-      fetch(`${baseUrl}/robots.txt`, { signal: AbortSignal.timeout(5000), headers: { 'User-Agent': 'BusinessRadar974/1.0' } }),
-      fetch(`${baseUrl}/sitemap.xml`, { signal: AbortSignal.timeout(5000), headers: { 'User-Agent': 'BusinessRadar974/1.0' } }),
+      fetch(`${baseUrl}/robots.txt`, { signal: AbortSignal.timeout(5000), headers: { 'User-Agent': 'Axora/1.0' } }),
+      fetch(`${baseUrl}/sitemap.xml`, { signal: AbortSignal.timeout(5000), headers: { 'User-Agent': 'Axora/1.0' } }),
     ])
 
     if (robotsRes.status === 'fulfilled') {

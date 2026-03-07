@@ -1,11 +1,13 @@
 import Header from '@/components/layout/Header'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import ReportsOldSection from '@/components/dashboard/ReportsOldSection'
 import {
   Brain, Calendar, CheckCircle2, XCircle, ArrowRight, Users,
   TrendingUp, TrendingDown, Minus, FileDown, Sparkles,
 } from 'lucide-react'
-import { DEMO_REPORT, DEMO_REPORTS_USED, DEMO_REPORTS_LIMIT } from '@/lib/demo-data'
+import { DEMO_REPORT, DEMO_REPORTS_USED, DEMO_REPORTS_LIMIT, DEMO_OLD_REPORTS } from '@/lib/demo-data'
+import type { AiReportContent } from '@/types'
 
 export default function DemoPremiumReportsPage() {
   const { score_global, summary, strengths, weaknesses, recommendations, competitor_analysis, generated_at, previous_score } = DEMO_REPORT
@@ -126,26 +128,18 @@ export default function DemoPremiumReportsPage() {
         </div>
       </div>
 
-      {/* Historique */}
+      {/* Historique avec filtres et expand/collapse */}
       <div>
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Rapports précédents</h2>
-        {[
-          { label: 'Hebdomadaire', date: '24 févr. 2026', score: 69, type: 'weekly' },
-          { label: 'Hebdomadaire', date: '17 févr. 2026', score: 66, type: 'weekly' },
-          { label: 'Hebdomadaire', date: '10 févr. 2026', score: 64, type: 'weekly' },
-        ].map((r, i) => (
-          <Card key={i} className="p-4 mb-2">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary">{r.label}</Badge>
-                <span className="text-xs text-gray-400 flex items-center gap-1">
-                  <Calendar className="w-3 h-3" />{r.date}
-                </span>
-              </div>
-              <span className="text-sm font-bold text-blue-600">{r.score}/100</span>
-            </div>
-          </Card>
-        ))}
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Rapports précédents</h2>
+        <ReportsOldSection
+          reports={DEMO_OLD_REPORTS.slice(1).map(r => ({
+            id: r.id,
+            report_type: r.report_type,
+            generated_at: r.generated_at,
+            summary: r.summary,
+            content: r.content as AiReportContent,
+          }))}
+        />
       </div>
     </div>
   )

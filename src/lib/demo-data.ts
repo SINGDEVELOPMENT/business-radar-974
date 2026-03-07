@@ -165,3 +165,68 @@ export const DEMO_COMPETITORS_PREMIUM = [
 
 export const DEMO_REPORTS_USED = 2
 export const DEMO_REPORTS_LIMIT = 5
+
+// Historique des rapports pour la démo (filtre année/mois)
+export const DEMO_OLD_REPORTS = [
+  {
+    id: 'dr-mar-2026',
+    report_type: 'monthly',
+    generated_at: '2026-03-01T06:00:00Z',
+    summary: DEMO_REPORT.summary,
+    content: {
+      score_global: DEMO_REPORT.score_global,
+      strengths: DEMO_REPORT.strengths,
+      weaknesses: DEMO_REPORT.weaknesses,
+      recommendations: DEMO_REPORT.recommendations,
+      competitor_analysis: DEMO_REPORT.competitor_analysis,
+    },
+  },
+  {
+    id: 'dr-feb-2026',
+    report_type: 'monthly',
+    generated_at: '2026-02-01T06:00:00Z',
+    summary: "Février 2026 : progression notable sur Instagram (+12%). Note Google stable à 4.3/5 avec une bonne gestion des avis négatifs ce mois. Le site web progresse légèrement en performance.",
+    content: {
+      score_global: 70,
+      strengths: [
+        'Note Google maintenue à 4.3/5 malgré la concurrence locale',
+        'Engagement Instagram en hausse de 12% — contenu visuel efficace',
+        'Réponse active aux 2 avis négatifs reçus ce mois',
+      ],
+      weaknesses: [
+        'Fréquence de publication Facebook insuffisante (2 posts/semaine)',
+        "Absence de balisage schema.org Restaurant — freine le référencement local",
+      ],
+      recommendations: [
+        { priority: 'haute', action: 'Ajouter le balisage schema.org Restaurant sur le site web', impact: 'Améliore la visibilité dans Google Maps et les rich snippets' },
+        { priority: 'moyenne', action: 'Planifier 4 posts Facebook hebdomadaires minimum', impact: 'Maintenir le reach organique et compenser la baisse algorithmique' },
+        { priority: 'basse', action: 'Créer un album Google My Business avec les nouvelles photos du mois', impact: 'Boost de +15% de vues sur la fiche Google Business' },
+      ],
+      competitor_analysis: "La Voile Blanche progresse (+0.1 note Google). Votre différenciation par la qualité reste forte mais la vigilance s'impose sur la gestion des avis.",
+    },
+  },
+  {
+    id: 'dr-jan-2026',
+    report_type: 'monthly',
+    generated_at: '2026-01-05T09:00:00Z',
+    summary: "Janvier 2026 : démarrage d'année encourageant avec une note Google à 4.2/5. Le site web présente des opportunités d'amélioration SEO importantes non exploitées. Priorité aux avis en attente de réponse.",
+    content: {
+      score_global: 65,
+      strengths: [
+        'Cuisine créole reconnue et appréciée — mentions régulières de l\'authenticité',
+        'Présence sociale active avec une communauté engagée',
+      ],
+      weaknesses: [
+        '4 avis négatifs (1-2 étoiles) sans réponse depuis décembre — urgence réputation',
+        'Score SEO à 71/100 — en dessous du potentiel avec quelques optimisations simples',
+        'Taux de publication Instagram en baisse en janvier',
+      ],
+      recommendations: [
+        { priority: 'haute', action: 'Répondre aux 4 avis négatifs en attente sur Google Business', impact: 'Montre le soin apporté à la satisfaction client — peut convertir 45% des indécis' },
+        { priority: 'haute', action: 'Optimiser les images du site web (WebP, lazy loading)', impact: 'Améliore le score Lighthouse et réduit le LCP sous 2.5s' },
+        { priority: 'moyenne', action: 'Reprendre un rythme de publication Instagram régulier (5/semaine)', impact: 'Maintenir la visibilité et profiter de l\'algorithme Reels' },
+      ],
+      competitor_analysis: "Concurrents stables en janvier. Bonne opportunité de se différencier en qualité de présence digitale et de réactivité aux avis.",
+    },
+  },
+]

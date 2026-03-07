@@ -211,7 +211,7 @@ export async function GET() {
 
   const orgName = org?.name ?? 'export'
   const dateStr = new Date().toISOString().slice(0, 10)
-  const filename = `business-radar-${orgName.toLowerCase().replace(/\s+/g, '-')}-${dateStr}.xlsx`
+  const filename = `axora-${orgName.toLowerCase().replace(/\s+/g, '-')}-${dateStr}.xlsx`
 
   const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' }) as Buffer
 

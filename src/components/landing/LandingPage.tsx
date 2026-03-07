@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import CookieBanner from './CookieBanner'
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -32,6 +33,40 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "Axora",
+            "applicationCategory": "BusinessApplication",
+            "description": "Dashboard d'intelligence commerciale locale pour les entreprises réunionnaises.",
+            "url": "https://axora.vercel.app",
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Standard",
+                "price": "1000",
+                "priceCurrency": "EUR",
+                "description": "Setup one-shot + 150€/mois"
+              },
+              {
+                "@type": "Offer",
+                "name": "Premium",
+                "price": "1500",
+                "priceCurrency": "EUR",
+                "description": "Setup one-shot + 200€/mois"
+              }
+            ],
+            "provider": {
+              "@type": "Organization",
+              "name": "Axora",
+              "url": "https://axora.vercel.app"
+            }
+          })
+        }}
+      />
 
       {/* ─── NAVBAR ─── */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100">
@@ -542,11 +577,21 @@ export default function LandingPage() {
             {/* Fait avec amour */}
             <span>Fait avec ❤️ à La Réunion 🌋</span>
             {/* Copyright */}
-            <span>© 2026 Axora. Tous droits réservés.</span>
+            <div className="flex flex-col items-center sm:items-end gap-1">
+              <span>© 2026 Axora. Tous droits réservés.</span>
+              <div className="flex items-center gap-4 flex-wrap justify-center text-xs text-slate-500">
+                <Link href="/mentions-legales" className="hover:text-slate-300 transition-colors">Mentions légales</Link>
+                <span>·</span>
+                <Link href="/politique-confidentialite" className="hover:text-slate-300 transition-colors">Politique de confidentialité</Link>
+                <span>·</span>
+                <Link href="/cgv" className="hover:text-slate-300 transition-colors">CGV</Link>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
 
+      <CookieBanner />
     </div>
   )
 }

@@ -86,7 +86,7 @@ export async function GET() {
     doc.on('error', reject)
 
     // ── En-tête ──
-    doc.fontSize(22).fillColor(BLUE).text('Business Radar 974', { align: 'center' })
+    doc.fontSize(22).fillColor(BLUE).text('Axora', { align: 'center' })
     doc.moveDown(0.3)
     doc.fontSize(14).fillColor(DARK).text(orgName, { align: 'center' })
     doc.moveDown(0.2)
@@ -183,7 +183,7 @@ export async function GET() {
     doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor('#e5e7eb').lineWidth(1).stroke()
     doc.moveDown(0.5)
     doc.fontSize(8).fillColor(GRAY).text(
-      `Score global : ${content.score_global ?? '--'}/100  •  Généré par Business Radar 974  •  ${reportDate}`,
+      `Score global : ${content.score_global ?? '--'}/100  •  Généré par Axora  •  ${reportDate}`,
       { align: 'center', width: PAGE_WIDTH }
     )
 

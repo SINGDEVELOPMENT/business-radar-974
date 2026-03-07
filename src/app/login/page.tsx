@@ -3,7 +3,6 @@
 import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Radar } from 'lucide-react'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 
 type View = 'login' | 'forgot'
@@ -182,10 +181,8 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md px-4">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-500 mb-4 shadow-lg shadow-blue-500/30">
-            <Radar className="w-7 h-7 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Business Radar 974</h1>
+          <img src="/logo.svg" alt="Axora" className="w-14 h-14 mb-4" />
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Axora</h1>
           <p className="mt-1.5 text-gray-500 dark:text-slate-400 text-sm">
             Connectez-vous à votre tableau de bord
           </p>
@@ -196,7 +193,7 @@ export default function LoginPage() {
         </Suspense>
 
         <p className="mt-6 text-center text-xs text-gray-400 dark:text-slate-600">
-          Dashboard réservé aux clients Business Radar 974
+          Dashboard réservé aux clients Axora
         </p>
       </div>
     </div>
