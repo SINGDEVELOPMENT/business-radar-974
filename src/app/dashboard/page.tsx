@@ -2,8 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import Header from '@/components/layout/Header'
 import KpiCard from '@/components/dashboard/KpiCard'
-import AiInsightCard from '@/components/dashboard/AiInsightCard'
-import OnboardingBanner from '@/components/dashboard/OnboardingBanner'
+import DashboardReportsSection from '@/components/dashboard/DashboardReportsSection'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -17,6 +16,7 @@ import {
   ArrowRight,
   Lock,
   Brain,
+  Sparkles,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -182,16 +182,15 @@ export default async function DashboardPage() {
           .order('collected_at', { ascending: false })
           .limit(1)
       : Promise.resolve({ data: [] }),
-    // Rapport le plus récent
+    // Tous les rapports (pour affichage + filtre)
     orgId
       ? supabase
           .from('ai_reports')
-          .select('summary, recommendations, content, generated_at')
+          .select('id, summary, recommendations, content, generated_at, report_type')
           .eq('organization_id', orgId)
           .order('generated_at', { ascending: false })
-          .limit(1)
-          .single()
-      : Promise.resolve({ data: null }),
+          .limit(20)
+      : Promise.resolve({ data: [] }),
     // Avis mois précédent (pour delta)
     orgId
       ? supabase
@@ -222,15 +221,8 @@ export default async function DashboardPage() {
           .order('collected_at', { ascending: false })
           .limit(1)
       : Promise.resolve({ data: [] }),
-    // Rapport avant-dernier
-    orgId
-      ? supabase
-          .from('ai_reports')
-          .select('content')
-          .eq('organization_id', orgId)
-          .order('generated_at', { ascending: false })
-          .range(1, 1)
-      : Promise.resolve({ data: [] }),
+    // (placeholder — delta calculé depuis allReports)
+    Promise.resolve({ data: [] }),
   ])
 
   const googleRating = businessRes.data?.google_rating ?? null
@@ -238,11 +230,12 @@ export default async function DashboardPage() {
   const reviews = reviewsRes.data ?? []
   const posts = postsRes.data ?? []
   const latestSeo = seoRes.data?.[0] ?? null
-  const latestReport = reportRes.data ?? null
+  const allReports = (reportRes.data ?? []) as Array<{ id: string; summary?: string | null; content?: { score_global?: number; recommendations?: Array<{ priority: 'haute' | 'moyenne' | 'basse'; action: string; impact: string }> } | null; generated_at: string; report_type: string }>
+  const latestReport = allReports[0] ?? null
   const reviewsPrev = reviewsPrevRes.data ?? []
   const postsPrev = postsPrevRes.data ?? []
   const seoOld = seoOldRes.data?.[0] ?? null
-  const reportPrev = (reportPrevRes.data ?? [])[0] ?? null
+  const reportPrev = allReports[1] ?? null
 
   const avgRatingPrev = reviewsPrev.length
     ? reviewsPrev.reduce((sum, r) => sum + (r.rating ?? 0), 0) / reviewsPrev.length
@@ -274,26 +267,9 @@ export default async function DashboardPage() {
     ? reportContent.score_global - reportPrevContent.score_global
     : null
 
-  // Bannière onboarding
-  const hasReviews = reviews.length > 0
-  const hasSeo = latestSeo !== null
-  const hasSocial = posts.length > 0
-  const hasReport = latestReport !== null
-  const falseCount = [hasReviews, hasSeo, hasSocial, hasReport].filter((v) => !v).length
-  const showOnboarding = falseCount >= 2
-
   return (
     <div className="space-y-6">
       <Header title="Vue d'ensemble" subtitle="Tableau de bord de votre activité" />
-
-      {showOnboarding && (
-        <OnboardingBanner
-          hasReviews={hasReviews}
-          hasSeo={hasSeo}
-          hasSocial={hasSocial}
-          hasReport={hasReport}
-        />
-      )}
 
       {/* KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -333,28 +309,22 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {/* Rapport AI */}
+      {/* Rapports AI */}
       <div>
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-          Dernière analyse AI
+        <h2 className="text-sm font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide mb-3">
+          Analyses AI
         </h2>
         {isPremium ? (
-          <AiInsightCard
-            summary={latestReport?.summary ?? undefined}
-            recommendations={
-              reportContent?.recommendations as
-                | Array<{ priority: 'haute' | 'moyenne' | 'basse'; action: string; impact: string }>
-                | undefined
-            }
-            scoreGlobal={reportContent?.score_global}
-            generatedAt={latestReport?.generated_at ?? undefined}
-          />
+          <DashboardReportsSection reports={allReports} />
         ) : (
           <div className="relative">
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-xl">
               <Lock className="w-7 h-7 text-blue-400" />
               <p className="text-sm font-semibold text-gray-700 dark:text-slate-300">Disponible en Premium</p>
-              <p className="text-xs text-gray-500 dark:text-slate-400">Contactez votre administrateur pour passer en Premium.</p>
+              <p className="text-xs text-gray-500 dark:text-slate-400 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                Contactez votre administrateur pour passer en Premium.
+              </p>
             </div>
             <div className="pointer-events-none select-none opacity-25">
               <Card className="p-6 space-y-3">
@@ -367,14 +337,6 @@ export default async function DashboardPage() {
                     <div className="h-3 bg-gray-200 rounded w-full" />
                     <div className="h-3 bg-gray-200 rounded w-5/6" />
                   </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  {[1, 2].map(i => (
-                    <div key={i} className="space-y-1.5">
-                      <div className="h-2.5 bg-gray-200 rounded w-1/2" />
-                      {[1, 2].map(j => <div key={j} className="h-2 bg-gray-100 rounded w-full" />)}
-                    </div>
-                  ))}
                 </div>
               </Card>
             </div>
