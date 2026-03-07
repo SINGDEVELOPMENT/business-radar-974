@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: ['/', '/demo', '/demo-premium', '/mentions-legales', '/politique-confidentialite', '/cgv'],
       disallow: ['/dashboard/', '/api/', '/login', '/auth/'],
     },
-    sitemap: 'https://axora.vercel.app/sitemap.xml',
+    sitemap: 'https://axora-data.vercel.app/sitemap.xml',
   }
 }
