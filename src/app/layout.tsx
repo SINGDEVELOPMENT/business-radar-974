@@ -1,26 +1,40 @@
 import type { Metadata } from 'next'
+import { Syne, DM_Sans } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import './globals.css'
 
+const syne = Syne({
+  subsets: ['latin'],
+  variable: '--font-syne',
+  weight: ['400', '600', '700', '800'],
+  display: 'swap',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
   title: {
-    default: 'Axora — Intelligence commerciale locale',
+    default: 'Axora — Local Business Intelligence',
     template: '%s | Axora',
   },
-  description: "Axora surveille vos avis Google, réseaux sociaux, concurrents et SEO — et génère chaque mois des recommandations IA actionnables pour les entreprises réunionnaises.",
-  metadataBase: new URL('https://axora.vercel.app'),
+  description: 'Axora centralizes your Google reviews, social media, SEO and competitors — and generates monthly AI-powered reports with actionable priorities for your business.',
+  metadataBase: new URL('https://axora-data.vercel.app'),
   openGraph: {
-    title: 'Axora — Intelligence commerciale locale',
-    description: "Dashboard d'intelligence commerciale pour les entreprises réunionnaises. Avis Google, social, SEO, concurrents et rapports IA.",
-    url: 'https://axora.vercel.app',
+    title: 'Axora — Local Business Intelligence',
+    description: 'The command center for your local digital performance. Google reviews, social, SEO, competitors and AI reports in one dashboard.',
+    url: 'https://axora-data.vercel.app',
     siteName: 'Axora',
     locale: 'fr_FR',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Axora',
-    description: "Dashboard d'intelligence commerciale locale — La Réunion",
+    title: 'Axora — Local Business Intelligence',
+    description: 'Google reviews, social media, SEO, competitors and AI reports — all in one dashboard.',
   },
   icons: {
     icon: '/logo.svg',
@@ -37,7 +51,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" suppressHydrationWarning>
-      <body>
+      <body className={`${syne.variable} ${dmSans.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
           {children}
         </ThemeProvider>
