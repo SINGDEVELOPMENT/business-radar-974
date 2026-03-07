@@ -1,8 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Bell, Building2 } from 'lucide-react'
+import { Building2 } from 'lucide-react'
 import HeaderUserMenu from '@/components/layout/HeaderUserMenu'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import NotificationBell from '@/components/layout/NotificationBell'
 
 interface HeaderProps {
   title: string
@@ -52,9 +53,7 @@ export default async function Header({ title, subtitle }: HeaderProps) {
 
         <div className="hidden md:flex items-center gap-2">
           <ThemeToggle />
-          <button className="relative p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors">
-            <Bell className="w-4.5 h-4.5" />
-          </button>
+          <NotificationBell />
         </div>
 
         <HeaderUserMenu

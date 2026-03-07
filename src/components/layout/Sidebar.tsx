@@ -43,14 +43,23 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
   const [recentReports, setRecentReports] = useState(0)
 
   useEffect(() => {
+    // Si on est sur la page rapports, marquer comme vu et effacer le badge
+    if (pathname.startsWith('/dashboard/reports')) {
+      localStorage.setItem('reports_last_seen', new Date().toISOString())
+      setRecentReports(0)
+      return
+    }
+
+    const lastSeen = localStorage.getItem('reports_last_seen')
+      ?? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+
     const supabase = createClient()
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
     supabase
       .from('ai_reports')
       .select('id', { count: 'exact', head: true })
-      .gte('generated_at', sevenDaysAgo)
-      .then(({ count }) => { if (count) setRecentReports(count) })
-  }, [])
+      .gte('generated_at', lastSeen)
+      .then(({ count }) => { setRecentReports(count ?? 0) })
+  }, [pathname])
 
   async function handleLogout() {
     const supabase = createClient()

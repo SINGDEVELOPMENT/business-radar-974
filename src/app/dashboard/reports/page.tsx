@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/layout/Header'
 import EmptyState from '@/components/dashboard/EmptyState'
 import GenerateReportButton from '@/components/dashboard/GenerateReportButton'
+import OldReportCard from '@/components/dashboard/OldReportCard'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -251,26 +252,15 @@ export default async function ReportsPage() {
             <div className="space-y-2">
               <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Rapports précédents</h2>
               <div className="space-y-2">
-                {reportsList.slice(1).map(report => {
-                  const c = report.content as AiReportContent | null
-                  return (
-                    <Card key={report.id} className="p-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <ReportTypeBadge type={report.report_type} />
-                          <span className="text-xs text-gray-400 flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            {new Date(report.generated_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                          </span>
-                        </div>
-                        {c?.score_global != null && (
-                          <span className="text-sm font-bold text-blue-600 shrink-0">{c.score_global}/100</span>
-                        )}
-                      </div>
-                      {report.summary && <p className="text-sm text-gray-600 dark:text-slate-400 mt-2 line-clamp-2">{report.summary}</p>}
-                    </Card>
-                  )
-                })}
+                {reportsList.slice(1).map(report => (
+                  <OldReportCard
+                    key={report.id}
+                    report={{
+                      ...report,
+                      content: report.content as AiReportContent | null,
+                    }}
+                  />
+                ))}
               </div>
             </div>
           )}
