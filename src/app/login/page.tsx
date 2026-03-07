@@ -181,7 +181,7 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md px-4">
         <div className="text-center mb-8">
-          <img src="/logo.svg" alt="Axora" className="w-14 h-14 mb-4" />
+          <img src="/logo.svg" alt="Axora" className="w-14 h-14 mb-4 mx-auto block" />
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Axora</h1>
           <p className="mt-1.5 text-gray-500 dark:text-slate-400 text-sm">
             Connectez-vous à votre tableau de bord
