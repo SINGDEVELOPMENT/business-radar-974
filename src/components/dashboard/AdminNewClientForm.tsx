@@ -8,6 +8,7 @@ import { UserPlus, ChevronDown, ChevronUp, Check } from 'lucide-react'
 interface FormData {
   orgName: string
   businessName: string
+  fullName: string
   clientEmail: string
   plan: 'standard' | 'premium'
   googlePlaceId: string
@@ -23,6 +24,7 @@ interface FormData {
 const initialForm: FormData = {
   orgName: '',
   businessName: '',
+  fullName: '',
   clientEmail: '',
   plan: 'standard',
   googlePlaceId: '',
@@ -59,6 +61,7 @@ export default function AdminNewClientForm() {
         body: JSON.stringify({
           orgName: form.orgName,
           businessName: form.businessName,
+          fullName: form.fullName || undefined,
           clientEmail: form.clientEmail || undefined,
           plan: form.plan,
           googlePlaceId: form.googlePlaceId || undefined,
@@ -122,19 +125,31 @@ export default function AdminNewClientForm() {
               Identité
             </legend>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Field
+                  label="Nom de l'organisation *"
+                  value={form.orgName}
+                  onChange={set('orgName')}
+                  placeholder="Ex : SARL Le Lagon"
+                  required
+                />
+                <p className="text-[11px] text-gray-400">Nom légal/commercial du compte (visible dans Business Radar)</p>
+              </div>
+              <div className="space-y-1">
+                <Field
+                  label="Nom du business *"
+                  value={form.businessName}
+                  onChange={set('businessName')}
+                  placeholder="Ex : Restaurant Le Lagon Bleu"
+                  required
+                />
+                <p className="text-[11px] text-gray-400">Nom public sur Google Maps, Facebook, Instagram</p>
+              </div>
               <Field
-                label="Nom de l'organisation *"
-                value={form.orgName}
-                onChange={set('orgName')}
-                placeholder="Ex : Resto Le Lagon"
-                required
-              />
-              <Field
-                label="Nom du business *"
-                value={form.businessName}
-                onChange={set('businessName')}
-                placeholder="Ex : Restaurant Le Lagon"
-                required
+                label="Nom complet du gérant"
+                value={form.fullName}
+                onChange={set('fullName')}
+                placeholder="Ex : Marie Dupont"
               />
               <Field
                 label="Email du client (invitation)"

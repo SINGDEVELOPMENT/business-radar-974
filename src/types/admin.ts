@@ -23,6 +23,9 @@ export interface OrgWithData {
   created_at: string
   api_key_claude: string | null
   meta_access_token: string | null
+  avatar_url: string | null
+  client_full_name: string | null
+  client_user_id: string | null
   businesses: BusinessWithMeta[]
   ai_reports: { generated_at: string }[]
 }

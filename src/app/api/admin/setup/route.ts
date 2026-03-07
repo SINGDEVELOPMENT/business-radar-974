@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
     orgName,
     businessName,
     clientEmail,
+    fullName,
     googlePlaceId,
     websiteUrl,
     instagramUsername,
@@ -84,11 +85,13 @@ export async function POST(request: NextRequest) {
   let inviteError = null
 
   if (clientEmail) {
+    const profileFullName = fullName?.trim() || orgName
+
     const { data: invite, error: err } = await adminClient.auth.admin.inviteUserByEmail(
       clientEmail,
       {
         redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-        data: { full_name: orgName },
+        data: { full_name: profileFullName },
       }
     )
 
@@ -97,7 +100,7 @@ export async function POST(request: NextRequest) {
     } else {
       invitedUser = invite.user
 
-      // Lie l'utilisateur invité à l'organisation avec le rôle admin
+      // Lie l'utilisateur invité à l'organisation avec le rôle member
       if (invitedUser) {
         await adminClient
           .from('profiles')
@@ -105,7 +108,7 @@ export async function POST(request: NextRequest) {
             id: invitedUser.id,
             organization_id: org.id,
             role: 'member',
-            full_name: orgName,
+            full_name: profileFullName,
           })
       }
     }

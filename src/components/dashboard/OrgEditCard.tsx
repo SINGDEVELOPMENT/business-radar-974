@@ -102,7 +102,10 @@ export default function OrgEditCard({ orgName, orgPlan, avatarUrl }: Props) {
             <Upload className="w-3 h-3" />
             {avatarPreview ? 'Changer' : 'Ajouter logo'}
           </button>
-          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+          <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" className="hidden" onChange={handleAvatarChange} />
+          <p className="text-[10px] text-gray-400 text-center leading-tight max-w-[80px]">
+            PNG · JPG · SVG<br />512×512 px<br />max 500 Ko
+          </p>
           {uploadError && <p className="text-[10px] text-red-500 text-center max-w-[80px]">{uploadError}</p>}
         </div>
 

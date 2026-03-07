@@ -6,7 +6,8 @@ import type { OrgWithData, BusinessWithMeta } from '@/types/admin'
 
 // ─── Inline EditClientForm logic ────────────────────────────────────────────
 
-import { Check, Loader2 } from 'lucide-react'
+import { Check, Loader2, Upload, ImageIcon } from 'lucide-react'
+import { useRef } from 'react'
 
 function EditField({
   label,
@@ -35,18 +36,30 @@ function EditField({
 
 interface EditFormProps {
   orgId: string
+  orgName: string
   orgPlan: string | null
   orgApiKeyClaude: string | null
   orgMetaToken: string | null
+  orgAvatarUrl: string | null
+  clientFullName: string | null
+  clientUserId: string | null
   business: BusinessWithMeta
 }
 
-function InlineEditClientForm({ orgId, orgPlan, orgApiKeyClaude, orgMetaToken, business }: EditFormProps) {
+function InlineEditClientForm({ orgId, orgName, orgPlan, orgApiKeyClaude, orgMetaToken, orgAvatarUrl, clientFullName, clientUserId, business }: EditFormProps) {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(orgAvatarUrl)
+  const [uploadLoading, setUploadLoading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
+  const fileRef = useRef<HTMLInputElement>(null)
+
   const [form, setForm] = useState({
+    fullName: clientFullName ?? '',
+    orgName: orgName ?? '',
+    businessName: business.name ?? '',
     plan: (orgPlan === 'premium' ? 'premium' : 'standard') as 'standard' | 'premium',
     googlePlaceId: business.google_place_id ?? '',
     websiteUrl: business.website_url ?? '',
@@ -58,6 +71,27 @@ function InlineEditClientForm({ orgId, orgPlan, orgApiKeyClaude, orgMetaToken, b
     lat: business.lat?.toString() ?? '',
     lng: business.lng?.toString() ?? '',
   })
+
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadError('')
+    const reader = new FileReader()
+    reader.onload = ev => setAvatarPreview(ev.target?.result as string)
+    reader.readAsDataURL(file)
+
+    setUploadLoading(true)
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('orgId', orgId)
+    const res = await fetch('/api/admin/avatar', { method: 'POST', body: fd })
+    setUploadLoading(false)
+    if (!res.ok) {
+      const { error: err } = await res.json()
+      setUploadError(err)
+      setAvatarPreview(orgAvatarUrl)
+    }
+  }
 
   function set(key: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -73,7 +107,7 @@ function InlineEditClientForm({ orgId, orgPlan, orgApiKeyClaude, orgMetaToken, b
     const res = await fetch('/api/admin/client', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ businessId: business.id, orgId, ...form }),
+      body: JSON.stringify({ businessId: business.id, orgId, clientUserId, ...form }),
     })
 
     setLoading(false)
@@ -88,6 +122,48 @@ function InlineEditClientForm({ orgId, orgPlan, orgApiKeyClaude, orgMetaToken, b
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+
+      {/* Identité client */}
+      <div className="pb-4 border-b border-gray-100 dark:border-slate-800 space-y-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-slate-500">Identité</p>
+
+        {/* Avatar */}
+        <div className="flex items-center gap-4">
+          <div
+            onClick={() => fileRef.current?.click()}
+            className="w-14 h-14 rounded-xl border-2 border-dashed border-gray-200 dark:border-slate-700 flex items-center justify-center overflow-hidden cursor-pointer hover:border-blue-400 transition-colors relative shrink-0"
+          >
+            {avatarPreview ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatarPreview} alt="Logo" className="w-full h-full object-cover" />
+            ) : (
+              <ImageIcon className="w-5 h-5 text-gray-300" />
+            )}
+            {uploadLoading && (
+              <div className="absolute inset-0 bg-white/70 dark:bg-slate-900/70 flex items-center justify-center">
+                <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+              </div>
+            )}
+          </div>
+          <div>
+            <button type="button" onClick={() => fileRef.current?.click()} className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-500">
+              <Upload className="w-3 h-3" /> {avatarPreview ? 'Changer le logo' : 'Ajouter un logo'}
+            </button>
+            <p className="text-[10px] text-gray-400 mt-0.5">PNG · JPG · SVG — max 500 Ko</p>
+            {uploadError && <p className="text-[10px] text-red-500">{uploadError}</p>}
+          </div>
+          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <EditField label="Nom complet du gérant" value={form.fullName} onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))} placeholder="Marie Dupont" />
+          <EditField label="Nom de l'organisation" value={form.orgName} onChange={e => setForm(p => ({ ...p, orgName: e.target.value }))} placeholder="SARL Le Lagon" />
+          <div className="sm:col-span-2">
+            <EditField label="Nom du business (Google / réseaux)" value={form.businessName} onChange={e => setForm(p => ({ ...p, businessName: e.target.value }))} placeholder="Restaurant Le Lagon Bleu" />
+          </div>
+        </div>
+      </div>
+
       {/* Plan */}
       <div className="space-y-1.5 pb-4 border-b border-gray-100 dark:border-slate-800">
         <label className="block text-xs font-medium text-gray-600 dark:text-slate-400">Plan</label>
@@ -332,6 +408,7 @@ interface PanelProps {
   onClose: () => void
 }
 
+
 type SubTab = 'info' | 'competitors'
 
 export default function AdminEditPanel({ org, mainBiz, competitors, onClose }: PanelProps) {
@@ -424,9 +501,13 @@ export default function AdminEditPanel({ org, mainBiz, competitors, onClose }: P
           {subTab === 'info' ? (
             <InlineEditClientForm
               orgId={org.id}
+              orgName={org.name}
               orgPlan={org.plan}
               orgApiKeyClaude={org.api_key_claude}
               orgMetaToken={org.meta_access_token}
+              orgAvatarUrl={org.avatar_url}
+              clientFullName={org.client_full_name}
+              clientUserId={org.client_user_id}
               business={mainBiz}
             />
           ) : (

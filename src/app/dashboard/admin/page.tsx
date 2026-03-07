@@ -25,7 +25,8 @@ export default async function AdminPage() {
   const { data: orgs } = await adminClient
     .from('organizations')
     .select(`
-      id, name, slug, plan, created_at, api_key_claude, meta_access_token,
+      id, name, slug, plan, created_at, api_key_claude, meta_access_token, avatar_url,
+      profiles(id, full_name, role),
       businesses(
         id, name, google_place_id, website_url, facebook_page_id,
         instagram_username, instagram_business_id, lat, lng,
@@ -69,6 +70,9 @@ export default async function AdminPage() {
       (a, z) => new Date(z.generated_at).getTime() - new Date(a.generated_at).getTime()
     )
 
+    const rawProfiles = (org as unknown as { profiles: { id: string; full_name: string | null; role: string }[] }).profiles ?? []
+    const clientProfile = rawProfiles.find(p => p.role !== 'superadmin') ?? rawProfiles[0] ?? null
+
     return {
       id: org.id,
       name: org.name,
@@ -77,6 +81,9 @@ export default async function AdminPage() {
       created_at: org.created_at,
       api_key_claude: (org as { api_key_claude: string | null }).api_key_claude,
       meta_access_token: (org as { meta_access_token: string | null }).meta_access_token,
+      avatar_url: (org as { avatar_url: string | null }).avatar_url ?? null,
+      client_full_name: clientProfile?.full_name ?? null,
+      client_user_id: clientProfile?.id ?? null,
       businesses,
       ai_reports: sortedReports.slice(0, 1),
     }
