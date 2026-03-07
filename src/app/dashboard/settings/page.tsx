@@ -37,23 +37,24 @@ export default async function SettingsPage() {
   const businessList = businesses ?? []
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-6">
       <Header title="Paramètres" subtitle="Gérez votre profil, votre organisation et vos business" />
 
-      {/* Profil */}
-      <ProfileEditCard
-        fullName={profile?.full_name ?? null}
-        email={user?.email ?? ''}
-      />
-
-      {/* Organisation */}
-      {org && (
-        <OrgEditCard
-          orgName={org.name}
-          orgPlan={org.plan ?? 'standard'}
-          avatarUrl={(org as { avatar_url?: string | null }).avatar_url ?? null}
+      {/* Profil + Organisation — côte à côte sur grands écrans */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <ProfileEditCard
+          fullName={profile?.full_name ?? null}
+          email={user?.email ?? ''}
         />
-      )}
+
+        {org && (
+          <OrgEditCard
+            orgName={org.name}
+            orgPlan={org.plan ?? 'standard'}
+            avatarUrl={(org as { avatar_url?: string | null }).avatar_url ?? null}
+          />
+        )}
+      </div>
 
       {/* Consentement RGPD */}
       {businessList.length > 0 && (
