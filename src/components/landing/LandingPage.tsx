@@ -156,13 +156,38 @@ const T = {
 type Lang = keyof typeof T
 
 // ─── Dashboard Mockup ──────────────────────────────────────────────────────────
+const NAV_ITEMS = [
+  { Icon: LayoutDashboard, label: 'Vue d\'ensemble', active: true },
+  { Icon: Star,            label: 'Avis Google',     active: false },
+  { Icon: Share2,          label: 'Réseaux Sociaux', active: false },
+  { Icon: Users,           label: 'Concurrents',     active: false },
+  { Icon: Search,          label: 'SEO',             active: false },
+  { Icon: Brain,           label: 'Rapports AI',     active: false },
+]
+
+const KPIS = [
+  { label: 'Note Google',   value: '4.7 / 5',   sub: '124 avis',      color: 'text-amber-500',  bg: 'bg-amber-50 dark:bg-amber-500/[0.1]',   border: 'border-amber-100 dark:border-amber-500/[0.1]' },
+  { label: 'Avis ce mois',  value: '18',         sub: '+6 vs préc.',   color: 'text-blue-600',   bg: 'bg-blue-50 dark:bg-blue-500/[0.1]',     border: 'border-blue-100 dark:border-blue-500/[0.1]' },
+  { label: 'Engagement',    value: '1 240',      sub: '+12 % vs préc.', color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-500/[0.1]', border: 'border-emerald-100 dark:border-emerald-500/[0.1]' },
+  { label: 'Score SEO',     value: '87 / 100',  sub: '+5 pts',        color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-500/[0.1]',  border: 'border-purple-100 dark:border-purple-500/[0.1]' },
+]
+
+const REVIEWS = [
+  { stars: 5, text: 'Service excellent, très professionnel.', author: 'Marie L.' },
+  { stars: 4, text: 'Bonne expérience, je recommande vivement.', author: 'Thomas R.' },
+]
+
 function DashboardMockup({ mockupT }: { mockupT: { title: string; body: string } }) {
   return (
     <div className="relative w-full select-none">
-      <div className="absolute inset-[-15%] rounded-full pointer-events-none opacity-0 dark:opacity-100" style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.18) 0%, transparent 70%)' }} />
-      <div className="relative rounded-2xl border border-gray-200 dark:border-white/[0.09] bg-white dark:bg-[#0b1628]/95 backdrop-blur-xl shadow-xl dark:shadow-black/60 overflow-hidden">
-        {/* Titlebar */}
-        <div className="flex items-center gap-1.5 px-4 py-3 border-b border-gray-100 dark:border-white/[0.06] bg-gray-50 dark:bg-white/[0.02]">
+      {/* Glow dark mode */}
+      <div className="absolute inset-[-15%] rounded-full pointer-events-none opacity-0 dark:opacity-100"
+        style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)' }} />
+
+      <div className="relative rounded-2xl border border-gray-200 dark:border-white/[0.09] bg-white dark:bg-[#0b1628]/95 shadow-xl dark:shadow-black/60 overflow-hidden">
+
+        {/* ── Titlebar ── */}
+        <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-gray-100 dark:border-white/[0.06] bg-gray-50 dark:bg-white/[0.02]">
           <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
           <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
           <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
@@ -170,39 +195,73 @@ function DashboardMockup({ mockupT }: { mockupT: { title: string; body: string }
             <span className="text-[10px] text-gray-400 dark:text-slate-500">axora-data.vercel.app/dashboard</span>
           </div>
         </div>
-        <div className="p-4 space-y-3">
-          {/* KPIs */}
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { l: 'Note Google', v: '4.7/5',   t: '+0.2', c: '#f59e0b' },
-              { l: 'Score SEO',   v: '87/100',  t: '+12',  c: '#3b82f6' },
-              { l: 'Avis/mois',   v: '18',      t: '+6',   c: '#10b981' },
-            ].map((k) => (
-              <div key={k.l} className="bg-gray-50 dark:bg-white/[0.04] rounded-xl p-2.5 border border-gray-100 dark:border-white/[0.05]">
-                <p className="text-[9px] text-gray-400 dark:text-slate-500 mb-1 truncate">{k.l}</p>
-                <p className="text-sm font-bold" style={{ color: k.c }}>{k.v}</p>
-                <p className="text-[9px] text-emerald-500 mt-0.5">▲ {k.t}</p>
+
+        {/* ── Layout sidebar + contenu ── */}
+        <div className="flex min-h-0">
+
+          {/* Sidebar */}
+          <aside className="w-32 flex-none bg-[#030f1c] flex flex-col p-2 gap-0.5">
+            {/* Logo */}
+            <div className="flex items-center gap-1.5 px-2 py-2 mb-1.5">
+              <div className="w-5 h-5 rounded-[4px] flex-none overflow-hidden">
+                <img src="/logo.svg" alt="" className="w-full h-full" />
+              </div>
+              <span className="text-[9px] font-bold text-white truncate">Axora Data</span>
+            </div>
+            {/* Nav */}
+            {NAV_ITEMS.map(({ Icon, label, active }) => (
+              <div key={label} className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md ${active ? 'bg-blue-600/20' : ''}`}>
+                <Icon className={`w-3 h-3 flex-none ${active ? 'text-blue-400' : 'text-slate-600'}`} />
+                <span className={`text-[8px] truncate ${active ? 'text-blue-300 font-medium' : 'text-slate-600'}`}>{label}</span>
               </div>
             ))}
-          </div>
-          {/* Chart */}
-          <div className="bg-gray-50 dark:bg-white/[0.02] rounded-xl p-3 border border-gray-100 dark:border-white/[0.04]">
-            <p className="text-[9px] text-gray-400 dark:text-slate-600 mb-2">Engagement — 7 derniers jours</p>
-            <div className="flex items-end gap-1.5 h-14">
-              {[35, 58, 42, 75, 52, 88, 65].map((h, i) => (
-                <div key={i} className="flex-1 rounded-t" style={{ height: `${h}%`, background: `linear-gradient(to top, rgba(59,130,246,0.7), rgba(59,130,246,0.2))` }} />
+          </aside>
+
+          {/* Main */}
+          <div className="flex-1 p-3 space-y-2.5 min-w-0 overflow-hidden">
+
+            {/* KPI grid 2×2 */}
+            <div className="grid grid-cols-2 gap-1.5">
+              {KPIS.map((k) => (
+                <div key={k.label} className={`${k.bg} border ${k.border} rounded-lg p-2`}>
+                  <p className="text-[8px] text-gray-500 dark:text-slate-500 mb-1 truncate">{k.label}</p>
+                  <p className={`text-xs font-bold leading-none ${k.color}`}>{k.value}</p>
+                  <p className="text-[8px] text-emerald-500 mt-1">{k.sub}</p>
+                </div>
               ))}
             </div>
-          </div>
-          {/* AI report */}
-          <div className="flex items-start gap-2.5 bg-blue-50 dark:bg-blue-500/[0.08] border border-blue-200 dark:border-blue-500/[0.15] rounded-xl p-3">
-            <div className="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-500/20 border border-blue-200 dark:border-blue-500/20 flex items-center justify-center shrink-0 mt-0.5">
-              <Brain className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
-            </div>
+
+            {/* Avis Google */}
             <div>
-              <p className="text-[10px] text-blue-600 dark:text-blue-300 font-semibold mb-0.5">{mockupT.title}</p>
-              <p className="text-[10px] text-gray-500 dark:text-slate-400 leading-relaxed">{mockupT.body}</p>
+              <p className="text-[8px] font-semibold text-gray-400 dark:text-slate-600 uppercase tracking-wider mb-1.5">Avis Google récents</p>
+              <div className="space-y-1.5">
+                {REVIEWS.map((r, i) => (
+                  <div key={i} className="bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.04] rounded-lg p-2">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <div className="flex gap-0.5">
+                        {[0,1,2,3,4].map((s) => (
+                          <div key={s} className={`w-1.5 h-1.5 rounded-sm ${s < r.stars ? 'bg-amber-400' : 'bg-gray-200 dark:bg-slate-700'}`} />
+                        ))}
+                      </div>
+                      <span className="text-[8px] text-gray-400 dark:text-slate-600">{r.author}</span>
+                    </div>
+                    <p className="text-[9px] text-gray-600 dark:text-slate-400 truncate leading-snug">{r.text}</p>
+                  </div>
+                ))}
+              </div>
             </div>
+
+            {/* Rapport IA */}
+            <div className="flex items-start gap-2 bg-blue-50 dark:bg-blue-500/[0.08] border border-blue-200 dark:border-blue-500/[0.15] rounded-lg p-2">
+              <div className="w-5 h-5 rounded-md bg-blue-100 dark:bg-blue-500/20 border border-blue-200 dark:border-blue-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                <Brain className="w-3 h-3 text-blue-500 dark:text-blue-400" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[9px] text-blue-600 dark:text-blue-300 font-semibold mb-0.5">{mockupT.title}</p>
+                <p className="text-[9px] text-gray-600 dark:text-slate-400 leading-snug line-clamp-2">{mockupT.body}</p>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
