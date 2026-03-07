@@ -4,10 +4,10 @@ import SeoHistoryChart from '@/components/dashboard/SeoHistoryChart'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
-  Clock, ShieldCheck, FileText, Gauge, AlertTriangle, CheckCircle2,
-  Zap, Eye, Search, Smartphone, Activity,
+  Clock, ShieldCheck, Gauge, AlertTriangle, CheckCircle2,
+  Zap, Eye, Search, Smartphone, Activity, FileCode, Code2,
 } from 'lucide-react'
-import { computeSeoIssues, seoScoreColor, seoScoreLabel } from '@/lib/utils/seo'
+import { computeSeoIssues } from '@/lib/utils/seo'
 import { cn } from '@/lib/utils'
 import { DEMO_SEO_LATEST, DEMO_SEO_CHART } from '@/lib/demo-data'
 
@@ -72,49 +72,98 @@ export default function DemoSeoPage() {
 
       <SeoHistoryChart data={DEMO_SEO_CHART} />
 
+      {/* On-page SEO + Données structurées */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card className="p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-gray-400" />Détails techniques
+            <FileCode className="w-4 h-4 text-gray-400" />Analyse on-page
           </h3>
           <div className="space-y-3">
-            <Detail label="URL analysée" value={DEMO_SEO_LATEST.url} mono />
-            <Detail label="Balise title" value={DEMO_SEO_LATEST.title} />
-            <Detail label="Meta description" value={DEMO_SEO_LATEST.meta_description} />
-            <Detail label="Balises H1" value={String(DEMO_SEO_LATEST.h1_count)} />
-            <Detail label="Taille de la page" value={`${DEMO_SEO_LATEST.page_size_kb} KB`} />
-            <Detail label="Status HTTP" value={String(DEMO_SEO_LATEST.status_code)} />
+            <OnPageRow label="Structure titres"
+              value={`H1: ${DEMO_SEO_LATEST.h1_count}  ·  H2: ${DEMO_SEO_LATEST.h2_count}  ·  H3: ${DEMO_SEO_LATEST.h3_count}`}
+              status={DEMO_SEO_LATEST.h1_count === 1 ? 'good' : 'warn'}
+            />
+            <OnPageRow label="Canonical URL"
+              value={DEMO_SEO_LATEST.canonical_url}
+              status="good"
+              mono
+            />
+            <OnPageRow label="Open Graph"
+              value="Présent (og:title, og:description, og:image)"
+              status="good"
+            />
+            <OnPageRow label="og:title"
+              value={DEMO_SEO_LATEST.og_title}
+              status="good"
+            />
+            <OnPageRow label="Balise title"
+              value={`${DEMO_SEO_LATEST.title} (${DEMO_SEO_LATEST.title_length} car.)`}
+              status="good"
+            />
+            <OnPageRow label="Meta description"
+              value={`${DEMO_SEO_LATEST.meta_description.slice(0, 80)}… (${DEMO_SEO_LATEST.meta_description_length} car.)`}
+              status="good"
+            />
+            <OnPageRow label="Nombre de mots"
+              value={`${DEMO_SEO_LATEST.word_count} mots`}
+              status="good"
+            />
           </div>
         </Card>
 
         <Card className="p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-gray-400" />
-            Problèmes détectés
-            {issues.length > 0 && <Badge variant="destructive" className="ml-auto">{issues.length}</Badge>}
+            <Code2 className="w-4 h-4 text-gray-400" />Données structurées &amp; crawl
           </h3>
-          {issues.length === 0 ? (
-            <div className="flex items-center gap-2 text-emerald-600 text-sm">
-              <CheckCircle2 className="w-4 h-4" />Aucun problème détecté — excellent !
-            </div>
-          ) : (
-            <ul className="space-y-3">
-              {issues.map(issue => (
-                <li key={issue.key} className="flex items-start gap-3">
-                  <span className={`inline-block w-2 h-2 rounded-full mt-1.5 shrink-0 ${issue.priority === 'haute' ? 'bg-red-500' : 'bg-orange-400'}`} />
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-medium text-gray-900">{issue.label}</span>
-                      <Badge variant={issue.priority === 'haute' ? 'destructive' : 'warning'}>{issue.priority}</Badge>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-0.5">{issue.detail}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+          <div className="space-y-3">
+            <OnPageRow label="Schema markup (JSON-LD)"
+              value="Absent — opportunité rich snippets !"
+              status="warn"
+            />
+            <OnPageRow label="Sitemap XML" value="Présent" status="good" />
+            <OnPageRow label="Robots.txt" value="Présent" status="good" />
+            <OnPageRow label="Images"
+              value={`${DEMO_SEO_LATEST.total_images} images · ${DEMO_SEO_LATEST.images_without_alt} sans alt`}
+              status="warn"
+            />
+            <OnPageRow label="Liens"
+              value={`${DEMO_SEO_LATEST.internal_links_count} internes · ${DEMO_SEO_LATEST.external_links_count} externes`}
+              status="neutral"
+            />
+            <OnPageRow label="Status HTTP" value="200" status="good" />
+            <OnPageRow label="Taille de la page" value={`${DEMO_SEO_LATEST.page_size_kb} KB`} status="good" />
+          </div>
         </Card>
       </div>
+
+      {/* Problèmes détectés */}
+      <Card className="p-5">
+        <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 text-gray-400" />
+          Problèmes détectés
+          {issues.length > 0 && <Badge variant="destructive" className="ml-auto">{issues.length}</Badge>}
+        </h3>
+        {issues.length === 0 ? (
+          <div className="flex items-center gap-2 text-emerald-600 text-sm">
+            <CheckCircle2 className="w-4 h-4" />Aucun problème détecté — excellent !
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {issues.map(issue => (
+              <div key={issue.key} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50">
+                <span className={`inline-block w-2 h-2 rounded-full mt-1.5 shrink-0 ${issue.priority === 'haute' ? 'bg-red-500' : issue.priority === 'moyenne' ? 'bg-orange-400' : 'bg-yellow-400'}`} />
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-medium text-gray-900">{issue.label}</span>
+                    <Badge variant={issue.priority === 'haute' ? 'destructive' : issue.priority === 'moyenne' ? 'warning' : 'secondary'} className="text-[10px]">{issue.priority}</Badge>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-0.5">{issue.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
 
       {/* Opportunités */}
       <Card className="p-5">
@@ -174,11 +223,26 @@ function CwvCard({ label, value, status, hint }: { label: string; value: string;
   )
 }
 
-function Detail({ label, value, mono = false }: { label: string; value: string | number; mono?: boolean }) {
+function OnPageRow({ label, value, status, mono = false }: { label: string; value: string; status: 'good' | 'warn' | 'bad' | 'neutral'; mono?: boolean }) {
+  const icon = status === 'good'
+    ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+    : status === 'bad'
+    ? <AlertTriangle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
+    : status === 'warn'
+    ? <AlertTriangle className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
+    : <span className="w-3.5 h-3.5 shrink-0 mt-0.5" />
   return (
-    <div className="flex items-start justify-between text-sm gap-2">
-      <span className="text-gray-500 shrink-0">{label}</span>
-      <span className={cn('text-right max-w-[55%] truncate text-gray-900', mono && 'font-mono text-xs')}>{value}</span>
+    <div className="flex items-start gap-2 text-sm">
+      {icon}
+      <span className="text-gray-500 shrink-0 min-w-[120px]">{label}</span>
+      <span className={cn(
+        'text-right flex-1 min-w-0 truncate',
+        mono && 'font-mono text-xs',
+        status === 'bad' && 'text-red-500',
+        status === 'warn' && 'text-orange-500',
+        status === 'good' && 'text-gray-900',
+        status === 'neutral' && 'text-gray-600',
+      )}>{value}</span>
     </div>
   )
 }
