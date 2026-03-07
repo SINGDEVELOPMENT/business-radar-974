@@ -34,18 +34,95 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
   const hasSSL = websiteUrl.startsWith('https://')
   const pageSizeKb = html ? Math.round(Buffer.byteLength(html, 'utf8') / 1024) : null
 
+  // ── Parsing HTML (inspiré claude-seo) ─────────────────────────────────────
   let title = ''
   let metaDescription = ''
   let h1Count = 0
   let mobileFriendly: boolean | null = null
+  let canonicalUrl: string | null = null
+  let hasOgTags = false
+  let ogTitle: string | null = null
+  let ogDescription: string | null = null
+  let ogImage: string | null = null
+  let h2Count = 0
+  let h3Count = 0
+  let imagesWithoutAlt = 0
+  let totalImages = 0
+  let internalLinksCount = 0
+  let externalLinksCount = 0
+  let wordCount = 0
+  let hasSchema = false
+  let schemaTypes: string[] = []
 
   if (html) {
     const $ = cheerio.load(html)
+
+    // Basiques
     title = $('title').first().text().trim()
     metaDescription = $('meta[name="description"]').attr('content') ?? ''
     h1Count = $('h1').length
     const viewport = $('meta[name="viewport"]').attr('content') ?? ''
     mobileFriendly = viewport.includes('width=device-width')
+
+    // Canonical
+    canonicalUrl = $('link[rel="canonical"]').attr('href') ?? null
+
+    // Open Graph tags
+    ogTitle = $('meta[property="og:title"]').attr('content') ?? null
+    ogDescription = $('meta[property="og:description"]').attr('content') ?? null
+    ogImage = $('meta[property="og:image"]').attr('content') ?? null
+    hasOgTags = !!(ogTitle || ogDescription || ogImage)
+
+    // Structure des titres
+    h2Count = $('h2').length
+    h3Count = $('h3').length
+
+    // Images
+    const images = $('img')
+    totalImages = images.length
+    images.each((_, el) => {
+      const alt = $(el).attr('alt')
+      if (!alt || alt.trim() === '') imagesWithoutAlt++
+    })
+
+    // Liens internes / externes
+    const urlDomain = (() => {
+      try { return new URL(websiteUrl).hostname } catch { return '' }
+    })()
+    $('a[href]').each((_, el) => {
+      const href = $(el).attr('href') ?? ''
+      if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:')) return
+      try {
+        const linkDomain = new URL(href, websiteUrl).hostname
+        if (linkDomain === urlDomain) internalLinksCount++
+        else externalLinksCount++
+      } catch {
+        if (href.startsWith('/')) internalLinksCount++
+      }
+    })
+
+    // Word count (texte visible uniquement)
+    $('script, style, nav, footer, header').remove()
+    const visibleText = $.root().text().replace(/\s+/g, ' ').trim()
+    wordCount = visibleText.split(/\s+/).filter(w => w.length > 0).length
+
+    // JSON-LD Schema markup
+    $('script[type="application/ld+json"]').each((_, el) => {
+      try {
+        const json = JSON.parse($(el).html() ?? '{}')
+        const schemas = Array.isArray(json) ? json : [json]
+        schemas.forEach(s => {
+          const type = s['@type']
+          if (type) {
+            const types = Array.isArray(type) ? type : [type]
+            schemaTypes.push(...types)
+          }
+        })
+      } catch { /* JSON invalide, ignorer */ }
+    })
+    hasSchema = schemaTypes.length > 0
+    // Dédupliquer
+    schemaTypes = [...new Set(schemaTypes)]
   }
 
   const partial = {
@@ -129,6 +206,28 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
     }
   }
 
+  // ── Robots.txt et sitemap ─────────────────────────────────────────────────
+  let hasRobotsTxt: boolean | null = null
+  let hasSitemap: boolean | null = null
+
+  try {
+    const baseUrl = (() => {
+      try { const u = new URL(websiteUrl); return `${u.protocol}//${u.hostname}` } catch { return websiteUrl }
+    })()
+
+    const [robotsRes, sitemapRes] = await Promise.allSettled([
+      fetch(`${baseUrl}/robots.txt`, { signal: AbortSignal.timeout(5000), headers: { 'User-Agent': 'BusinessRadar974/1.0' } }),
+      fetch(`${baseUrl}/sitemap.xml`, { signal: AbortSignal.timeout(5000), headers: { 'User-Agent': 'BusinessRadar974/1.0' } }),
+    ])
+
+    if (robotsRes.status === 'fulfilled') {
+      hasRobotsTxt = robotsRes.value.ok && robotsRes.value.status === 200
+    }
+    if (sitemapRes.status === 'fulfilled') {
+      hasSitemap = sitemapRes.value.ok && sitemapRes.value.status === 200
+    }
+  } catch { /* ignorer */ }
+
   const snapshot = {
     business_id: businessId,
     url: websiteUrl,
@@ -145,6 +244,25 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
     seo_audit_score: seoAuditScore,
     best_practices_score: bestPracticesScore,
     opportunities: opportunities.length > 0 ? opportunities : null,
+    // Nouvelles colonnes on-page
+    canonical_url: canonicalUrl,
+    has_og_tags: hasOgTags,
+    og_title: ogTitle,
+    og_description: ogDescription,
+    og_image: ogImage,
+    h2_count: h2Count,
+    h3_count: h3Count,
+    images_without_alt: imagesWithoutAlt,
+    total_images: totalImages,
+    internal_links_count: internalLinksCount,
+    external_links_count: externalLinksCount,
+    word_count: wordCount,
+    has_sitemap: hasSitemap,
+    has_robots_txt: hasRobotsTxt,
+    has_schema: hasSchema,
+    schema_types: schemaTypes.length > 0 ? schemaTypes : null,
+    title_length: title ? title.length : null,
+    meta_description_length: metaDescription ? metaDescription.length : null,
   }
 
   const supabase = createAdminClient()

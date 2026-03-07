@@ -125,7 +125,7 @@ export async function POST() {
 
   const { data: seoRows } = await supabase
     .from('seo_snapshots')
-    .select('lighthouse_score, has_ssl, meta_description, mobile_friendly, load_time_ms, h1_count')
+    .select('lighthouse_score, has_ssl, meta_description, mobile_friendly, load_time_ms, h1_count, has_schema, schema_types, has_og_tags, canonical_url, has_sitemap, h2_count, h3_count, images_without_alt, total_images, word_count, internal_links_count, external_links_count')
     .eq('business_id', business.id)
     .order('collected_at', { ascending: false })
     .limit(1)
@@ -139,6 +139,11 @@ export async function POST() {
     if (!seo.mobile_friendly) seoIssues.push('Non optimisé mobile')
     if (seo.load_time_ms && seo.load_time_ms > 3000) seoIssues.push(`Temps de chargement élevé (${(seo.load_time_ms / 1000).toFixed(1)}s)`)
     if (seo.h1_count === 0) seoIssues.push('Balise H1 manquante')
+    if (!seo.has_schema) seoIssues.push('Aucune donnée structurée (schema)')
+    if (!seo.has_og_tags) seoIssues.push('Balises Open Graph absentes')
+    if (!seo.canonical_url) seoIssues.push('Canonical URL absente')
+    if (seo.has_sitemap === false) seoIssues.push('Sitemap XML manquant')
+    if (seo.images_without_alt && seo.images_without_alt > 0) seoIssues.push(`${seo.images_without_alt} image(s) sans attribut alt`)
   }
 
   const businessData: BusinessData = {
@@ -155,6 +160,21 @@ export async function POST() {
       collected_at: '',
     })),
     postsCount, avgEngagement, bestPost, competitors, seoScore, seoIssues,
+    seoDetails: seo ? {
+      hasSchema: seo.has_schema,
+      schemaTypes: seo.schema_types as string[] | null,
+      hasOgTags: seo.has_og_tags,
+      canonicalUrl: seo.canonical_url,
+      hasSitemap: seo.has_sitemap,
+      h1Count: seo.h1_count,
+      h2Count: seo.h2_count,
+      h3Count: seo.h3_count,
+      imagesWithoutAlt: seo.images_without_alt,
+      totalImages: seo.total_images,
+      wordCount: seo.word_count,
+      internalLinksCount: seo.internal_links_count,
+      externalLinksCount: seo.external_links_count,
+    } : undefined,
   }
 
   // ── 6. Générer le rapport ──────────────────────────────────────────────

@@ -67,6 +67,35 @@ export interface SeoSnapshot {
   lighthouse_score?: number
   page_size_kb?: number
   collected_at: string
+  // Core Web Vitals
+  fcp_ms?: number | null
+  lcp_ms?: number | null
+  cls_score?: number | null
+  tbt_ms?: number | null
+  speed_index_ms?: number | null
+  accessibility_score?: number | null
+  seo_audit_score?: number | null
+  best_practices_score?: number | null
+  opportunities?: { id: string; title: string; displayValue: string; score: number }[] | null
+  // On-page SEO (migration 009)
+  canonical_url?: string | null
+  has_og_tags?: boolean | null
+  og_title?: string | null
+  og_description?: string | null
+  og_image?: string | null
+  h2_count?: number | null
+  h3_count?: number | null
+  images_without_alt?: number | null
+  total_images?: number | null
+  internal_links_count?: number | null
+  external_links_count?: number | null
+  word_count?: number | null
+  has_sitemap?: boolean | null
+  has_robots_txt?: boolean | null
+  has_schema?: boolean | null
+  schema_types?: string[] | null
+  title_length?: number | null
+  meta_description_length?: number | null
 }
 
 export interface AiReport {
@@ -94,6 +123,22 @@ export interface AiRecommendation {
   impact: string
 }
 
+export interface SeoDetails {
+  hasSchema?: boolean | null
+  schemaTypes?: string[] | null
+  hasOgTags?: boolean | null
+  canonicalUrl?: string | null
+  hasSitemap?: boolean | null
+  h1Count?: number | null
+  h2Count?: number | null
+  h3Count?: number | null
+  imagesWithoutAlt?: number | null
+  totalImages?: number | null
+  wordCount?: number | null
+  internalLinksCount?: number | null
+  externalLinksCount?: number | null
+}
+
 export interface BusinessData {
   businessName: string
   avgRating: number
@@ -106,4 +151,5 @@ export interface BusinessData {
   competitors: Array<{ name: string; rating: number; reviews: number }>
   seoScore: number
   seoIssues: string[]
+  seoDetails?: SeoDetails
 }

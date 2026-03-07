@@ -20,8 +20,16 @@ Analyse les données suivantes pour l'entreprise "${data.businessName}" et fourn
 ${data.competitors.map((c) => `- ${c.name}: ${c.rating}/5 (${c.reviews} avis)`).join('\n')}
 
 ### SEO
-- Score : ${data.seoScore}/100
+- Score performance : ${data.seoScore}/100
 - Problèmes détectés : ${data.seoIssues.join(', ') || 'aucun'}
+- Données structurées (schema) : ${data.seoDetails?.hasSchema ? `Oui (${data.seoDetails.schemaTypes?.join(', ') || 'type inconnu'})` : 'Non — opportunité rich snippets'}
+- Balises Open Graph : ${data.seoDetails?.hasOgTags ? 'Présentes' : 'Absentes — impact réseaux sociaux'}
+- Canonical URL : ${data.seoDetails?.canonicalUrl ? 'Définie' : 'Absente'}
+- Sitemap XML : ${data.seoDetails?.hasSitemap === true ? 'Présent' : data.seoDetails?.hasSitemap === false ? 'Absent' : 'Non vérifié'}
+- Structure titres : H1=${data.seoDetails?.h1Count ?? '?'}, H2=${data.seoDetails?.h2Count ?? '?'}, H3=${data.seoDetails?.h3Count ?? '?'}
+- Images sans alt : ${data.seoDetails?.imagesWithoutAlt ?? 0} / ${data.seoDetails?.totalImages ?? 0}
+- Nombre de mots : ${data.seoDetails?.wordCount ?? 'non mesuré'}
+- Liens internes : ${data.seoDetails?.internalLinksCount ?? '?'} | Liens externes : ${data.seoDetails?.externalLinksCount ?? '?'}
 
 ## Consignes :
 1. Résume la situation en 3 phrases max

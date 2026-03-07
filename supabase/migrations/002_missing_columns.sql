@@ -19,9 +19,13 @@ ALTER TABLE businesses
 
 -- Contrainte unique requise par l'upsert dans competitors.ts
 -- (onConflict: 'organization_id,google_place_id')
-ALTER TABLE businesses
-  ADD CONSTRAINT businesses_org_place_unique
-  UNIQUE (organization_id, google_place_id);
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'businesses_org_place_unique'
+  ) THEN
+    ALTER TABLE businesses ADD CONSTRAINT businesses_org_place_unique UNIQUE (organization_id, google_place_id);
+  END IF;
+END $$;
 
 -- ---------------------------------------------------------------
 -- Jour 8 — collecte automatique (CRON)

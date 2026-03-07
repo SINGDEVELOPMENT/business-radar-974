@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import {
   Search, Activity, Clock, ShieldCheck, FileText, Gauge,
   AlertTriangle, CheckCircle2, Zap, Eye, Smartphone,
+  Link2, Image, Code2, Globe, Map, FileCode,
 } from 'lucide-react'
 import { computeSeoIssues, seoScoreColor, seoScoreLabel } from '@/lib/utils/seo'
 import { cn } from '@/lib/utils'
@@ -45,6 +46,25 @@ type SeoSnapshot = {
   accessibility_score?: number | null; seo_audit_score?: number | null
   best_practices_score?: number | null
   opportunities?: { id: string; title: string; displayValue: string; score: number }[] | null
+  // On-page SEO
+  canonical_url?: string | null
+  has_og_tags?: boolean | null
+  og_title?: string | null
+  og_description?: string | null
+  og_image?: string | null
+  h2_count?: number | null
+  h3_count?: number | null
+  images_without_alt?: number | null
+  total_images?: number | null
+  internal_links_count?: number | null
+  external_links_count?: number | null
+  word_count?: number | null
+  has_sitemap?: boolean | null
+  has_robots_txt?: boolean | null
+  has_schema?: boolean | null
+  schema_types?: string[] | null
+  title_length?: number | null
+  meta_description_length?: number | null
 }
 
 export default async function SeoPage() {
@@ -150,53 +170,129 @@ export default async function SeoPage() {
           {/* ── Graphique historique ── */}
           <SeoHistoryChart data={chartData} />
 
-          {/* ── Détails + Problèmes ── */}
+          {/* ── On-page SEO + Données structurées ── */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Analyse on-page */}
             <Card className="p-5">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-gray-400" />
-                Détails techniques
+                <FileCode className="w-4 h-4 text-gray-400" />
+                Analyse on-page
               </h3>
               <div className="space-y-3">
-                <Detail label="URL analysée" value={latest.url ?? '--'} mono />
-                <Detail label="Balise title" value={latest.title ?? 'Non définie'} missing={!latest.title} />
-                <Detail label="Meta description" value={latest.meta_description ?? 'Non définie'} missing={!latest.meta_description} />
-                <Detail label="Balises H1" value={String(latest.h1_count ?? 0)} warning={!latest.h1_count || latest.h1_count !== 1} />
-                {latest.page_size_kb != null && <Detail label="Taille de la page" value={`${latest.page_size_kb} KB`} />}
-                <Detail label="Status HTTP" value={String(latest.status_code ?? '--')} warning={latest.status_code !== 200} />
-                <Detail label="Dernier audit" value={new Date(latest.collected_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} />
+                <OnPageRow label="Structure titres"
+                  value={`H1: ${latest.h1_count ?? 0}  ·  H2: ${latest.h2_count ?? 0}  ·  H3: ${latest.h3_count ?? 0}`}
+                  status={latest.h1_count === 1 ? 'good' : 'warn'}
+                />
+                <OnPageRow label="Canonical URL"
+                  value={latest.canonical_url ?? 'Absente'}
+                  status={latest.canonical_url ? 'good' : 'warn'}
+                  mono
+                />
+                <OnPageRow label="Open Graph"
+                  value={latest.has_og_tags ? 'Présent (og:title, og:description, og:image)' : 'Absent'}
+                  status={latest.has_og_tags ? 'good' : 'warn'}
+                />
+                {latest.og_title && (
+                  <OnPageRow label="og:title" value={latest.og_title} status="good" />
+                )}
+                <OnPageRow label="Balise title"
+                  value={latest.title ? `${latest.title} (${latest.title_length ?? latest.title.length} car.)` : 'Absente'}
+                  status={!latest.title ? 'bad' : (latest.title_length ?? 0) >= 30 && (latest.title_length ?? 0) <= 60 ? 'good' : 'warn'}
+                />
+                <OnPageRow label="Meta description"
+                  value={latest.meta_description
+                    ? `${latest.meta_description.slice(0, 80)}${(latest.meta_description.length > 80) ? '…' : ''} (${latest.meta_description_length ?? latest.meta_description.length} car.)`
+                    : 'Absente'}
+                  status={!latest.meta_description ? 'bad' : (latest.meta_description_length ?? 0) >= 120 && (latest.meta_description_length ?? 0) <= 160 ? 'good' : 'warn'}
+                />
+                {latest.word_count != null && (
+                  <OnPageRow label="Nombre de mots"
+                    value={`${latest.word_count} mots`}
+                    status={latest.word_count >= 300 ? 'good' : 'warn'}
+                  />
+                )}
               </div>
             </Card>
 
+            {/* Données structurées + crawl */}
             <Card className="p-5">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-gray-400" />
-                Problèmes détectés
-                {issues.length > 0 && <Badge variant="destructive" className="ml-auto">{issues.length}</Badge>}
+                <Code2 className="w-4 h-4 text-gray-400" />
+                Données structurées & crawl
               </h3>
-              {issues.length === 0 ? (
-                <div className="flex items-center gap-2 text-emerald-600 text-sm">
-                  <CheckCircle2 className="w-4 h-4" />
-                  Aucun problème détecté — excellent !
-                </div>
-              ) : (
-                <ul className="space-y-3">
-                  {issues.map(issue => (
-                    <li key={issue.key} className="flex items-start gap-3">
-                      <span className={`inline-block w-2 h-2 rounded-full mt-1.5 shrink-0 ${issue.priority === 'haute' ? 'bg-red-500' : 'bg-orange-400'}`} />
-                      <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-sm font-medium text-gray-900 dark:text-white">{issue.label}</span>
-                          <Badge variant={issue.priority === 'haute' ? 'destructive' : 'warning'}>{issue.priority}</Badge>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-0.5">{issue.detail}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <div className="space-y-3">
+                <OnPageRow label="Schema markup (JSON-LD)"
+                  value={latest.has_schema
+                    ? `Présent${latest.schema_types && latest.schema_types.length > 0 ? ` — ${(latest.schema_types as string[]).join(', ')}` : ''}`
+                    : 'Absent — opportunité rich snippets !'}
+                  status={latest.has_schema ? 'good' : 'warn'}
+                />
+                {latest.has_schema && latest.schema_types && (latest.schema_types as string[]).length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 pl-4">
+                    {(latest.schema_types as string[]).map(t => (
+                      <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
+                    ))}
+                  </div>
+                )}
+                <OnPageRow label="Sitemap XML"
+                  value={latest.has_sitemap === true ? 'Présent' : latest.has_sitemap === false ? 'Absent' : 'Non vérifié'}
+                  status={latest.has_sitemap === true ? 'good' : latest.has_sitemap === false ? 'warn' : 'neutral'}
+                />
+                <OnPageRow label="Robots.txt"
+                  value={latest.has_robots_txt === true ? 'Présent' : latest.has_robots_txt === false ? 'Absent' : 'Non vérifié'}
+                  status={latest.has_robots_txt === true ? 'good' : latest.has_robots_txt === false ? 'warn' : 'neutral'}
+                />
+                {latest.total_images != null && (
+                  <OnPageRow label="Images"
+                    value={`${latest.total_images} image${latest.total_images > 1 ? 's' : ''} · ${latest.images_without_alt ?? 0} sans alt`}
+                    status={(latest.images_without_alt ?? 0) === 0 ? 'good' : 'warn'}
+                  />
+                )}
+                {(latest.internal_links_count != null || latest.external_links_count != null) && (
+                  <OnPageRow label="Liens"
+                    value={`${latest.internal_links_count ?? 0} internes · ${latest.external_links_count ?? 0} externes`}
+                    status="neutral"
+                  />
+                )}
+                <OnPageRow label="Status HTTP" value={String(latest.status_code ?? '--')} status={latest.status_code === 200 ? 'good' : 'bad'} />
+                {latest.page_size_kb != null && (
+                  <OnPageRow label="Taille de la page" value={`${latest.page_size_kb} KB`}
+                    status={latest.page_size_kb > 2000 ? 'warn' : 'good'}
+                  />
+                )}
+              </div>
             </Card>
           </div>
+
+          {/* ── Problèmes détectés ── */}
+          <Card className="p-5">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-gray-400" />
+              Problèmes détectés
+              {issues.length > 0 && <Badge variant="destructive" className="ml-auto">{issues.length}</Badge>}
+            </h3>
+            {issues.length === 0 ? (
+              <div className="flex items-center gap-2 text-emerald-600 text-sm">
+                <CheckCircle2 className="w-4 h-4" />
+                Aucun problème détecté — excellent !
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {issues.map(issue => (
+                  <div key={issue.key} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+                    <span className={`inline-block w-2 h-2 rounded-full mt-1.5 shrink-0 ${issue.priority === 'haute' ? 'bg-red-500' : issue.priority === 'moyenne' ? 'bg-orange-400' : 'bg-yellow-400'}`} />
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-medium text-gray-900 dark:text-white">{issue.label}</span>
+                        <Badge variant={issue.priority === 'haute' ? 'destructive' : issue.priority === 'moyenne' ? 'warning' : 'secondary'} className="text-[10px]">{issue.priority}</Badge>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-0.5">{issue.detail}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
 
           {/* ── Opportunités d'optimisation ── */}
           {latest.opportunities && (latest.opportunities as { id: string; title: string; displayValue: string; score: number }[]).length > 0 && (
@@ -268,13 +364,34 @@ function CwvCard({ label, value, status, hint }: { label: string; value: string;
   )
 }
 
-function Detail({ label, value, mono = false, missing = false, warning = false }: {
-  label: string; value: string; mono?: boolean; missing?: boolean; warning?: boolean
+function OnPageRow({
+  label, value, status, mono = false,
+}: {
+  label: string
+  value: string
+  status: 'good' | 'warn' | 'bad' | 'neutral'
+  mono?: boolean
 }) {
+  const icon = status === 'good'
+    ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+    : status === 'bad'
+    ? <AlertTriangle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
+    : status === 'warn'
+    ? <AlertTriangle className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
+    : <span className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+
   return (
-    <div className="flex items-start justify-between text-sm gap-2">
-      <span className="text-gray-500 shrink-0">{label}</span>
-      <span className={cn('text-right max-w-[55%] truncate', mono && 'font-mono text-xs', missing && 'text-red-500 italic', warning && !missing && 'text-orange-500', !missing && !warning && 'text-gray-900 dark:text-white')}>
+    <div className="flex items-start gap-2 text-sm">
+      {icon}
+      <span className="text-gray-500 shrink-0 min-w-[120px]">{label}</span>
+      <span className={cn(
+        'text-right flex-1 min-w-0 truncate',
+        mono && 'font-mono text-xs',
+        status === 'bad' && 'text-red-500',
+        status === 'warn' && 'text-orange-500',
+        status === 'good' && 'text-gray-900 dark:text-white',
+        status === 'neutral' && 'text-gray-600 dark:text-gray-300',
+      )}>
         {value}
       </span>
     </div>
