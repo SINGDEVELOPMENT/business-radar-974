@@ -38,12 +38,14 @@ function SkeletonReviewItem() {
 export default function ReviewsLoading() {
   return (
     <div className="space-y-6">
-      {/* Header row with export button */}
-      <div className="flex items-start justify-between gap-3 flex-wrap animate-pulse">
-        <div className="space-y-1.5">
-          <div className="h-6 w-36 bg-gray-200 dark:bg-gray-700 rounded" />
-          <div className="h-4 w-64 bg-gray-100 dark:bg-gray-800 rounded" />
-        </div>
+      {/* Header skeleton */}
+      <div className="animate-pulse space-y-1.5">
+        <div className="h-6 w-36 bg-gray-200 dark:bg-gray-700 rounded" />
+        <div className="h-4 w-64 bg-gray-100 dark:bg-gray-800 rounded" />
+      </div>
+
+      {/* Export button skeleton */}
+      <div className="flex justify-end animate-pulse">
         <div className="h-9 w-36 bg-gray-200 dark:bg-gray-700 rounded-lg" />
       </div>
 

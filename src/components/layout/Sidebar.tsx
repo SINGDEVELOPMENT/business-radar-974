@@ -14,7 +14,6 @@ import {
   Brain,
   Settings,
   LogOut,
-  Radar,
   ShieldCheck,
   Menu,
   X,
@@ -134,13 +133,8 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-5 h-16">
-          <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
-            <Radar className="w-4 h-4 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-white font-semibold text-sm leading-tight">Business Radar</span>
-            <span className="text-slate-500 text-xs leading-tight">974</span>
-          </div>
+          <img src="/logo.svg" alt="Axora" className="w-8 h-8 shrink-0" />
+          <span className="text-white font-bold text-lg leading-tight tracking-tight">Axora</span>
         </div>
 
         <Separator className="bg-slate-800" />

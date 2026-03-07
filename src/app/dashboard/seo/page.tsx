@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import {
   Search, Activity, Clock, ShieldCheck, FileText, Gauge,
   AlertTriangle, CheckCircle2, Zap, Eye, Smartphone,
-  Link2, Image, Code2, Globe, Map, FileCode, FileDown,
+  Link2, Image, Code2, Globe, Map, FileCode, FileDown, Lock,
 } from 'lucide-react'
 import { computeSeoIssues, seoScoreColor, seoScoreLabel } from '@/lib/utils/seo'
 import { cn } from '@/lib/utils'
@@ -78,6 +78,11 @@ export default async function SeoPage() {
     .single()
 
   const orgId = profile?.organization_id
+
+  const { data: orgData } = orgId
+    ? await supabase.from('organizations').select('plan').eq('id', orgId).single()
+    : { data: null }
+  const isPremium = orgData?.plan === 'premium'
 
   const { data: snapshots } = orgId
     ? await supabase
@@ -170,99 +175,125 @@ export default async function SeoPage() {
           {/* ── Graphique historique ── */}
           <SeoHistoryChart data={chartData} />
 
-          {/* ── On-page SEO + Données structurées ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Analyse on-page */}
-            <Card className="p-5">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <FileCode className="w-4 h-4 text-gray-400" />
-                Analyse on-page
-              </h3>
-              <div className="space-y-3">
-                <OnPageRow label="Structure titres"
-                  value={`H1: ${latest.h1_count ?? 0}  ·  H2: ${latest.h2_count ?? 0}  ·  H3: ${latest.h3_count ?? 0}`}
-                  status={latest.h1_count === 1 ? 'good' : 'warn'}
-                />
-                <OnPageRow label="Canonical URL"
-                  value={latest.canonical_url ?? 'Absente'}
-                  status={latest.canonical_url ? 'good' : 'warn'}
-                  mono
-                />
-                <OnPageRow label="Open Graph"
-                  value={latest.has_og_tags ? 'Présent (og:title, og:description, og:image)' : 'Absent'}
-                  status={latest.has_og_tags ? 'good' : 'warn'}
-                />
-                {latest.og_title && (
-                  <OnPageRow label="og:title" value={latest.og_title} status="good" />
-                )}
-                <OnPageRow label="Balise title"
-                  value={latest.title ? `${latest.title} (${latest.title_length ?? latest.title.length} car.)` : 'Absente'}
-                  status={!latest.title ? 'bad' : (latest.title_length ?? 0) >= 30 && (latest.title_length ?? 0) <= 60 ? 'good' : 'warn'}
-                />
-                <OnPageRow label="Meta description"
-                  value={latest.meta_description
-                    ? `${latest.meta_description.slice(0, 80)}${(latest.meta_description.length > 80) ? '…' : ''} (${latest.meta_description_length ?? latest.meta_description.length} car.)`
-                    : 'Absente'}
-                  status={!latest.meta_description ? 'bad' : (latest.meta_description_length ?? 0) >= 120 && (latest.meta_description_length ?? 0) <= 160 ? 'good' : 'warn'}
-                />
-                {latest.word_count != null && (
-                  <OnPageRow label="Nombre de mots"
-                    value={`${latest.word_count} mots`}
-                    status={latest.word_count >= 300 ? 'good' : 'warn'}
+          {/* ── On-page SEO + Données structurées (Premium only) ── */}
+          {isPremium ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Analyse on-page */}
+              <Card className="p-5">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <FileCode className="w-4 h-4 text-gray-400" />
+                  Analyse on-page
+                </h3>
+                <div className="space-y-3">
+                  <OnPageRow label="Structure titres"
+                    value={`H1: ${latest.h1_count ?? 0}  ·  H2: ${latest.h2_count ?? 0}  ·  H3: ${latest.h3_count ?? 0}`}
+                    status={latest.h1_count === 1 ? 'good' : 'warn'}
                   />
-                )}
-              </div>
-            </Card>
+                  <OnPageRow label="Canonical URL"
+                    value={latest.canonical_url ?? 'Absente'}
+                    status={latest.canonical_url ? 'good' : 'warn'}
+                    mono
+                  />
+                  <OnPageRow label="Open Graph"
+                    value={latest.has_og_tags ? 'Présent (og:title, og:description, og:image)' : 'Absent'}
+                    status={latest.has_og_tags ? 'good' : 'warn'}
+                  />
+                  {latest.og_title && (
+                    <OnPageRow label="og:title" value={latest.og_title} status="good" />
+                  )}
+                  <OnPageRow label="Balise title"
+                    value={latest.title ? `${latest.title} (${latest.title_length ?? latest.title.length} car.)` : 'Absente'}
+                    status={!latest.title ? 'bad' : (latest.title_length ?? 0) >= 30 && (latest.title_length ?? 0) <= 60 ? 'good' : 'warn'}
+                  />
+                  <OnPageRow label="Meta description"
+                    value={latest.meta_description
+                      ? `${latest.meta_description.slice(0, 80)}${(latest.meta_description.length > 80) ? '…' : ''} (${latest.meta_description_length ?? latest.meta_description.length} car.)`
+                      : 'Absente'}
+                    status={!latest.meta_description ? 'bad' : (latest.meta_description_length ?? 0) >= 120 && (latest.meta_description_length ?? 0) <= 160 ? 'good' : 'warn'}
+                  />
+                  {latest.word_count != null && (
+                    <OnPageRow label="Nombre de mots"
+                      value={`${latest.word_count} mots`}
+                      status={latest.word_count >= 300 ? 'good' : 'warn'}
+                    />
+                  )}
+                </div>
+              </Card>
 
-            {/* Données structurées + crawl */}
-            <Card className="p-5">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <Code2 className="w-4 h-4 text-gray-400" />
-                Données structurées & crawl
-              </h3>
-              <div className="space-y-3">
-                <OnPageRow label="Schema markup (JSON-LD)"
-                  value={latest.has_schema
-                    ? `Présent${latest.schema_types && latest.schema_types.length > 0 ? ` — ${(latest.schema_types as string[]).join(', ')}` : ''}`
-                    : 'Absent — opportunité rich snippets !'}
-                  status={latest.has_schema ? 'good' : 'warn'}
-                />
-                {latest.has_schema && latest.schema_types && (latest.schema_types as string[]).length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 pl-4">
-                    {(latest.schema_types as string[]).map(t => (
-                      <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
-                    ))}
-                  </div>
-                )}
-                <OnPageRow label="Sitemap XML"
-                  value={latest.has_sitemap === true ? 'Présent' : latest.has_sitemap === false ? 'Absent' : 'Non vérifié'}
-                  status={latest.has_sitemap === true ? 'good' : latest.has_sitemap === false ? 'warn' : 'neutral'}
-                />
-                <OnPageRow label="Robots.txt"
-                  value={latest.has_robots_txt === true ? 'Présent' : latest.has_robots_txt === false ? 'Absent' : 'Non vérifié'}
-                  status={latest.has_robots_txt === true ? 'good' : latest.has_robots_txt === false ? 'warn' : 'neutral'}
-                />
-                {latest.total_images != null && (
-                  <OnPageRow label="Images"
-                    value={`${latest.total_images} image${latest.total_images > 1 ? 's' : ''} · ${latest.images_without_alt ?? 0} sans alt`}
-                    status={(latest.images_without_alt ?? 0) === 0 ? 'good' : 'warn'}
+              {/* Données structurées + crawl */}
+              <Card className="p-5">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <Code2 className="w-4 h-4 text-gray-400" />
+                  Données structurées & crawl
+                </h3>
+                <div className="space-y-3">
+                  <OnPageRow label="Schema markup (JSON-LD)"
+                    value={latest.has_schema
+                      ? `Présent${latest.schema_types && latest.schema_types.length > 0 ? ` — ${(latest.schema_types as string[]).join(', ')}` : ''}`
+                      : 'Absent — opportunité rich snippets !'}
+                    status={latest.has_schema ? 'good' : 'warn'}
                   />
-                )}
-                {(latest.internal_links_count != null || latest.external_links_count != null) && (
-                  <OnPageRow label="Liens"
-                    value={`${latest.internal_links_count ?? 0} internes · ${latest.external_links_count ?? 0} externes`}
-                    status="neutral"
+                  {latest.has_schema && latest.schema_types && (latest.schema_types as string[]).length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 pl-4">
+                      {(latest.schema_types as string[]).map(t => (
+                        <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
+                      ))}
+                    </div>
+                  )}
+                  <OnPageRow label="Sitemap XML"
+                    value={latest.has_sitemap === true ? 'Présent' : latest.has_sitemap === false ? 'Absent' : 'Non vérifié'}
+                    status={latest.has_sitemap === true ? 'good' : latest.has_sitemap === false ? 'warn' : 'neutral'}
                   />
-                )}
-                <OnPageRow label="Status HTTP" value={String(latest.status_code ?? '--')} status={latest.status_code === 200 ? 'good' : 'bad'} />
-                {latest.page_size_kb != null && (
-                  <OnPageRow label="Taille de la page" value={`${latest.page_size_kb} KB`}
-                    status={latest.page_size_kb > 2000 ? 'warn' : 'good'}
+                  <OnPageRow label="Robots.txt"
+                    value={latest.has_robots_txt === true ? 'Présent' : latest.has_robots_txt === false ? 'Absent' : 'Non vérifié'}
+                    status={latest.has_robots_txt === true ? 'good' : latest.has_robots_txt === false ? 'warn' : 'neutral'}
                   />
-                )}
+                  {latest.total_images != null && (
+                    <OnPageRow label="Images"
+                      value={`${latest.total_images} image${latest.total_images > 1 ? 's' : ''} · ${latest.images_without_alt ?? 0} sans alt`}
+                      status={(latest.images_without_alt ?? 0) === 0 ? 'good' : 'warn'}
+                    />
+                  )}
+                  {(latest.internal_links_count != null || latest.external_links_count != null) && (
+                    <OnPageRow label="Liens"
+                      value={`${latest.internal_links_count ?? 0} internes · ${latest.external_links_count ?? 0} externes`}
+                      status="neutral"
+                    />
+                  )}
+                  <OnPageRow label="Status HTTP" value={String(latest.status_code ?? '--')} status={latest.status_code === 200 ? 'good' : 'bad'} />
+                  {latest.page_size_kb != null && (
+                    <OnPageRow label="Taille de la page" value={`${latest.page_size_kb} KB`}
+                      status={latest.page_size_kb > 2000 ? 'warn' : 'good'}
+                    />
+                  )}
+                </div>
+              </Card>
+            </div>
+          ) : (
+            <div className="relative">
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-xl border border-blue-100 dark:border-blue-900">
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-950">
+                  <Lock className="w-6 h-6 text-blue-500" />
+                </div>
+                <div className="text-center px-4">
+                  <p className="text-sm font-bold text-gray-800 dark:text-white">Analyse on-page & données structurées</p>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Disponible avec le plan Premium</p>
+                </div>
+                <a href="/#pricing" className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg transition-colors">
+                  ✦ Passer au Premium
+                </a>
               </div>
-            </Card>
-          </div>
+              <div className="pointer-events-none select-none opacity-20 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* cartes fantômes */}
+                <div className="rounded-xl border border-gray-200 p-5 space-y-3 bg-white">
+                  {[1,2,3,4,5,6].map(i => <div key={i} className="h-4 bg-gray-100 rounded w-full" />)}
+                </div>
+                <div className="rounded-xl border border-gray-200 p-5 space-y-3 bg-white">
+                  {[1,2,3,4,5,6].map(i => <div key={i} className="h-4 bg-gray-100 rounded w-full" />)}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* ── Problèmes détectés ── */}
           <Card className="p-5">

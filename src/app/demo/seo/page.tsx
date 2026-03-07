@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
   Clock, ShieldCheck, Gauge, AlertTriangle, CheckCircle2,
-  Zap, Eye, Search, Smartphone, Activity, FileCode, Code2,
+  Zap, Eye, Search, Smartphone, Activity, FileCode, Code2, Lock,
 } from 'lucide-react'
 import { computeSeoIssues } from '@/lib/utils/seo'
 import { cn } from '@/lib/utils'
@@ -72,68 +72,28 @@ export default function DemoSeoPage() {
 
       <SeoHistoryChart data={DEMO_SEO_CHART} />
 
-      {/* On-page SEO + Données structurées */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card className="p-5">
-          <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <FileCode className="w-4 h-4 text-gray-400" />Analyse on-page
-          </h3>
-          <div className="space-y-3">
-            <OnPageRow label="Structure titres"
-              value={`H1: ${DEMO_SEO_LATEST.h1_count}  ·  H2: ${DEMO_SEO_LATEST.h2_count}  ·  H3: ${DEMO_SEO_LATEST.h3_count}`}
-              status={DEMO_SEO_LATEST.h1_count === 1 ? 'good' : 'warn'}
-            />
-            <OnPageRow label="Canonical URL"
-              value={DEMO_SEO_LATEST.canonical_url}
-              status="good"
-              mono
-            />
-            <OnPageRow label="Open Graph"
-              value="Présent (og:title, og:description, og:image)"
-              status="good"
-            />
-            <OnPageRow label="og:title"
-              value={DEMO_SEO_LATEST.og_title}
-              status="good"
-            />
-            <OnPageRow label="Balise title"
-              value={`${DEMO_SEO_LATEST.title} (${DEMO_SEO_LATEST.title_length} car.)`}
-              status="good"
-            />
-            <OnPageRow label="Meta description"
-              value={`${DEMO_SEO_LATEST.meta_description.slice(0, 80)}… (${DEMO_SEO_LATEST.meta_description_length} car.)`}
-              status="good"
-            />
-            <OnPageRow label="Nombre de mots"
-              value={`${DEMO_SEO_LATEST.word_count} mots`}
-              status="good"
-            />
+      {/* On-page SEO + Données structurées — Premium uniquement */}
+      <div className="relative">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/70 backdrop-blur-sm rounded-xl border border-blue-100">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50">
+            <Lock className="w-6 h-6 text-blue-500" />
           </div>
-        </Card>
-
-        <Card className="p-5">
-          <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Code2 className="w-4 h-4 text-gray-400" />Données structurées &amp; crawl
-          </h3>
-          <div className="space-y-3">
-            <OnPageRow label="Schema markup (JSON-LD)"
-              value="Absent — opportunité rich snippets !"
-              status="warn"
-            />
-            <OnPageRow label="Sitemap XML" value="Présent" status="good" />
-            <OnPageRow label="Robots.txt" value="Présent" status="good" />
-            <OnPageRow label="Images"
-              value={`${DEMO_SEO_LATEST.total_images} images · ${DEMO_SEO_LATEST.images_without_alt} sans alt`}
-              status="warn"
-            />
-            <OnPageRow label="Liens"
-              value={`${DEMO_SEO_LATEST.internal_links_count} internes · ${DEMO_SEO_LATEST.external_links_count} externes`}
-              status="neutral"
-            />
-            <OnPageRow label="Status HTTP" value="200" status="good" />
-            <OnPageRow label="Taille de la page" value={`${DEMO_SEO_LATEST.page_size_kb} KB`} status="good" />
+          <div className="text-center px-4">
+            <p className="text-sm font-bold text-gray-800">Analyse on-page &amp; données structurées</p>
+            <p className="text-xs text-gray-500 mt-1">Disponible avec le plan Premium</p>
           </div>
-        </Card>
+          <a href="/demo-premium/seo" className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg transition-colors">
+            ✦ Voir la démo Premium
+          </a>
+        </div>
+        <div className="pointer-events-none select-none opacity-20 grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="rounded-xl border border-gray-200 p-5 space-y-3 bg-white">
+            {[1,2,3,4,5,6].map(i => <div key={i} className="h-4 bg-gray-100 rounded w-full" />)}
+          </div>
+          <div className="rounded-xl border border-gray-200 p-5 space-y-3 bg-white">
+            {[1,2,3,4,5,6].map(i => <div key={i} className="h-4 bg-gray-100 rounded w-full" />)}
+          </div>
+        </div>
       </div>
 
       {/* Problèmes détectés */}

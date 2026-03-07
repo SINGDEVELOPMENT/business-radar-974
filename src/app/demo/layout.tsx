@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import {
   LayoutDashboard, Star, Share2, Users, Search, Brain,
-  Radar, FlaskConical, Menu, X,
+  FlaskConical, Menu, X,
 } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import ThemeToggle from '@/components/ui/ThemeToggle'
@@ -29,16 +29,9 @@ export default function DemoLayout({ children }: { children: React.ReactNode }) 
       {/* Sidebar desktop */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 z-40 flex-col w-64 bg-slate-900">
         <div className="flex items-center gap-3 px-5 h-16">
-          <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
-            <Radar className="w-4 h-4 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-white font-semibold text-sm leading-tight">Business Radar</span>
-            <span className="text-slate-500 text-xs leading-tight">974</span>
-          </div>
-          <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-400 text-amber-900">
-            DÉMO
-          </span>
+          <img src="/logo.svg" alt="Axora" className="w-8 h-8 shrink-0" />
+          <span className="text-white font-bold text-lg leading-tight tracking-tight">Axora</span>
+          <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-400 text-amber-900">DÉMO</span>
         </div>
         <Separator className="bg-slate-800" />
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -91,10 +84,8 @@ export default function DemoLayout({ children }: { children: React.ReactNode }) 
         mobileOpen ? 'translate-x-0' : '-translate-x-full'
       )}>
         <div className="flex items-center gap-3 px-5 h-16">
-          <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
-            <Radar className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-white font-semibold text-sm">Business Radar 974</span>
+          <img src="/logo.svg" alt="Axora" className="w-8 h-8 shrink-0" />
+          <span className="text-white font-bold text-lg leading-tight tracking-tight">Axora</span>
           <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-400 text-amber-900">DÉMO</span>
         </div>
         <Separator className="bg-slate-800" />

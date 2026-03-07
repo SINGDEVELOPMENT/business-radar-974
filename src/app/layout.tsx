@@ -3,8 +3,8 @@ import { ThemeProvider } from 'next-themes'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Business Radar 974',
-  description: "Dashboard d'intelligence commerciale pour les entreprises réunionnaises",
+  title: 'Axora',
+  description: "Axora — Intelligence commerciale locale pour les entreprises réunionnaises. Avis Google, réseaux sociaux, SEO et analyse IA en un seul dashboard.",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -101,15 +101,7 @@ export default async function ReviewsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <Header title="Avis Google" subtitle="Suivi et analyse de vos avis clients" />
-        {totalReviews > 0 && (
-          <a href="/api/export/xlsx"
-            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors shrink-0">
-            <FileDown className="w-4 h-4" />Exporter Excel
-          </a>
-        )}
-      </div>
+      <Header title="Avis Google" subtitle="Suivi et analyse de vos avis clients" />
 
       {totalReviews === 0 ? (
         <EmptyState
@@ -119,6 +111,14 @@ export default async function ReviewsPage() {
         />
       ) : (
         <>
+          {/* Export button */}
+          <div className="flex justify-end">
+            <a href="/api/export/xlsx"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
+              <FileDown className="w-4 h-4" />Exporter Excel
+            </a>
+          </div>
+
           {/* KPI cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <KpiCard
