@@ -222,15 +222,18 @@ export default function LandingPage() {
 
   const t = T[lang]
 
-  // Scroll reveal
+  // Scroll reveal — re-run on lang change because keys change → DOM elements remount
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in-view'); observer.unobserve(e.target) } }),
       { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
     )
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
+    // Short delay so React finishes mounting new elements before we query them
+    const id = requestAnimationFrame(() => {
+      document.querySelectorAll('.reveal:not(.in-view)').forEach((el) => observer.observe(el))
+    })
+    return () => { cancelAnimationFrame(id); observer.disconnect() }
+  }, [lang])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -411,7 +414,7 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
             {t.problem.cards.map((p, i) => (
-              <div key={p.title} className={`reveal reveal-delay-${i + 1} flex gap-4 p-5 rounded-2xl border border-red-200 dark:border-red-500/[0.1] bg-red-50/50 dark:bg-red-500/[0.03] hover:border-red-300 dark:hover:border-red-500/[0.2] transition-colors`}>
+              <div key={i} className={`reveal reveal-delay-${i + 1} flex gap-4 p-5 rounded-2xl border border-red-200 dark:border-red-500/[0.1] bg-red-50/50 dark:bg-red-500/[0.03] hover:border-red-300 dark:hover:border-red-500/[0.2] transition-colors`}>
                 <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-500/[0.1] border border-red-200 dark:border-red-500/[0.15] flex items-center justify-center shrink-0 mt-0.5">
                   <X className="w-4 h-4 text-red-500 dark:text-red-400" />
                 </div>
@@ -460,7 +463,7 @@ export default function LandingPage() {
               const icons = [Star, Share2, Users, Search, Brain, LayoutDashboard]
               const Icon = icons[i]
               return (
-                <div key={title} className={`reveal reveal-delay-${i + 1} group relative p-6 rounded-2xl border border-gray-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.02] hover:border-blue-300 dark:hover:border-blue-500/[0.2] hover:bg-blue-50/30 dark:hover:bg-white/[0.04] transition-all duration-300`}>
+                <div key={i} className={`reveal reveal-delay-${i + 1} group relative p-6 rounded-2xl border border-gray-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.02] hover:border-blue-300 dark:hover:border-blue-500/[0.2] hover:bg-blue-50/30 dark:hover:bg-white/[0.04] transition-all duration-300`}>
                   <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 0%, rgba(59,130,246,0.04) 0%, transparent 60%)' }} />
                   <div className="relative">
                     <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/[0.1] border border-blue-200 dark:border-blue-500/[0.12] flex items-center justify-center mb-4 group-hover:bg-blue-100 dark:group-hover:bg-blue-500/[0.18] transition-colors">
@@ -489,7 +492,7 @@ export default function LandingPage() {
               const icons = [Zap, BarChart2, Brain]
               const Icon = icons[i]
               return (
-                <div key={num} className={`reveal reveal-delay-${i + 1} flex flex-col items-center md:items-start text-center md:text-left`}>
+                <div key={i} className={`reveal reveal-delay-${i + 1} flex flex-col items-center md:items-start text-center md:text-left`}>
                   <div className="relative w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-500/[0.1] border border-blue-200 dark:border-blue-500/[0.18] flex items-center justify-center mb-6 shrink-0">
                     <Icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     <span className="absolute -top-2.5 -right-2.5 text-[10px] font-bold text-blue-600 dark:text-blue-300 bg-white dark:bg-[#0b1221] border border-blue-200 dark:border-blue-500/30 px-1.5 py-0.5 rounded-md">{num}</span>
@@ -508,7 +511,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
             {t.stats.map((s, i) => (
-              <div key={s.value} className={`reveal reveal-delay-${i + 1}`}>
+              <div key={i} className={`reveal reveal-delay-${i + 1}`}>
                 <p className="text-5xl sm:text-6xl font-extrabold mb-2 bg-gradient-to-br from-gray-900 to-gray-400 dark:from-white dark:to-slate-500 bg-clip-text text-transparent">{s.value}</p>
                 <p className="text-sm font-semibold text-gray-900 dark:text-white mb-1">{s.label}</p>
                 <p className="text-sm text-gray-500 dark:text-slate-400">{s.sub}</p>
