@@ -85,18 +85,6 @@ export async function GET() {
     doc.on('end', () => resolve(Buffer.concat(chunks)))
     doc.on('error', reject)
 
-    let pageNumber = 1
-
-    // Numérotation de page sur chaque nouvelle page
-    doc.on('pageAdded', () => {
-      pageNumber++
-      const y = doc.page.height - 40
-      doc
-        .fontSize(8)
-        .fillColor(GRAY)
-        .text(`Business Radar 974  •  Page ${pageNumber}`, 50, y, { align: 'center', width: PAGE_WIDTH })
-    })
-
     // ── En-tête ──
     doc.fontSize(22).fillColor(BLUE).text('Business Radar 974', { align: 'center' })
     doc.moveDown(0.3)
@@ -190,12 +178,13 @@ export async function GET() {
       doc.moveDown(1)
     }
 
-    // ── Footer première page ──
-    const footerY = doc.page.height - 40
-    doc.moveTo(50, footerY - 10).lineTo(545, footerY - 10).strokeColor('#e5e7eb').lineWidth(1).stroke()
+    // ── Footer ──
+    doc.moveDown(1)
+    doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor('#e5e7eb').lineWidth(1).stroke()
+    doc.moveDown(0.5)
     doc.fontSize(8).fillColor(GRAY).text(
-      `Score global : ${content.score_global ?? '--'}/100  •  Généré par Business Radar 974  •  ${reportDate}  •  Page 1`,
-      50, footerY, { align: 'center', width: PAGE_WIDTH }
+      `Score global : ${content.score_global ?? '--'}/100  •  Généré par Business Radar 974  •  ${reportDate}`,
+      { align: 'center', width: PAGE_WIDTH }
     )
 
     doc.end()
