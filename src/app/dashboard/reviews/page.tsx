@@ -3,7 +3,7 @@ import Header from '@/components/layout/Header'
 import EmptyState from '@/components/dashboard/EmptyState'
 import KpiCard from '@/components/dashboard/KpiCard'
 import ReviewsChart from '@/components/dashboard/ReviewsChart'
-import { Star, MessageSquareText, ThumbsUp, ThumbsDown, Activity } from 'lucide-react'
+import { Star, MessageSquareText, ThumbsUp, ThumbsDown, Activity, FileDown } from 'lucide-react'
 import ReviewsFilterList from '@/components/dashboard/ReviewsFilterList'
 
 export default async function ReviewsPage() {
@@ -101,7 +101,15 @@ export default async function ReviewsPage() {
 
   return (
     <div className="space-y-6">
-      <Header title="Avis Google" subtitle="Suivi et analyse de vos avis clients" />
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <Header title="Avis Google" subtitle="Suivi et analyse de vos avis clients" />
+        {totalReviews > 0 && (
+          <a href="/api/export/xlsx"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors shrink-0">
+            <FileDown className="w-4 h-4" />Exporter Excel
+          </a>
+        )}
+      </div>
 
       {totalReviews === 0 ? (
         <EmptyState

@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import {
   Search, Activity, Clock, ShieldCheck, FileText, Gauge,
   AlertTriangle, CheckCircle2, Zap, Eye, Smartphone,
-  Link2, Image, Code2, Globe, Map, FileCode,
+  Link2, Image, Code2, Globe, Map, FileCode, FileDown,
 } from 'lucide-react'
 import { computeSeoIssues, seoScoreColor, seoScoreLabel } from '@/lib/utils/seo'
 import { cn } from '@/lib/utils'
