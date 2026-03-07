@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import Header from '@/components/layout/Header'
 import KpiCard from '@/components/dashboard/KpiCard'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -56,7 +55,10 @@ export default function DemoPremiumPage() {
 
   return (
     <div className="space-y-6">
-      <Header title="Vue d'ensemble" subtitle={`Tableau de bord — ${DEMO_BUSINESS.name}`} />
+      <div className="flex flex-col min-w-0">
+        <h1 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">Vue d&apos;ensemble</h1>
+        <p className="text-xs md:text-sm text-gray-500">Tableau de bord — {DEMO_BUSINESS.name}</p>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
