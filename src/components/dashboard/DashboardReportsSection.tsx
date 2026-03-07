@@ -186,10 +186,10 @@ export default function DashboardReportsSection({ reports }: Props) {
                   )}
 
                   {/* Actions */}
-                  <div className="flex items-center gap-2 flex-wrap pt-1 border-t border-gray-100 dark:border-slate-800">
+                  <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-gray-100 dark:border-slate-800">
                     <Link
-                      href="/dashboard/reports"
-                      className="flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                      href={`/dashboard/reports#report-${report.id}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-lg transition-colors"
                     >
                       Voir le rapport complet <ArrowRight className="w-3 h-3" />
                     </Link>
@@ -197,7 +197,7 @@ export default function DashboardReportsSection({ reports }: Props) {
                     {isLatest && (
                       <a
                         href="/api/reports/pdf"
-                        className="flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200 transition-colors ml-3"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 text-xs font-medium rounded-lg transition-colors"
                       >
                         <FileDown className="w-3.5 h-3.5" />
                         Télécharger PDF

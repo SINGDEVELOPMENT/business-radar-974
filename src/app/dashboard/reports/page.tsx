@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import EmptyState from '@/components/dashboard/EmptyState'
 import GenerateReportButton from '@/components/dashboard/GenerateReportButton'
 import OldReportCard from '@/components/dashboard/OldReportCard'
+import ReportsOldSection from '@/components/dashboard/ReportsOldSection'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -169,7 +170,7 @@ export default async function ReportsPage() {
         />
       ) : !isPremium && !isInGracePeriod ? null : (
         <div className="space-y-6">
-          <div className="space-y-2">
+          <div id={`report-${latest.id}`} className="space-y-2 scroll-mt-20">
             <div className="flex items-center gap-2">
               <ReportTypeBadge type={latest.report_type} />
               <span className="text-xs text-gray-400 flex items-center gap-1">
@@ -249,19 +250,14 @@ export default async function ReportsPage() {
           </div>
 
           {reportsList.length > 1 && (
-            <div className="space-y-2">
+            <div className="space-y-3">
               <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Rapports précédents</h2>
-              <div className="space-y-2">
-                {reportsList.slice(1).map(report => (
-                  <OldReportCard
-                    key={report.id}
-                    report={{
-                      ...report,
-                      content: report.content as AiReportContent | null,
-                    }}
-                  />
-                ))}
-              </div>
+              <ReportsOldSection
+                reports={reportsList.slice(1).map(r => ({
+                  ...r,
+                  content: r.content as AiReportContent | null,
+                }))}
+              />
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ChevronDown, ChevronUp, Calendar, CheckCircle2, XCircle, TrendingUp, TrendingDown, Minus, ArrowRight } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -48,10 +48,21 @@ function RecommendationRow({ rec, index }: { rec: AiRecommendation; index: numbe
 
 export default function OldReportCard({ report }: OldReportCardProps) {
   const [expanded, setExpanded] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
   const c = report.content
 
+  // Auto-expand + scroll si l'URL contient l'ancre de ce rapport
+  useEffect(() => {
+    if (window.location.hash === `#report-${report.id}`) {
+      setExpanded(true)
+      setTimeout(() => {
+        cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 50)
+    }
+  }, [report.id])
+
   return (
-    <Card className="p-4">
+    <Card ref={cardRef} id={`report-${report.id}`} className="p-4 scroll-mt-20">
       {/* En-tête toujours visible */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2 flex-wrap">
