@@ -79,7 +79,7 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
           'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
           isActive
             ? 'bg-blue-600/20 text-blue-400'
-            : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+            : 'text-slate-400 hover:bg-white/[0.06] hover:text-slate-200'
         )}
       >
         <Icon className={cn('w-4 h-4 shrink-0', isActive && 'text-blue-400')} />
@@ -98,13 +98,13 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
       {/* FAB mobile — bas droite — Bell + ThemeToggle + Menu */}
       <div className="fixed bottom-6 right-4 z-50 md:hidden flex flex-col items-center gap-2">
         <button
-          className="w-11 h-11 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 shadow-lg border border-gray-200 dark:border-slate-700"
+          className="w-11 h-11 flex items-center justify-center rounded-full bg-white dark:bg-white/[0.06] text-gray-600 dark:text-slate-300 shadow-lg border border-gray-200 dark:border-slate-700"
           aria-label="Notifications"
         >
           <Bell className="w-5 h-5" />
         </button>
 
-        <ThemeToggle className="w-11 h-11 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 shadow-lg border border-gray-200 dark:border-slate-700 !p-0" />
+        <ThemeToggle className="w-11 h-11 flex items-center justify-center rounded-full bg-white dark:bg-white/[0.06] shadow-lg border border-gray-200 dark:border-slate-700 !p-0" />
 
         <button
           onClick={() => setMobileOpen((v) => !v)}
@@ -126,18 +126,18 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
       {/* Sidebar drawer */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex flex-col w-64 bg-slate-900 transition-transform duration-300',
+          'fixed inset-y-0 left-0 z-40 flex flex-col w-64 bg-[#030f1c] transition-transform duration-300',
           'md:translate-x-0',
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-5 h-16">
-          <img src="/logo.svg" alt="Axora" className="w-8 h-8 shrink-0" />
-          <span className="text-white font-bold text-lg leading-tight tracking-tight">Axora</span>
+          <img src="/logo.svg" alt="Axora Data" className="w-8 h-8 shrink-0" />
+          <span className="text-white font-bold text-lg leading-tight tracking-tight">Axora Data</span>
         </div>
 
-        <Separator className="bg-slate-800" />
+        <Separator className="bg-white/[0.06]" />
 
         {/* Navigation */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -160,7 +160,7 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
 
         {/* Bas de sidebar */}
         <div className="px-3 py-4 space-y-1">
-          <Separator className="bg-slate-800 mb-3" />
+          <Separator className="bg-white/[0.06] mb-3" />
           {navLink('/dashboard/settings', 'Paramètres', Settings)}
           <button
             onClick={handleLogout}

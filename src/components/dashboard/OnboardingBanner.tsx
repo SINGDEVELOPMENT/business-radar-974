@@ -29,7 +29,7 @@ export default function OnboardingBanner({ hasReviews, hasSeo, hasSocial, hasRep
           <Radar className="w-6 h-6 text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-lg">Bienvenue sur Axora !</p>
+          <p className="font-bold text-lg">Bienvenue sur Axora Data !</p>
           <p className="text-blue-100 text-sm mt-0.5">
             Vos données sont en cours de collecte. Le premier rapport sera disponible sous 24h.
           </p>

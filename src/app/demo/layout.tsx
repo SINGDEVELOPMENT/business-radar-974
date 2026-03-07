@@ -27,13 +27,13 @@ export default function DemoLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-slate-950">
       {/* Sidebar desktop */}
-      <aside className="hidden md:flex fixed inset-y-0 left-0 z-40 flex-col w-64 bg-slate-900">
+      <aside className="hidden md:flex fixed inset-y-0 left-0 z-40 flex-col w-64 bg-[#030f1c]">
         <div className="flex items-center gap-3 px-5 h-16">
-          <img src="/logo.svg" alt="Axora" className="w-8 h-8 shrink-0" />
-          <span className="text-white font-bold text-lg leading-tight tracking-tight">Axora</span>
+          <img src="/logo.svg" alt="Axora Data" className="w-8 h-8 shrink-0" />
+          <span className="text-white font-bold text-lg leading-tight tracking-tight">Axora Data</span>
           <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-400 text-amber-900">DÉMO</span>
         </div>
-        <Separator className="bg-slate-800" />
+        <Separator className="bg-white/[0.06]" />
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           <p className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Navigation</p>
           {navItems.map(({ href, label, icon: Icon }) => {
@@ -51,7 +51,7 @@ export default function DemoLayout({ children }: { children: React.ReactNode }) 
           })}
         </nav>
         <div className="px-3 py-4 space-y-2">
-          <Separator className="bg-slate-800 mb-3" />
+          <Separator className="bg-white/[0.06] mb-3" />
           <div className="flex items-center gap-2 px-3">
             <ThemeToggle className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-700 text-slate-400" />
             <Link href="/login" className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-blue-400 hover:bg-blue-500/10 transition-all">
@@ -80,15 +80,15 @@ export default function DemoLayout({ children }: { children: React.ReactNode }) 
 
       {/* Drawer mobile */}
       <aside className={cn(
-        'fixed inset-y-0 left-0 z-40 flex flex-col w-64 bg-slate-900 transition-transform duration-300 md:hidden',
+        'fixed inset-y-0 left-0 z-40 flex flex-col w-64 bg-[#030f1c] transition-transform duration-300 md:hidden',
         mobileOpen ? 'translate-x-0' : '-translate-x-full'
       )}>
         <div className="flex items-center gap-3 px-5 h-16">
-          <img src="/logo.svg" alt="Axora" className="w-8 h-8 shrink-0" />
-          <span className="text-white font-bold text-lg leading-tight tracking-tight">Axora</span>
+          <img src="/logo.svg" alt="Axora Data" className="w-8 h-8 shrink-0" />
+          <span className="text-white font-bold text-lg leading-tight tracking-tight">Axora Data</span>
           <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-400 text-amber-900">DÉMO</span>
         </div>
-        <Separator className="bg-slate-800" />
+        <Separator className="bg-white/[0.06]" />
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {navItems.map(({ href, label, icon: Icon }) => {
             const isActive = href === '/demo' ? pathname === '/demo' : pathname.startsWith(href)

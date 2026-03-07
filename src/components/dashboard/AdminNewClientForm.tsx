@@ -133,7 +133,7 @@ export default function AdminNewClientForm() {
                   placeholder="Ex : SARL Le Lagon"
                   required
                 />
-                <p className="text-[11px] text-gray-400">Nom légal/commercial du compte (visible dans Axora)</p>
+                <p className="text-[11px] text-gray-400">Nom légal/commercial du compte (visible dans Axora Data)</p>
               </div>
               <div className="space-y-1">
                 <Field

@@ -7,6 +7,12 @@ import ThemeToggle from '@/components/ui/ThemeToggle'
 
 type View = 'login' | 'forgot'
 
+const inputClass =
+  'w-full px-4 py-2.5 bg-gray-50 dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08] rounded-lg text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors'
+
+const labelClass =
+  'block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5'
+
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -56,11 +62,11 @@ function LoginForm() {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-8 shadow-sm">
+    <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-gray-200 dark:border-white/[0.08] p-8 shadow-sm dark:shadow-none backdrop-blur-sm">
       {view === 'login' ? (
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">
+            <label htmlFor="email" className={labelClass}>
               Email
             </label>
             <input
@@ -70,7 +76,7 @@ function LoginForm() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={inputClass}
               placeholder="vous@exemple.re"
             />
           </div>
@@ -95,7 +101,7 @@ function LoginForm() {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={inputClass}
               placeholder="••••••••"
             />
           </div>
@@ -130,7 +136,7 @@ function LoginForm() {
       ) : (
         <form onSubmit={handleForgot} className="space-y-5">
           <div>
-            <label htmlFor="reset-email" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">
+            <label htmlFor="reset-email" className={labelClass}>
               Votre email
             </label>
             <input
@@ -140,7 +146,7 @@ function LoginForm() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={inputClass}
               placeholder="vous@exemple.re"
             />
           </div>
@@ -174,26 +180,54 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-slate-950 relative transition-colors">
-      <div className="absolute top-4 right-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#020817] relative transition-colors overflow-hidden">
+
+      {/* Dot grid — dark mode only */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-30"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle, #334155 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
+        }}
+      />
+
+      {/* Soft radial glow behind card — dark mode only */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(37,99,235,0.10) 0%, transparent 70%)',
+        }}
+      />
+
+      <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
       </div>
 
-      <div className="w-full max-w-md px-4">
+      <div className="relative z-10 w-full max-w-md px-4">
         <div className="text-center mb-8">
-          <img src="/logo.svg" alt="Axora" className="w-14 h-14 mb-4 mx-auto block" />
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Axora</h1>
-          <p className="mt-1.5 text-gray-500 dark:text-slate-400 text-sm">
+          <img src="/logo.svg" alt="Axora Data" className="w-12 h-12 mx-auto block mb-4" />
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            Axora Data
+          </h1>
+          <p className="mt-1.5 text-sm text-gray-500 dark:text-slate-400">
             Connectez-vous à votre tableau de bord
           </p>
         </div>
 
-        <Suspense fallback={<div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-8 shadow-sm h-48" />}>
+        <Suspense
+          fallback={
+            <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-gray-200 dark:border-white/[0.08] p-8 shadow-sm h-48" />
+          }
+        >
           <LoginForm />
         </Suspense>
 
         <p className="mt-6 text-center text-xs text-gray-400 dark:text-slate-600">
-          Dashboard réservé aux clients Axora
+          Dashboard réservé aux clients Axora Data
         </p>
       </div>
     </div>
