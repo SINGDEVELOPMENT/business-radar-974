@@ -142,7 +142,7 @@ export default async function SeoPage() {
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <Zap className="w-4 h-4 text-gray-400" />
                 Core Web Vitals
-                <span className="ml-auto text-xs text-gray-400 font-normal">Seuils Google</span>
+                <span className="ml-auto text-xs text-gray-500 font-normal">Seuils Google</span>
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                 {latest.lcp_ms != null && <CwvCard label="LCP" value={`${(latest.lcp_ms / 1000).toFixed(1)}s`} status={cwvStatus('lcp', latest.lcp_ms)} hint="Largest Contentful Paint" />}
@@ -317,7 +317,7 @@ export default async function SeoPage() {
                         <span className="text-sm font-medium text-gray-900 dark:text-white">{issue.label}</span>
                         <Badge variant={issue.priority === 'haute' ? 'destructive' : issue.priority === 'moyenne' ? 'warning' : 'secondary'} className="text-[10px]">{issue.priority}</Badge>
                       </div>
-                      <p className="text-xs text-gray-500 mt-0.5">{issue.detail}</p>
+                      <p className="text-sm text-gray-600 mt-0.5">{issue.detail}</p>
                     </div>
                   </div>
                 ))}
@@ -341,7 +341,7 @@ export default async function SeoPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 dark:text-white">{opp.title}</p>
                       {opp.displayValue && (
-                        <p className="text-xs text-gray-500 mt-0.5">{opp.displayValue}</p>
+                        <p className="text-sm text-gray-600 mt-0.5">{opp.displayValue}</p>
                       )}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
@@ -357,7 +357,7 @@ export default async function SeoPage() {
           )}
 
           {/* Dernière info */}
-          <p className="text-xs text-gray-400 text-center flex items-center justify-center gap-1">
+          <p className="text-xs text-gray-500 text-center flex items-center justify-center gap-1">
             <Activity className="w-3 h-3" />
             Dernier audit : {new Date(latest.collected_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
           </p>
@@ -376,7 +376,7 @@ function ScoreCard({ label, score, icon: Icon }: { label: string; score: number 
     <Card className="p-4 flex flex-col items-center gap-1 text-center">
       <Icon className="w-4 h-4 text-gray-400 mb-1" />
       <p className={cn('text-3xl font-extrabold', color)}>{score ?? '--'}</p>
-      <p className="text-xs text-gray-500 font-medium">{label}</p>
+      <p className="text-sm text-gray-600 font-medium">{label}</p>
       {variant && score != null && <Badge variant={variant} className="text-[10px] px-1.5 mt-0.5">{score >= 90 ? 'Excellent' : score >= 50 ? 'Moyen' : 'Faible'}</Badge>}
     </Card>
   )
@@ -390,7 +390,7 @@ function CwvCard({ label, value, status, hint }: { label: string; value: string;
         <Badge variant={statusBadge(status)} className="text-[9px] px-1 py-0">{statusLabel(status)}</Badge>
       </div>
       <p className={cn('text-xl font-bold', statusColor(status))}>{value}</p>
-      <p className="text-[10px] text-gray-400">{hint}</p>
+      <p className="text-xs text-gray-500">{hint}</p>
     </div>
   )
 }
@@ -414,7 +414,7 @@ function OnPageRow({
   return (
     <div className="flex items-start gap-2 text-sm">
       {icon}
-      <span className="text-gray-500 shrink-0 min-w-[120px]">{label}</span>
+      <span className="text-gray-600 shrink-0 min-w-[120px]">{label}</span>
       <span className={cn(
         'text-right flex-1 min-w-0 truncate',
         mono && 'font-mono text-xs',

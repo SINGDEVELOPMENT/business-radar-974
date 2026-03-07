@@ -282,20 +282,19 @@ export default function LandingPage() {
           {/* Nav desktop */}
           <nav className="hidden md:flex items-center gap-7">
             {navItems.map(([href, label]) => (
-              <a key={href} href={href} className="text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors">{label}</a>
+              <a key={href} href={href} className="text-sm font-medium text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-colors">{label}</a>
             ))}
           </nav>
 
           {/* Actions desktop */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-3">
             {/* Lang toggle */}
             <div className="flex items-center border border-gray-200 dark:border-white/[0.1] rounded-lg overflow-hidden text-xs font-semibold">
-              <button onClick={() => setLang('fr')} className={`px-2.5 py-1.5 transition-colors ${lang === 'fr' ? 'bg-blue-600 text-white' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-white/[0.05]'}`}>FR</button>
-              <button onClick={() => setLang('en')} className={`px-2.5 py-1.5 transition-colors ${lang === 'en' ? 'bg-blue-600 text-white' : 'text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-white/[0.05]'}`}>EN</button>
+              <button onClick={() => setLang('fr')} className={`px-2.5 py-1.5 transition-colors ${lang === 'fr' ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/[0.05]'}`}>FR</button>
+              <button onClick={() => setLang('en')} className={`px-2.5 py-1.5 transition-colors ${lang === 'en' ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/[0.05]'}`}>EN</button>
             </div>
             <ThemeToggle />
-            <Link href="/demo" className="text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors px-2 py-1.5">{t.nav.demo} →</Link>
-            <Link href="/login" className="text-sm font-medium text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-1.5 border border-gray-200 dark:border-white/[0.1] rounded-lg hover:border-gray-300 dark:hover:border-white/[0.2]">{t.nav.login}</Link>
+            <Link href="/login" className="text-sm font-medium text-gray-700 dark:text-slate-200 hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-1.5 border border-gray-200 dark:border-white/[0.1] rounded-lg hover:border-gray-300 dark:hover:border-white/[0.2]">{t.nav.login}</Link>
             <a href="#contact" className="text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-colors shadow-sm shadow-blue-600/20">{t.nav.cta}</a>
           </div>
 
@@ -308,18 +307,17 @@ export default function LandingPage() {
         {menuOpen && (
           <div className="md:hidden border-t border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#020817] px-4 py-5 flex flex-col gap-4">
             {navItems.map(([href, label]) => (
-              <a key={href} href={href} onClick={() => setMenuOpen(false)} className="text-sm text-gray-500 dark:text-slate-400">{label}</a>
+              <a key={href} href={href} onClick={() => setMenuOpen(false)} className="text-base font-medium text-gray-700 dark:text-slate-200">{label}</a>
             ))}
             <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-white/[0.06]">
               <div className="flex items-center border border-gray-200 dark:border-white/[0.1] rounded-lg overflow-hidden text-xs font-semibold">
-                <button onClick={() => setLang('fr')} className={`px-2.5 py-1.5 ${lang === 'fr' ? 'bg-blue-600 text-white' : 'text-gray-500 dark:text-slate-400'}`}>FR</button>
-                <button onClick={() => setLang('en')} className={`px-2.5 py-1.5 ${lang === 'en' ? 'bg-blue-600 text-white' : 'text-gray-500 dark:text-slate-400'}`}>EN</button>
+                <button onClick={() => setLang('fr')} className={`px-2.5 py-1.5 ${lang === 'fr' ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-slate-300'}`}>FR</button>
+                <button onClick={() => setLang('en')} className={`px-2.5 py-1.5 ${lang === 'en' ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-slate-300'}`}>EN</button>
               </div>
               <ThemeToggle />
             </div>
             <div className="flex flex-col gap-2">
-              <Link href="/demo" className="text-sm font-medium text-blue-600 dark:text-blue-400">{t.nav.demo} →</Link>
-              <Link href="/login" className="text-sm font-medium text-center border border-gray-200 dark:border-white/[0.1] text-gray-700 dark:text-slate-300 px-4 py-2.5 rounded-lg">{t.nav.login}</Link>
+              <Link href="/login" className="text-sm font-medium text-center border border-gray-200 dark:border-white/[0.1] text-gray-700 dark:text-slate-200 px-4 py-2.5 rounded-lg">{t.nav.login}</Link>
               <a href="#contact" onClick={() => setMenuOpen(false)} className="text-sm font-semibold bg-blue-600 text-white px-4 py-2.5 rounded-lg text-center">{t.nav.cta}</a>
             </div>
           </div>
@@ -356,7 +354,7 @@ export default function LandingPage() {
                 </span>
               </h1>
 
-              <p className="hero-animate hero-animate-delay-2 text-lg text-gray-500 dark:text-slate-400 leading-relaxed mb-8 max-w-lg">{t.hero.sub}</p>
+              <p className="hero-animate hero-animate-delay-2 text-lg text-gray-600 dark:text-slate-300 leading-relaxed mb-8 max-w-lg">{t.hero.sub}</p>
 
               <div className="hero-animate hero-animate-delay-3 flex flex-col sm:flex-row gap-3 mb-10">
                 <Link href="/demo" className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/25 text-sm">
@@ -367,7 +365,7 @@ export default function LandingPage() {
                 </a>
               </div>
 
-              <div className="hero-animate hero-animate-delay-4 flex flex-wrap gap-5 text-xs text-gray-500 dark:text-slate-500">
+              <div className="hero-animate hero-animate-delay-4 flex flex-wrap gap-5 text-sm text-gray-600 dark:text-slate-400">
                 {t.hero.trust.map((s) => (
                   <span key={s} className="flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />{s}
@@ -387,7 +385,7 @@ export default function LandingPage() {
       {/* ─── TRUST BAR ───────────────────────────────────────────────────────── */}
       <div className="border-y border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.02]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs text-gray-500 dark:text-slate-500 font-medium">
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-sm text-gray-600 dark:text-slate-400 font-medium">
             {[
               { Icon: Zap,        label: t.trustBar[0] },
               { Icon: BarChart2,  label: t.trustBar[1] },
@@ -409,7 +407,7 @@ export default function LandingPage() {
           <div className="max-w-2xl mx-auto text-center mb-16 reveal">
             <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">{t.problem.label}</p>
             <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight mb-5">{t.problem.title}</h2>
-            <p className="text-gray-500 dark:text-slate-400 text-lg leading-relaxed">{t.problem.sub}</p>
+            <p className="text-gray-600 dark:text-slate-300 text-lg leading-relaxed">{t.problem.sub}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
             {t.problem.cards.map((p, i) => (
@@ -418,8 +416,8 @@ export default function LandingPage() {
                   <X className="w-4 h-4 text-red-500 dark:text-red-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1 text-sm">{p.title}</h3>
-                  <p className="text-sm text-gray-500 dark:text-slate-500 leading-relaxed">{p.desc}</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1 text-base">{p.title}</h3>
+                  <p className="text-base text-gray-600 dark:text-slate-400 leading-relaxed">{p.desc}</p>
                 </div>
               </div>
             ))}
@@ -434,10 +432,10 @@ export default function LandingPage() {
             <div className="reveal">
               <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">{t.solution.label}</p>
               <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight mb-6">{t.solution.title1}<br />{t.solution.title2}</h2>
-              <p className="text-gray-500 dark:text-slate-400 text-lg leading-relaxed mb-8">{t.solution.sub}</p>
+              <p className="text-gray-600 dark:text-slate-300 text-lg leading-relaxed mb-8">{t.solution.sub}</p>
               <ul className="space-y-4">
                 {t.solution.bullets.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-sm text-gray-600 dark:text-slate-300">
+                  <li key={item} className="flex items-start gap-3 text-base text-gray-600 dark:text-slate-300">
                     <CheckCircle2 className="w-4 h-4 text-blue-500 dark:text-blue-400 shrink-0 mt-0.5" />{item}
                   </li>
                 ))}
@@ -468,8 +466,8 @@ export default function LandingPage() {
                     <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/[0.1] border border-blue-200 dark:border-blue-500/[0.12] flex items-center justify-center mb-4 group-hover:bg-blue-100 dark:group-hover:bg-blue-500/[0.18] transition-colors">
                       <Icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2 text-sm">{title}</h3>
-                    <p className="text-sm text-gray-500 dark:text-slate-500 leading-relaxed">{desc}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2 text-base">{title}</h3>
+                    <p className="text-base text-gray-600 dark:text-slate-400 leading-relaxed">{desc}</p>
                   </div>
                 </div>
               )
@@ -496,8 +494,8 @@ export default function LandingPage() {
                     <Icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     <span className="absolute -top-2.5 -right-2.5 text-[10px] font-bold text-blue-600 dark:text-blue-300 bg-white dark:bg-[#0b1221] border border-blue-200 dark:border-blue-500/30 px-1.5 py-0.5 rounded-md">{num}</span>
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white mb-3">{title}</h3>
-                  <p className="text-sm text-gray-500 dark:text-slate-500 leading-relaxed">{desc}</p>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{title}</h3>
+                  <p className="text-base text-gray-600 dark:text-slate-400 leading-relaxed">{desc}</p>
                 </div>
               )
             })}
@@ -513,7 +511,7 @@ export default function LandingPage() {
               <div key={s.value} className={`reveal reveal-delay-${i + 1}`}>
                 <p className="text-5xl sm:text-6xl font-extrabold mb-2 bg-gradient-to-br from-gray-900 to-gray-400 dark:from-white dark:to-slate-500 bg-clip-text text-transparent">{s.value}</p>
                 <p className="text-sm font-semibold text-gray-900 dark:text-white mb-1">{s.label}</p>
-                <p className="text-xs text-gray-400 dark:text-slate-600">{s.sub}</p>
+                <p className="text-sm text-gray-500 dark:text-slate-400">{s.sub}</p>
               </div>
             ))}
           </div>
@@ -526,19 +524,19 @@ export default function LandingPage() {
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">{t.pricing.label}</p>
             <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight mb-4">{t.pricing.title}</h2>
-            <p className="text-gray-500 dark:text-slate-400 text-sm">{t.pricing.sub}</p>
+            <p className="text-gray-600 dark:text-slate-300 text-base">{t.pricing.sub}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {/* Standard */}
             <div className="reveal reveal-delay-1 p-8 rounded-2xl border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.02] flex flex-col">
-              <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest mb-1">{t.pricing.standard.hint}</p>
-              <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest mb-3">{t.pricing.standard.name}</p>
+              <p className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-1">{t.pricing.standard.hint}</p>
+              <p className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-3">{t.pricing.standard.name}</p>
               <div className="mb-0.5"><span className="text-4xl font-extrabold text-gray-900 dark:text-white">1 000 €</span><span className="text-gray-400 dark:text-slate-500 text-sm ml-2">{t.pricing.setup}</span></div>
               <div className="mb-8"><span className="text-xl font-bold text-gray-600 dark:text-slate-300">150 €</span><span className="text-gray-400 dark:text-slate-500 text-sm ml-1">{t.pricing.monthly}</span></div>
               <ul className="space-y-3 mb-8 flex-1">
                 {t.pricing.standard.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-gray-500 dark:text-slate-400">
-                    <CheckCircle2 className="w-4 h-4 text-gray-400 dark:text-slate-600 shrink-0 mt-0.5" />{f}
+                  <li key={f} className="flex items-start gap-2.5 text-base text-gray-600 dark:text-slate-300">
+                    <CheckCircle2 className="w-4 h-4 text-gray-400 dark:text-slate-500 shrink-0 mt-0.5" />{f}
                   </li>
                 ))}
               </ul>
@@ -550,13 +548,13 @@ export default function LandingPage() {
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
                 <span className="bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg shadow-blue-600/30 tracking-wide">{t.pricing.premium.recommended}</span>
               </div>
-              <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">{t.pricing.premium.hint}</p>
-              <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-3">{t.pricing.premium.name}</p>
+              <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">{t.pricing.premium.hint}</p>
+              <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-3">{t.pricing.premium.name}</p>
               <div className="mb-0.5"><span className="text-4xl font-extrabold text-gray-900 dark:text-white">1 500 €</span><span className="text-gray-400 dark:text-slate-500 text-sm ml-2">{t.pricing.setup}</span></div>
               <div className="mb-8"><span className="text-xl font-bold text-gray-600 dark:text-slate-300">200 €</span><span className="text-gray-400 dark:text-slate-500 text-sm ml-1">{t.pricing.monthly}</span></div>
               <ul className="space-y-3 mb-8 flex-1">
                 {t.pricing.premium.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-slate-300">
+                  <li key={f} className="flex items-start gap-2.5 text-base text-gray-700 dark:text-slate-300">
                     <CheckCircle2 className="w-4 h-4 text-blue-500 dark:text-blue-400 shrink-0 mt-0.5" />{f}
                   </li>
                 ))}
@@ -573,7 +571,7 @@ export default function LandingPage() {
           <div className="text-center mb-12 reveal">
             <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">{t.contact.label}</p>
             <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight mb-4">{t.contact.title}</h2>
-            <p className="text-gray-500 dark:text-slate-400 text-sm leading-relaxed">{t.contact.sub}</p>
+            <p className="text-gray-600 dark:text-slate-300 text-base leading-relaxed">{t.contact.sub}</p>
           </div>
 
           {success ? (
@@ -592,25 +590,25 @@ export default function LandingPage() {
               </div>
               <div><label className="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1.5">{t.contact.company}</label><input name="entreprise" type="text" required placeholder="Mon Business" className={inputCls} /></div>
               <div><label className="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1.5">{t.contact.email} <span className="text-red-400">*</span></label><input name="email" type="email" required placeholder="jean.dupont@example.com" className={inputCls} /></div>
-              <div><label className="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1.5">{t.contact.phone} <span className="text-gray-300 dark:text-slate-600">{t.contact.phoneOpt}</span></label><input name="telephone" type="tel" placeholder="0692 00 00 00" className={inputCls} /></div>
+              <div><label className="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1.5">{t.contact.phone} <span className="text-gray-400 dark:text-slate-500">{t.contact.phoneOpt}</span></label><input name="telephone" type="tel" placeholder="0692 00 00 00" className={inputCls} /></div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1.5">{t.contact.plan}</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">{t.contact.plan}</label>
                 <select name="plan" required className={`${inputCls} bg-white dark:bg-[#0b1221]`}>
                   <option value="">{t.contact.planDefault}</option>
                   <option value="Standard">{t.contact.planStd}</option>
                   <option value="Premium">{t.contact.planPrem}</option>
                 </select>
               </div>
-              <div><label className="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1.5">{t.contact.message} <span className="text-gray-300 dark:text-slate-600">{t.contact.messageOpt}</span></label><textarea name="message" rows={3} placeholder="..." className={`${inputCls} resize-none`} /></div>
+              <div><label className="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1.5">{t.contact.message} <span className="text-gray-400 dark:text-slate-500">{t.contact.messageOpt}</span></label><textarea name="message" rows={3} placeholder="..." className={`${inputCls} resize-none`} /></div>
 
               {error && <div className="bg-red-50 dark:bg-red-500/[0.08] border border-red-200 dark:border-red-500/[0.15] text-red-500 dark:text-red-400 text-sm rounded-xl px-4 py-3">{error}</div>}
 
-              <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-all text-sm shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
+              <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-all text-base shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
                 {loading
                   ? <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>{t.contact.sending}</>
                   : <>{t.contact.submit} <ArrowRight className="w-4 h-4" /></>}
               </button>
-              <p className="text-[11px] text-gray-400 dark:text-slate-600 text-center leading-relaxed">{t.contact.privacy}</p>
+              <p className="text-xs text-gray-500 dark:text-slate-500 text-center leading-relaxed">{t.contact.privacy}</p>
             </form>
           )}
         </div>
@@ -623,11 +621,11 @@ export default function LandingPage() {
             <Image src="/logo.svg" alt="Axora Data" width={24} height={24} className="opacity-80" />
             <span className="font-bold text-gray-900 dark:text-white text-sm">Axora Data</span>
           </div>
-          <p className="text-xs text-gray-400 dark:text-slate-700">© 2026 Axora Data. {t.footer.rights}</p>
-          <div className="flex items-center gap-6 text-xs text-gray-400 dark:text-slate-600">
-            <Link href="/mentions-legales" className="hover:text-gray-700 dark:hover:text-slate-400 transition-colors">{t.footer.legal}</Link>
-            <Link href="/politique-confidentialite" className="hover:text-gray-700 dark:hover:text-slate-400 transition-colors">{t.footer.privacy}</Link>
-            <Link href="/cgv" className="hover:text-gray-700 dark:hover:text-slate-400 transition-colors">{t.footer.terms}</Link>
+          <p className="text-xs text-gray-500 dark:text-slate-500">© 2026 Axora Data. {t.footer.rights}</p>
+          <div className="flex items-center gap-6 text-xs text-gray-500 dark:text-slate-400">
+            <Link href="/mentions-legales" className="hover:text-gray-800 dark:hover:text-slate-200 transition-colors">{t.footer.legal}</Link>
+            <Link href="/politique-confidentialite" className="hover:text-gray-800 dark:hover:text-slate-200 transition-colors">{t.footer.privacy}</Link>
+            <Link href="/cgv" className="hover:text-gray-800 dark:hover:text-slate-200 transition-colors">{t.footer.terms}</Link>
           </div>
         </div>
       </footer>

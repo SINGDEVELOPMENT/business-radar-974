@@ -34,7 +34,7 @@ export default function KpiCard({
     <Card className="p-5">
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-500 dark:text-slate-400 truncate">{title}</p>
+          <p className="text-base font-medium text-gray-600 dark:text-slate-400 truncate">{title}</p>
           <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
           {(subtitle || trend) && (
             <div className="mt-1 flex items-center gap-2 flex-wrap">
@@ -42,17 +42,17 @@ export default function KpiCard({
                 <span
                   className={cn(
                     'text-xs font-semibold',
-                    isNeutral && 'text-gray-400',
+                    isNeutral && 'text-gray-500',
                     !isNeutral && isPositive && 'text-emerald-600',
                     !isNeutral && !isPositive && 'text-red-500',
                   )}
                 >
                   {isNeutral ? '→' : isPositive ? '▲' : '▼'}{' '}
                   {trend.value > 0 ? '+' : ''}{trend.value}{' '}
-                  <span className="font-normal text-gray-400">{trend.label}</span>
+                  <span className="font-normal text-gray-500">{trend.label}</span>
                 </span>
               )}
-              {subtitle && <span className="text-xs text-gray-400">{subtitle}</span>}
+              {subtitle && <span className="text-xs text-gray-500">{subtitle}</span>}
             </div>
           )}
         </div>

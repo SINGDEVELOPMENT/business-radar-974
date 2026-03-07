@@ -173,7 +173,7 @@ export default async function ReportsPage() {
           <div id={`report-${latest.id}`} className="space-y-2 scroll-mt-20">
             <div className="flex items-center gap-2">
               <ReportTypeBadge type={latest.report_type} />
-              <span className="text-xs text-gray-400 flex items-center gap-1">
+              <span className="text-xs text-gray-500 flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
                 {new Date(latest.generated_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
               </span>
@@ -198,7 +198,7 @@ export default async function ReportsPage() {
                   <Card className="p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Points forts</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-base">Points forts</h3>
                     </div>
                     <ul className="space-y-2">
                       {latestContent.strengths.map((s, i) => (
@@ -212,7 +212,7 @@ export default async function ReportsPage() {
                   <Card className="p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <XCircle className="w-4 h-4 text-red-400" />
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Axes d&apos;amélioration</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-base">Axes d&apos;amélioration</h3>
                     </div>
                     <ul className="space-y-2">
                       {latestContent.weaknesses.map((w, i) => (
@@ -225,7 +225,7 @@ export default async function ReportsPage() {
                 </div>
 
                 <Card className="p-5">
-                  <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-4 flex items-center gap-2">
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-base mb-4 flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-gray-400" />
                     Recommandations prioritaires
                   </h3>
@@ -240,7 +240,7 @@ export default async function ReportsPage() {
                   <Card className="p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <Users className="w-4 h-4 text-gray-400" />
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Analyse concurrentielle</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-base">Analyse concurrentielle</h3>
                     </div>
                     <p className="text-sm text-gray-700 dark:text-slate-300 leading-relaxed">{latestContent.competitor_analysis}</p>
                   </Card>
@@ -251,7 +251,7 @@ export default async function ReportsPage() {
 
           {reportsList.length > 1 && (
             <div className="space-y-3">
-              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Rapports précédents</h2>
+              <h2 className="text-base font-semibold text-gray-600 uppercase tracking-wide">Rapports précédents</h2>
               <ReportsOldSection
                 reports={reportsList.slice(1).map(r => ({
                   ...r,
@@ -294,7 +294,7 @@ function RecommendationRow({ rec, index }: { rec: AiRecommendation; index: numbe
         <ArrowRight className="w-3 h-3 text-gray-400 shrink-0" />
         <p className="text-sm font-medium text-gray-900 flex-1">{rec.action}</p>
       </div>
-      {rec.impact && <p className="text-xs text-gray-500 pl-6"><span className="font-medium text-gray-600">Impact :</span> {rec.impact}</p>}
+      {rec.impact && <p className="text-sm text-gray-600 pl-6"><span className="font-medium text-gray-700">Impact :</span> {rec.impact}</p>}
     </div>
   )
 }

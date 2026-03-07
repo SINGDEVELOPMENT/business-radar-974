@@ -188,7 +188,7 @@ export default async function SocialPage() {
                   {bestPost.content ? (
                     <p className="text-sm text-gray-700 line-clamp-3">{bestPost.content}</p>
                   ) : (
-                    <p className="text-sm text-gray-400 italic">Contenu non disponible</p>
+                    <p className="text-sm text-gray-500 italic">Contenu non disponible</p>
                   )}
                   <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
                     <span className="flex items-center gap-1">
@@ -217,7 +217,7 @@ export default async function SocialPage() {
 
           {/* Top 5 posts */}
           <div className="space-y-3">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+            <h2 className="text-base font-semibold text-gray-600 uppercase tracking-wide">
               Top posts
             </h2>
             {topPosts.map((post, i) => (
@@ -251,7 +251,7 @@ export default async function SocialPage() {
                     {post.content && (
                       <p className="text-sm text-gray-600 line-clamp-2">{post.content}</p>
                     )}
-                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
+                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
                       <span className="flex items-center gap-1">
                         <ThumbsUp className="w-3 h-3" /> {post.likes ?? 0}
                       </span>
@@ -261,7 +261,7 @@ export default async function SocialPage() {
                       <span className="flex items-center gap-1">
                         <Repeat2 className="w-3 h-3" /> {post.shares ?? 0}
                       </span>
-                      <span className="font-semibold text-gray-500 ml-auto">
+                      <span className="font-semibold text-gray-600 ml-auto">
                         {(
                           (post.likes ?? 0) +
                           (post.comments ?? 0) +

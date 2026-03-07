@@ -38,7 +38,7 @@ function CustomTooltip({ active, payload, label }: {
     <div className="rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 shadow-lg text-sm">
       <p className="font-semibold text-gray-700 dark:text-slate-200 mb-1">{label}</p>
       <p className="text-amber-600 font-bold">★ {d.avgRating.toFixed(1)} / 5</p>
-      <p className="text-gray-500 dark:text-slate-400">{d.count} avis</p>
+      <p className="text-gray-600 dark:text-slate-400">{d.count} avis</p>
     </div>
   )
 }
@@ -51,7 +51,7 @@ export default function ReviewsChart({ data }: { data: ChartDataPoint[] }) {
 
   if (data.length === 0) {
     return (
-      <Card className="p-6 flex items-center justify-center h-48 text-gray-400 dark:text-slate-500 text-sm">
+      <Card className="p-6 flex items-center justify-center h-48 text-gray-500 dark:text-slate-400 text-base">
         Aucune donnée temporelle disponible
       </Card>
     )
@@ -64,8 +64,8 @@ export default function ReviewsChart({ data }: { data: ChartDataPoint[] }) {
           <TrendingUp className="w-4 h-4 text-amber-600" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-gray-800 dark:text-slate-100">Évolution de la note moyenne</p>
-          <p className="text-xs text-gray-400 dark:text-slate-500">Note mensuelle moyenne sur la période</p>
+          <p className="text-base font-semibold text-gray-800 dark:text-slate-100">Évolution de la note moyenne</p>
+          <p className="text-xs text-gray-500 dark:text-slate-400">Note mensuelle moyenne sur la période</p>
         </div>
       </div>
 

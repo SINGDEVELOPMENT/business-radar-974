@@ -107,7 +107,7 @@ export default async function DashboardPage() {
         {/* Derniers clients */}
         <Card className="p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900 text-sm flex items-center gap-2">
+            <h3 className="font-semibold text-gray-900 text-base flex items-center gap-2">
               <Building2 className="w-4 h-4 text-gray-400" />
               Clients récents
             </h3>
@@ -121,14 +121,14 @@ export default async function DashboardPage() {
                 <span className="text-sm font-medium text-gray-900">{org.name}</span>
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" className="text-xs">{org.plan ?? 'standard'}</Badge>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-gray-500">
                     {new Date(org.created_at).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
               </div>
             ))}
             {(recentOrgs ?? []).length === 0 && (
-              <p className="text-sm text-gray-400">Aucun client. <Link href="/dashboard/admin" className="text-blue-600 hover:underline">Créer le premier →</Link></p>
+              <p className="text-sm text-gray-600">Aucun client. <Link href="/dashboard/admin" className="text-blue-600 hover:underline">Créer le premier →</Link></p>
             )}
           </div>
         </Card>
@@ -311,7 +311,7 @@ export default async function DashboardPage() {
 
       {/* Rapports AI */}
       <div>
-        <h2 className="text-sm font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide mb-3">
+        <h2 className="text-base font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wide mb-3">
           Analyses AI
         </h2>
         {isPremium ? (
