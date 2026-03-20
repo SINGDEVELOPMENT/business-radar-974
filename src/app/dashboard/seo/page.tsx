@@ -252,15 +252,15 @@ export default async function SeoPage() {
             </div>
           ) : (
             <div className="relative">
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-xl border border-blue-100 dark:border-blue-900">
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-950">
-                  <Lock className="w-6 h-6 text-blue-500" />
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-xl border border-[#6C5CE7]/20 dark:border-[#6C5CE7]/30">
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#6C5CE7]/10 dark:bg-[#6C5CE7]/20">
+                  <Lock className="w-6 h-6 text-[#6C5CE7]" />
                 </div>
                 <div className="text-center px-4">
                   <p className="text-sm font-bold text-gray-800 dark:text-white">Analyse on-page & données structurées</p>
                   <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Disponible avec le plan Premium</p>
                 </div>
-                <a href="/#pricing" className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg transition-colors">
+                <a href="/#pricing" className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#6C5CE7] hover:bg-[#9B8FF2] text-white text-xs font-semibold rounded-lg transition-colors">
                   ✦ Passer au Premium
                 </a>
               </div>

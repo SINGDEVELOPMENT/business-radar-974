@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     description:
       'The command center for your local digital performance. Google reviews, social media, SEO, competitors and AI reports — all in one dashboard. Setup in 24h.',
     url: 'https://axora-data.vercel.app',
-    images: [{ url: '/logo.svg', width: 400, height: 400, alt: 'Axora' }],
+    images: [{ url: '/icon.svg', width: 400, height: 400, alt: 'Axora' }],
   },
   keywords: [
     'local business intelligence',

@@ -24,9 +24,9 @@ export const metadata: Metadata = {
     description: 'Google reviews, social media, SEO, competitors and AI reports — all in one dashboard.',
   },
   icons: {
-    icon: '/logo.svg',
-    shortcut: '/logo.svg',
-    apple: '/logo.svg',
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
   },
   robots: {
     index: true,

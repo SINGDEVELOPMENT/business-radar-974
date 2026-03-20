@@ -95,11 +95,11 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
 
   const activeClass = variant === 'premium'
     ? 'bg-amber-500/20 text-amber-400'
-    : 'bg-blue-600/20 text-blue-400'
+    : 'bg-[#6C5CE7]/20 text-[#9B8FF2]'
 
   const fabClass = variant === 'premium'
     ? 'bg-amber-500 shadow-amber-500/40'
-    : 'bg-blue-600 shadow-blue-600/40'
+    : 'bg-[#6C5CE7] shadow-[#6C5CE7]/40'
 
   function isActive(href: string) {
     return href === base ? pathname === base : pathname.startsWith(href)
@@ -107,7 +107,7 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
 
   const logoHeader = (
     <div className="flex items-center gap-3 px-5 h-16">
-      <img src="/logo.svg" alt="Axora Data" className="w-8 h-8 shrink-0" />
+      <img src="/logo-white.svg" alt="Axora Data" className="w-8 h-8 shrink-0" />
       <span className="text-white font-bold text-lg leading-tight tracking-tight">Axora Data</span>
       <DemoBadge variant={variant} />
     </div>
@@ -116,7 +116,7 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-slate-950">
       {/* Sidebar desktop */}
-      <aside className="hidden md:flex fixed inset-y-0 left-0 z-40 flex-col w-64 bg-[#030f1c]">
+      <aside className="hidden md:flex fixed inset-y-0 left-0 z-40 flex-col w-64 bg-[#1A1A2E]">
         {logoHeader}
         <Separator className="bg-white/[0.06]" />
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -136,7 +136,7 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
           <Separator className="bg-white/[0.06] mb-3" />
           <div className="flex items-center gap-2 px-3">
             <ThemeToggle className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-700 text-slate-400" />
-            <Link href="/login" className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-blue-400 hover:bg-blue-500/10 transition-all">
+            <Link href="/login" className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-[#9B8FF2] hover:bg-[#6C5CE7]/10 transition-all">
               Se connecter →
             </Link>
           </div>
@@ -165,7 +165,7 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
 
       {/* Drawer mobile */}
       <aside className={cn(
-        'fixed inset-y-0 left-0 z-40 flex flex-col w-64 bg-[#030f1c] transition-transform duration-300 md:hidden',
+        'fixed inset-y-0 left-0 z-40 flex flex-col w-64 bg-[#1A1A2E] transition-transform duration-300 md:hidden',
         mobileOpen ? 'translate-x-0' : '-translate-x-full'
       )}>
         {logoHeader}
@@ -183,7 +183,7 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
           ))}
         </nav>
         <div className="px-6 py-4">
-          <Link href="/login" className="text-sm font-medium text-blue-400 hover:text-blue-300">Se connecter →</Link>
+          <Link href="/login" className="text-sm font-medium text-[#9B8FF2] hover:text-[#6C5CE7]">Se connecter →</Link>
         </div>
       </aside>
 
