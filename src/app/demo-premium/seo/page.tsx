@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
   Clock, ShieldCheck, Gauge, AlertTriangle, CheckCircle2,
-  Zap, Eye, Search, Smartphone, Activity, FileCode, Code2,
+  Zap, Eye, Search, Smartphone, Monitor, Activity, FileCode, Code2,
 } from 'lucide-react'
 import { computeSeoIssues } from '@/lib/utils/seo'
 import { cn } from '@/lib/utils'
@@ -45,6 +45,26 @@ export default function DemoPremiumSeoPage() {
         <ScoreCard label="Accessibilité" score={DEMO_SEO_LATEST.accessibility_score} icon={Eye} />
         <ScoreCard label="SEO" score={DEMO_SEO_LATEST.seo_audit_score} icon={Search} />
         <ScoreCard label="Bonnes pratiques" score={DEMO_SEO_LATEST.best_practices_score} icon={CheckCircle2} />
+      </div>
+
+      {/* Performance mobile vs desktop */}
+      <div className="grid grid-cols-2 gap-4">
+        <Card className="p-4 flex flex-col items-center gap-1.5 text-center">
+          <Smartphone className="w-5 h-5 text-blue-400 mb-1" />
+          <p className={`text-3xl font-extrabold ${DEMO_SEO_LATEST.mobile_performance_score >= 90 ? 'text-emerald-600' : DEMO_SEO_LATEST.mobile_performance_score >= 50 ? 'text-orange-500' : 'text-red-500'}`}>
+            {DEMO_SEO_LATEST.mobile_performance_score}
+          </p>
+          <p className="text-xs text-gray-500 font-medium">Performance</p>
+          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">Mobile</span>
+        </Card>
+        <Card className="p-4 flex flex-col items-center gap-1.5 text-center">
+          <Monitor className="w-5 h-5 text-indigo-400 mb-1" />
+          <p className={`text-3xl font-extrabold ${DEMO_SEO_LATEST.desktop_performance_score >= 90 ? 'text-emerald-600' : DEMO_SEO_LATEST.desktop_performance_score >= 50 ? 'text-orange-500' : 'text-red-500'}`}>
+            {DEMO_SEO_LATEST.desktop_performance_score}
+          </p>
+          <p className="text-xs text-gray-500 font-medium">Performance</p>
+          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600">Desktop</span>
+        </Card>
       </div>
 
       {/* Core Web Vitals */}

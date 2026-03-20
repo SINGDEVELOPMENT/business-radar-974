@@ -67,8 +67,8 @@ export const T = {
     pricing: {
       label: 'Tarifs', title: 'Prix transparents. Sans surprises.', sub: 'Frais de setup unique + maintenance mensuelle fixe.',
       setup: 'setup', monthly: '/mois',
-      standard: { name: 'Standard', hint: 'Pour commencer', recommended: '', cta: 'Démarrer', features: ['Avis Google et alertes en temps réel', 'Suivi réseaux sociaux (FB + IG)', 'Veille concurrents (2 max)', 'Audit SEO de base', 'Accès dashboard complet', 'Support email'] },
-      premium: { name: 'Premium', hint: 'Pour aller plus loin', recommended: 'RECOMMANDÉ', cta: 'Choisir Premium', features: ['Tout le plan Standard', 'SEO on-page complet (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', 'Rapports IA mensuels complets avec recommandations détaillées', 'Alertes prioritaires avis négatifs', 'Support prioritaire'] },
+      standard: { name: 'Standard', hint: 'Pour commencer', recommended: '', cta: 'Démarrer', features: ['Avis Google et alertes en temps réel', 'Suivi réseaux sociaux (FB + IG)', 'Veille concurrents (2 max)', 'Infos concurrents : horaires, photos, site web', 'Audit SEO de base', 'Score SEO mobile et desktop séparés', 'Vérifications techniques : sitemap, robots.txt, schema', 'Accès dashboard complet', 'Support email'] },
+      premium: { name: 'Premium', hint: 'Pour aller plus loin', recommended: 'RECOMMANDÉ', cta: 'Choisir Premium', features: ['Tout le plan Standard', 'SEO on-page complet (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', '% de réponses aux avis (vous vs concurrents)', 'Avis récents 30 jours par concurrent', 'Score PageSpeed des sites concurrents', 'Rapports IA mensuels complets avec recommandations détaillées', 'Alertes prioritaires avis négatifs', 'Support prioritaire'] },
     },
     contact: {
       label: 'Obtenir l\'accès', title: 'Prêt à voir ce que vos clients disent vraiment ?', sub: 'Remplissez ce formulaire et nous vous recontactons sous 24h.',
@@ -168,8 +168,8 @@ export const T = {
     pricing: {
       label: 'Pricing', title: 'Transparent pricing. No surprises.', sub: 'One-time setup fee + fixed monthly maintenance.',
       setup: 'setup', monthly: '/month',
-      standard: { name: 'Standard', hint: 'To get started', recommended: '', cta: 'Get started', features: ['Google Reviews & real-time alerts', 'Social media tracking (FB + IG)', 'Competitor monitoring (2 max)', 'Base SEO audit', 'Full dashboard access', 'Email support'] },
-      premium: { name: 'Premium', hint: 'To go further', recommended: 'RECOMMENDED', cta: 'Get Premium', features: ['Everything in Standard', 'Full on-page SEO (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', 'Full monthly AI reports with detailed recommendations', 'Priority alerts on negative reviews', 'Priority support'] },
+      standard: { name: 'Standard', hint: 'To get started', recommended: '', cta: 'Get started', features: ['Google Reviews & real-time alerts', 'Social media tracking (FB + IG)', 'Competitor monitoring (2 max)', 'Competitor info: hours, photos, website', 'Base SEO audit', 'Mobile & desktop SEO scores', 'Tech checks: sitemap, robots.txt, schema', 'Full dashboard access', 'Email support'] },
+      premium: { name: 'Premium', hint: 'To go further', recommended: 'RECOMMENDED', cta: 'Get Premium', features: ['Everything in Standard', 'Full on-page SEO (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', 'Review response rate (you vs competitors)', 'Recent reviews (last 30 days) per competitor', "Competitors' PageSpeed scores", 'Full monthly AI reports with detailed recommendations', 'Priority alerts on negative reviews', 'Priority support'] },
     },
     contact: {
       label: 'Get access', title: 'Ready to see what your customers really say?', sub: 'Fill in the form below and we\'ll get back to you within 24 hours.',

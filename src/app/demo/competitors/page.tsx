@@ -4,9 +4,9 @@ import CompetitorChart from '@/components/dashboard/CompetitorChart'
 import { Card } from '@/components/ui/card'
 import {
   Users, Star, TrendingUp, TrendingDown, Minus,
-  Globe, Clock, Gauge, ExternalLink, Trophy,
+  Globe, Clock, Gauge, ExternalLink, ImageIcon,
 } from 'lucide-react'
-import { DEMO_COMPETITORS, DEMO_BUSINESS } from '@/lib/demo-data'
+import { DEMO_COMPETITORS } from '@/lib/demo-data'
 
 export default function DemoCompetitorsPage() {
   const client = DEMO_COMPETITORS.find(c => c.isClient)!
@@ -74,6 +74,12 @@ export default function DemoCompetitorsPage() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-900 dark:text-white truncate">{comp.name}</p>
+                    {comp.opening_hours && (
+                      <p className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+                        <Clock className="w-3 h-3 shrink-0" />
+                        {comp.opening_hours}
+                      </p>
+                    )}
                     {comp.website_url && (
                       <a href={comp.website_url} target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-1 text-xs text-blue-500 hover:underline mt-0.5">
@@ -98,7 +104,7 @@ export default function DemoCompetitorsPage() {
                       <span className="text-xs font-medium text-amber-700 dark:text-amber-400">Note Google</span>
                     </div>
                     <p className="text-2xl font-bold text-amber-700 dark:text-amber-400">{comp.rating.toFixed(1)}</p>
-                    <p className="text-xs text-amber-600 dark:text-amber-500">{comp.reviews} avis</p>
+                    <p className="text-xs text-amber-600 dark:text-amber-500">/5</p>
                   </div>
 
                   <div className="flex flex-col gap-1 p-3 rounded-xl bg-blue-50 dark:bg-blue-500/10">
@@ -127,13 +133,15 @@ export default function DemoCompetitorsPage() {
 
                   <div className="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 dark:bg-slate-800">
                     <div className="flex items-center gap-1.5">
-                      <Users className="w-4 h-4 text-gray-400" />
-                      <span className="text-xs font-medium text-gray-500">Total avis</span>
+                      <ImageIcon className="w-4 h-4 text-gray-400" />
+                      <span className="text-xs font-medium text-gray-500">Photos Google</span>
                     </div>
-                    <p className="text-2xl font-bold text-gray-700 dark:text-white">{comp.reviews}</p>
-                    <p className="text-xs text-gray-400">Google Places</p>
+                    <p className="text-2xl font-bold text-gray-700 dark:text-white">{comp.google_photos_count}</p>
+                    <p className="text-xs text-gray-400">photos</p>
                   </div>
                 </div>
+
+                <p className="text-xs text-gray-400">{comp.reviews} avis Google</p>
               </Card>
             )
           })}

@@ -35,7 +35,7 @@ export async function GET() {
   // Concurrents
   const { data: competitors, error: competitorsError } = await admin
     .from('businesses')
-    .select('id, name, google_rating, google_reviews_count, website_url, google_place_id')
+    .select('id, name, google_rating, google_reviews_count, website_url, google_place_id, opening_hours, google_photos_count, review_response_rate, recent_reviews_count, competitor_seo_score, competitor_lcp_ms')
     .eq('organization_id', orgId)
     .eq('is_competitor', true)
     .order('google_rating', { ascending: false })
@@ -77,6 +77,13 @@ export async function GET() {
     website_url: c.website_url ?? null,
     seo_score: seoMap[c.id]?.score ?? null,
     load_time_ms: seoMap[c.id]?.loadTime ?? null,
+    opening_hours: c.opening_hours ?? null,
+    google_photos_count: c.google_photos_count ?? 0,
+    // Premium
+    review_response_rate: c.review_response_rate ?? null,
+    recent_reviews_count: c.recent_reviews_count ?? null,
+    competitor_seo_score: c.competitor_seo_score ?? null,
+    competitor_lcp_ms: c.competitor_lcp_ms ?? null,
   }))
 
   const clientName = ownBusiness?.name ?? 'Mon établissement'
@@ -95,5 +102,6 @@ export async function GET() {
     ownReviewCount,
     clientName,
     freeLimit,
+    isPremium: freeLimit >= 5,
   })
 }

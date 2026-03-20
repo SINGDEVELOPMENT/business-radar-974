@@ -137,6 +137,8 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
   const seoScore = computeSeoScore(partial)
 
   // ── PageSpeed Insights API ────────────────────────────────────────────────
+  let mobilePerformanceScore: number | null = null
+  let desktopPerformanceScore: number | null = null
   let lighthouseScore = seoScore
   let fcpMs: number | null = null
   let lcpMs: number | null = null
@@ -150,26 +152,37 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
 
   if (statusCode > 0) {
     try {
-      const psUrl = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed')
-      psUrl.searchParams.set('url', websiteUrl)
-      psUrl.searchParams.set('strategy', 'mobile')
       const psKey = process.env.PAGESPEED_API_KEY
-      if (psKey) psUrl.searchParams.set('key', psKey)
-      ;['performance', 'accessibility', 'best-practices', 'seo'].forEach(cat =>
-        psUrl.searchParams.append('category', cat)
-      )
 
-      const psRes = await fetch(psUrl.toString(), { signal: AbortSignal.timeout(40000) })
-      if (!psRes.ok) {
-        const errText = await psRes.text().catch(() => '')
-        console.error('[seo-audit] PageSpeed HTTP error:', psRes.status, errText.slice(0, 300))
+      const buildPsUrl = (strategy: 'mobile' | 'desktop') => {
+        const psUrl = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed')
+        psUrl.searchParams.set('url', websiteUrl)
+        psUrl.searchParams.set('strategy', strategy)
+        if (psKey) psUrl.searchParams.set('key', psKey)
+        ;['performance', 'accessibility', 'best-practices', 'seo'].forEach(cat =>
+          psUrl.searchParams.append('category', cat)
+        )
+        return psUrl.toString()
+      }
+
+      const [mobileRes, desktopRes] = await Promise.all([
+        fetch(buildPsUrl('mobile'), { signal: AbortSignal.timeout(40000) }),
+        fetch(buildPsUrl('desktop'), { signal: AbortSignal.timeout(40000) }),
+      ])
+
+      // Traitement mobile (CWV + scores catégories)
+      if (!mobileRes.ok) {
+        const errText = await mobileRes.text().catch(() => '')
+        console.error('[seo-audit] PageSpeed mobile HTTP error:', mobileRes.status, errText.slice(0, 300))
       } else {
-        const psData = await psRes.json()
+        const psData = await mobileRes.json()
         const audits = psData?.lighthouseResult?.audits
         const categories = psData?.lighthouseResult?.categories
 
-        if (categories?.performance?.score != null)
-          lighthouseScore = Math.round(categories.performance.score * 100)
+        if (categories?.performance?.score != null) {
+          mobilePerformanceScore = Math.round(categories.performance.score * 100)
+          lighthouseScore = mobilePerformanceScore
+        }
         if (categories?.accessibility?.score != null)
           accessibilityScore = Math.round(categories.accessibility.score * 100)
         if (categories?.seo?.score != null)
@@ -200,6 +213,17 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
               score: Math.round(((audits[key].score as number) ?? 0) * 100),
             }))
         }
+      }
+
+      // Traitement desktop (score performance uniquement)
+      if (!desktopRes.ok) {
+        const errText = await desktopRes.text().catch(() => '')
+        console.error('[seo-audit] PageSpeed desktop HTTP error:', desktopRes.status, errText.slice(0, 300))
+      } else {
+        const psDesktopData = await desktopRes.json()
+        const desktopCategories = psDesktopData?.lighthouseResult?.categories
+        if (desktopCategories?.performance?.score != null)
+          desktopPerformanceScore = Math.round(desktopCategories.performance.score * 100)
       }
     } catch (err) {
       console.error('[seo-audit] PageSpeed error:', err)
@@ -235,6 +259,8 @@ export async function collectSeoAudit(businessId: string, websiteUrl: string) {
     page_size_kb: pageSizeKb,
     mobile_friendly: mobileFriendly,
     lighthouse_score: lighthouseScore,
+    mobile_performance_score: mobilePerformanceScore,
+    desktop_performance_score: desktopPerformanceScore,
     fcp_ms: fcpMs,
     lcp_ms: lcpMs,
     cls_score: clsScore,

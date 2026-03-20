@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import {
   Search, Activity, Clock, ShieldCheck, Gauge,
   AlertTriangle, CheckCircle2, Zap, Eye, Smartphone,
-  Code2, FileCode, Lock,
+  Code2, FileCode, Lock, Monitor,
 } from 'lucide-react'
 import { computeSeoIssues } from '@/lib/utils/seo'
 import { cn } from '@/lib/utils'
@@ -46,6 +46,8 @@ type SeoSnapshot = {
   schema_types?: string[] | null
   title_length?: number | null
   meta_description_length?: number | null
+  mobile_performance_score?: number | null
+  desktop_performance_score?: number | null
 }
 
 export default async function SeoPage() {
@@ -117,6 +119,50 @@ export default async function SeoPage() {
             <ScoreCard label="Bonnes pratiques" score={latest.best_practices_score ?? null} icon={CheckCircle2} />
           </div>
 
+          {/* ── Mobile vs Desktop ── */}
+          {(latest.mobile_performance_score != null || latest.desktop_performance_score != null) && (
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="p-5 flex items-center gap-4">
+                <div className={`flex items-center justify-center w-10 h-10 rounded-xl shrink-0 ${
+                  (latest.mobile_performance_score ?? 0) >= 90 ? 'bg-emerald-50 dark:bg-emerald-500/10' :
+                  (latest.mobile_performance_score ?? 0) >= 50 ? 'bg-orange-50 dark:bg-orange-500/10' : 'bg-red-50 dark:bg-red-500/10'
+                }`}>
+                  <Smartphone className={`w-5 h-5 ${
+                    (latest.mobile_performance_score ?? 0) >= 90 ? 'text-emerald-600' :
+                    (latest.mobile_performance_score ?? 0) >= 50 ? 'text-orange-500' : 'text-red-500'
+                  }`} />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 font-medium uppercase tracking-wide">Mobile</p>
+                  <p className={`text-3xl font-bold ${
+                    (latest.mobile_performance_score ?? 0) >= 90 ? 'text-emerald-600' :
+                    (latest.mobile_performance_score ?? 0) >= 50 ? 'text-orange-500' : 'text-red-500'
+                  }`}>{latest.mobile_performance_score ?? '--'}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Score PageSpeed</p>
+                </div>
+              </Card>
+              <Card className="p-5 flex items-center gap-4">
+                <div className={`flex items-center justify-center w-10 h-10 rounded-xl shrink-0 ${
+                  (latest.desktop_performance_score ?? 0) >= 90 ? 'bg-emerald-50 dark:bg-emerald-500/10' :
+                  (latest.desktop_performance_score ?? 0) >= 50 ? 'bg-orange-50 dark:bg-orange-500/10' : 'bg-red-50 dark:bg-red-500/10'
+                }`}>
+                  <Monitor className={`w-5 h-5 ${
+                    (latest.desktop_performance_score ?? 0) >= 90 ? 'text-emerald-600' :
+                    (latest.desktop_performance_score ?? 0) >= 50 ? 'text-orange-500' : 'text-red-500'
+                  }`} />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 font-medium uppercase tracking-wide">Desktop</p>
+                  <p className={`text-3xl font-bold ${
+                    (latest.desktop_performance_score ?? 0) >= 90 ? 'text-emerald-600' :
+                    (latest.desktop_performance_score ?? 0) >= 50 ? 'text-orange-500' : 'text-red-500'
+                  }`}>{latest.desktop_performance_score ?? '--'}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Score PageSpeed</p>
+                </div>
+              </Card>
+            </div>
+          )}
+
           {/* ── Core Web Vitals ── */}
           {(latest.lcp_ms != null || latest.fcp_ms != null || latest.cls_score != null || latest.tbt_ms != null) && (
             <Card className="p-5">
@@ -152,6 +198,64 @@ export default async function SeoPage() {
               iconBg={latest.mobile_friendly === true ? 'bg-emerald-50' : latest.mobile_friendly === false ? 'bg-red-50' : 'bg-gray-50'}
             />
           </div>
+
+          {/* ── Vérifications techniques de base (Standard) ── */}
+          {(latest.has_sitemap != null || latest.has_robots_txt != null || latest.has_schema != null) && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {latest.has_sitemap != null && (
+                <div className={`flex flex-col items-center gap-1.5 p-3 rounded-xl text-center ${
+                  latest.has_sitemap ? 'bg-emerald-50 dark:bg-emerald-500/10' : 'bg-orange-50 dark:bg-orange-500/10'
+                }`}>
+                  {latest.has_sitemap
+                    ? <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                    : <AlertTriangle className="w-5 h-5 text-orange-500" />}
+                  <span className="text-xs font-semibold text-gray-700 dark:text-white">Sitemap XML</span>
+                  <span className={`text-xs ${latest.has_sitemap ? 'text-emerald-600' : 'text-orange-500'}`}>
+                    {latest.has_sitemap ? 'Présent' : 'Absent'}
+                  </span>
+                </div>
+              )}
+              {latest.has_robots_txt != null && (
+                <div className={`flex flex-col items-center gap-1.5 p-3 rounded-xl text-center ${
+                  latest.has_robots_txt ? 'bg-emerald-50 dark:bg-emerald-500/10' : 'bg-orange-50 dark:bg-orange-500/10'
+                }`}>
+                  {latest.has_robots_txt
+                    ? <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                    : <AlertTriangle className="w-5 h-5 text-orange-500" />}
+                  <span className="text-xs font-semibold text-gray-700 dark:text-white">Robots.txt</span>
+                  <span className={`text-xs ${latest.has_robots_txt ? 'text-emerald-600' : 'text-orange-500'}`}>
+                    {latest.has_robots_txt ? 'Présent' : 'Absent'}
+                  </span>
+                </div>
+              )}
+              {latest.has_schema != null && (
+                <div className={`flex flex-col items-center gap-1.5 p-3 rounded-xl text-center ${
+                  latest.has_schema ? 'bg-emerald-50 dark:bg-emerald-500/10' : 'bg-orange-50 dark:bg-orange-500/10'
+                }`}>
+                  {latest.has_schema
+                    ? <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                    : <AlertTriangle className="w-5 h-5 text-orange-500" />}
+                  <span className="text-xs font-semibold text-gray-700 dark:text-white">Schema.org</span>
+                  <span className={`text-xs ${latest.has_schema ? 'text-emerald-600' : 'text-orange-500'}`}>
+                    {latest.has_schema ? 'Présent' : 'Absent'}
+                  </span>
+                </div>
+              )}
+              {latest.total_images != null && (
+                <div className={`flex flex-col items-center gap-1.5 p-3 rounded-xl text-center ${
+                  (latest.images_without_alt ?? 0) === 0 ? 'bg-emerald-50 dark:bg-emerald-500/10' : 'bg-orange-50 dark:bg-orange-500/10'
+                }`}>
+                  {(latest.images_without_alt ?? 0) === 0
+                    ? <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                    : <AlertTriangle className="w-5 h-5 text-orange-500" />}
+                  <span className="text-xs font-semibold text-gray-700 dark:text-white">Balises alt</span>
+                  <span className={`text-xs ${(latest.images_without_alt ?? 0) === 0 ? 'text-emerald-600' : 'text-orange-500'}`}>
+                    {(latest.images_without_alt ?? 0) === 0 ? `${latest.total_images} OK` : `${latest.images_without_alt} manquantes`}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* ── Graphique historique ── */}
           <SeoHistoryChart data={chartData} />

@@ -81,6 +81,8 @@ export const DEMO_SEO_LATEST = {
   tbt_ms: 145,
   speed_index_ms: 2890,
   page_size_kb: 342,
+  mobile_performance_score: 68,
+  desktop_performance_score: 84,
   collected_at: '2026-03-03T06:00:00Z',
   // On-page SEO
   canonical_url: 'https://www.lebarachois-demo.re/',
@@ -149,18 +151,18 @@ export const DEMO_REPORT = {
 
 // Standard : 2 concurrents
 export const DEMO_COMPETITORS = [
-  { id: 'c1', name: 'Le Barachois', rating: 4.3, reviews: 127, isClient: true, website_url: 'https://www.lebarachois-demo.re', seo_score: 78, load_time_ms: 1840 },
-  { id: 'c2', name: 'La Voile Blanche', rating: 4.3, reviews: 89, isClient: false, website_url: 'https://lavoileblanche.re', seo_score: 65, load_time_ms: 2340 },
-  { id: 'c3', name: 'Le Lagon d\'Or', rating: 3.9, reviews: 216, isClient: false, website_url: 'https://lelagondor.re', seo_score: 52, load_time_ms: 3100 },
+  { id: 'c1', name: 'Le Barachois', rating: 4.3, reviews: 127, isClient: true, website_url: 'https://www.lebarachois-demo.re', seo_score: 78, load_time_ms: 1840, opening_hours: 'Mar-Dim 11h30-14h30, 18h-22h', google_photos_count: 24, review_response_rate: null, recent_reviews_count: null, competitor_seo_score: null, competitor_lcp_ms: null },
+  { id: 'c2', name: 'La Voile Blanche', rating: 4.3, reviews: 89, isClient: false, website_url: 'https://lavoileblanche.re', seo_score: 65, load_time_ms: 2340, opening_hours: 'Lun-Dim 12h-22h', google_photos_count: 31, review_response_rate: null, recent_reviews_count: null, competitor_seo_score: null, competitor_lcp_ms: null },
+  { id: 'c3', name: "Le Lagon d'Or", rating: 3.9, reviews: 216, isClient: false, website_url: 'https://lelagondor.re', seo_score: 52, load_time_ms: 3100, opening_hours: 'Mer-Lun 11h-22h', google_photos_count: 8, review_response_rate: null, recent_reviews_count: null, competitor_seo_score: null, competitor_lcp_ms: null },
 ]
 
 // Premium : 5 concurrents
 export const DEMO_COMPETITORS_PREMIUM = [
-  { id: 'c1', name: 'Le Barachois', rating: 4.3, reviews: 127, isClient: true, website_url: 'https://www.lebarachois-demo.re', seo_score: 78, load_time_ms: 1840 },
-  { id: 'c2', name: 'La Voile Blanche', rating: 4.3, reviews: 89, isClient: false, website_url: 'https://lavoileblanche.re', seo_score: 65, load_time_ms: 2340 },
-  { id: 'c3', name: 'Le Lagon d\'Or', rating: 3.9, reviews: 216, isClient: false, website_url: 'https://lelagondor.re', seo_score: 52, load_time_ms: 3100 },
-  { id: 'c4', name: 'Chez Nous Saint-Gilles', rating: 4.1, reviews: 143, isClient: false, website_url: 'https://cheznous-saintgilles.re', seo_score: 44, load_time_ms: 3800 },
-  { id: 'c5', name: 'Le Blue Marlin', rating: 4.0, reviews: 78, isClient: false, website_url: null, seo_score: null, load_time_ms: null },
+  { id: 'c1', name: 'Le Barachois', rating: 4.3, reviews: 127, isClient: true, website_url: 'https://www.lebarachois-demo.re', seo_score: 78, load_time_ms: 1840, opening_hours: 'Mar-Dim 11h30-14h30, 18h-22h', google_photos_count: 24, review_response_rate: 72, recent_reviews_count: 6, competitor_seo_score: 78, competitor_lcp_ms: 2180 },
+  { id: 'c2', name: 'La Voile Blanche', rating: 4.3, reviews: 89, isClient: false, website_url: 'https://lavoileblanche.re', seo_score: 65, load_time_ms: 2340, opening_hours: 'Lun-Dim 12h-22h', google_photos_count: 31, review_response_rate: 12, recent_reviews_count: 8, competitor_seo_score: 65, competitor_lcp_ms: 3200 },
+  { id: 'c3', name: "Le Lagon d'Or", rating: 3.9, reviews: 216, isClient: false, website_url: 'https://lelagondor.re', seo_score: 52, load_time_ms: 3100, opening_hours: 'Mer-Lun 11h-22h', google_photos_count: 8, review_response_rate: 5, recent_reviews_count: 3, competitor_seo_score: 52, competitor_lcp_ms: 4800 },
+  { id: 'c4', name: 'Chez Nous Saint-Gilles', rating: 4.1, reviews: 143, isClient: false, website_url: 'https://cheznous-saintgilles.re', seo_score: 44, load_time_ms: 3800, opening_hours: 'Mar-Sam 11h-21h30', google_photos_count: 15, review_response_rate: 45, recent_reviews_count: 5, competitor_seo_score: 44, competitor_lcp_ms: 5100 },
+  { id: 'c5', name: 'Le Blue Marlin', rating: 4.0, reviews: 78, isClient: false, website_url: null, seo_score: null, load_time_ms: null, opening_hours: 'Jeu-Mar 12h-14h30, 19h-22h', google_photos_count: 5, review_response_rate: 30, recent_reviews_count: 2, competitor_seo_score: null, competitor_lcp_ms: null },
 ]
 
 export const DEMO_REPORTS_USED = 2

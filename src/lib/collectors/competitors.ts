@@ -33,7 +33,7 @@ export async function refreshCustomCompetitors() {
       await limiter.throttle()
       const url = new URL('https://maps.googleapis.com/maps/api/place/details/json')
       url.searchParams.set('place_id', comp.google_place_id!)
-      url.searchParams.set('fields', 'rating,user_ratings_total,name')
+      url.searchParams.set('fields', 'rating,user_ratings_total,name,opening_hours,photos')
       url.searchParams.set('language', 'fr')
       url.searchParams.set('key', apiKey)
 
@@ -50,6 +50,8 @@ export async function refreshCustomCompetitors() {
           google_rating: result.rating ?? null,
           google_reviews_count: result.user_ratings_total ?? null,
           name: result.name ?? undefined,
+          opening_hours: result.opening_hours?.weekday_text?.join(', ') ?? null,
+          google_photos_count: result.photos?.length ?? 0,
         })
         .eq('id', comp.id)
 
@@ -110,4 +112,47 @@ export async function collectCompetitors(
   if (error) throw new Error(`Supabase insert error: ${error.message}`)
 
   return { found: rows.length }
+}
+
+export async function collectCompetitorSeo(businessId: string, websiteUrl: string): Promise<void> {
+  try {
+    const psKey = process.env.PAGESPEED_API_KEY
+    const psUrl = new URL('https://www.googleapis.com/pagespeedonline/v5/runPagespeed')
+    psUrl.searchParams.set('url', websiteUrl)
+    psUrl.searchParams.set('strategy', 'mobile')
+    if (psKey) psUrl.searchParams.set('key', psKey)
+    psUrl.searchParams.append('category', 'performance')
+
+    const res = await fetch(psUrl.toString(), { signal: AbortSignal.timeout(40000) })
+    if (!res.ok) {
+      console.error('[competitors] PageSpeed error for', websiteUrl, res.status)
+      return
+    }
+
+    const psData = await res.json()
+    const categories = psData?.lighthouseResult?.categories
+    const audits = psData?.lighthouseResult?.audits
+
+    const performanceScore =
+      categories?.performance?.score != null
+        ? Math.round(categories.performance.score * 100)
+        : null
+
+    const lcpMs =
+      audits?.['largest-contentful-paint']?.numericValue != null
+        ? Math.round(audits['largest-contentful-paint'].numericValue)
+        : null
+
+    const supabase = createAdminClient()
+    await supabase
+      .from('businesses')
+      .update({
+        competitor_seo_score: performanceScore,
+        competitor_lcp_ms: lcpMs,
+        competitor_seo_collected_at: new Date().toISOString(),
+      })
+      .eq('id', businessId)
+  } catch (err) {
+    console.error('[competitors] collectCompetitorSeo error:', err)
+  }
 }

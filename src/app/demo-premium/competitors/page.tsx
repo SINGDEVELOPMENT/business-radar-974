@@ -2,7 +2,11 @@ import Header from '@/components/layout/Header'
 import KpiCard from '@/components/dashboard/KpiCard'
 import CompetitorChart from '@/components/dashboard/CompetitorChart'
 import { Card } from '@/components/ui/card'
-import { Users, Star, TrendingUp, TrendingDown, Minus, Globe, Clock, Gauge, ExternalLink } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import {
+  Users, Star, TrendingUp, TrendingDown, Minus,
+  Globe, Clock, Gauge, ExternalLink, ImageIcon, MessageSquare,
+} from 'lucide-react'
 import { DEMO_COMPETITORS_PREMIUM } from '@/lib/demo-data'
 
 export default function DemoPremiumCompetitorsPage() {
@@ -48,6 +52,12 @@ export default function DemoPremiumCompetitorsPage() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-900 dark:text-white truncate">{comp.name}</p>
+                    {comp.opening_hours && (
+                      <p className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+                        <Clock className="w-3 h-3 shrink-0" />
+                        {comp.opening_hours}
+                      </p>
+                    )}
                     {comp.website_url && (
                       <a href={comp.website_url} target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-1 text-xs text-blue-500 hover:underline mt-0.5">
@@ -69,7 +79,7 @@ export default function DemoPremiumCompetitorsPage() {
                   <div className="flex flex-col gap-1 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10">
                     <div className="flex items-center gap-1.5"><Star className="w-4 h-4 text-amber-500 fill-amber-500" /><span className="text-xs font-medium text-amber-700">Note Google</span></div>
                     <p className="text-2xl font-bold text-amber-700">{comp.rating?.toFixed(1) ?? '--'}</p>
-                    <p className="text-xs text-amber-600">{comp.reviews != null ? `${comp.reviews} avis` : 'Aucun avis'}</p>
+                    <p className="text-xs text-amber-600">/5</p>
                   </div>
                   <div className="flex flex-col gap-1 p-3 rounded-xl bg-blue-50 dark:bg-blue-500/10">
                     <div className="flex items-center gap-1.5"><Gauge className="w-4 h-4 text-blue-500" /><span className="text-xs font-medium text-blue-700">Score SEO</span></div>
@@ -86,9 +96,62 @@ export default function DemoPremiumCompetitorsPage() {
                     <p className="text-xs text-purple-600">{comp.load_time_ms == null ? 'En attente' : comp.load_time_ms < 2000 ? 'Rapide' : comp.load_time_ms < 5000 ? 'Moyen' : 'Lent'}</p>
                   </div>
                   <div className="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 dark:bg-slate-800">
-                    <div className="flex items-center gap-1.5"><Users className="w-4 h-4 text-gray-400" /><span className="text-xs font-medium text-gray-500">Total avis</span></div>
-                    <p className="text-2xl font-bold text-gray-700 dark:text-white">{comp.reviews ?? '--'}</p>
-                    <p className="text-xs text-gray-400">{comp.website_url ? 'Google Places' : 'Non lié'}</p>
+                    <div className="flex items-center gap-1.5"><ImageIcon className="w-4 h-4 text-gray-400" /><span className="text-xs font-medium text-gray-500">Photos Google</span></div>
+                    <p className="text-2xl font-bold text-gray-700 dark:text-white">{comp.google_photos_count ?? '--'}</p>
+                    <p className="text-xs text-gray-400">photos</p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-400">{comp.reviews != null ? `${comp.reviews} avis Google` : 'Aucun avis'}</p>
+
+                {/* Section Analyse Premium — non-client uniquement */}
+                <div className="border-t border-gray-100 dark:border-slate-700 pt-3 space-y-2">
+                  <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Analyse Premium</p>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    {/* % réponses aux avis */}
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs text-gray-500">Réponses avis :</span>
+                      {comp.review_response_rate != null ? (
+                        <Badge variant="outline" className={`text-xs font-semibold border-0 ${
+                          comp.review_response_rate >= 50
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : comp.review_response_rate >= 20
+                            ? 'bg-orange-50 text-orange-600'
+                            : 'bg-red-50 text-red-600'
+                        }`}>
+                          {comp.review_response_rate}%
+                        </Badge>
+                      ) : (
+                        <span className="text-xs text-gray-300">--</span>
+                      )}
+                    </div>
+
+                    {/* Avis récents 30j */}
+                    <div className="flex items-center gap-1">
+                      <MessageSquare className="w-3.5 h-3.5 text-gray-400" />
+                      <span className="text-xs text-gray-500">30j :</span>
+                      <span className="text-xs font-semibold text-gray-700 dark:text-white">
+                        {comp.recent_reviews_count != null ? `${comp.recent_reviews_count} avis` : '--'}
+                      </span>
+                    </div>
+
+                    {/* Score PageSpeed concurrent */}
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs text-gray-500">PageSpeed :</span>
+                      {comp.competitor_seo_score != null ? (
+                        <span className={`text-xs font-bold ${
+                          comp.competitor_seo_score >= 70
+                            ? 'text-emerald-600'
+                            : comp.competitor_seo_score >= 40
+                            ? 'text-orange-500'
+                            : 'text-red-500'
+                        }`}>
+                          {comp.competitor_seo_score}/100
+                        </span>
+                      ) : (
+                        <span className="text-xs text-gray-300">--</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </Card>
