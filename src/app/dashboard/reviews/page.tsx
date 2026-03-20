@@ -138,8 +138,8 @@ export default async function ReviewsPage() {
               value={totalReviews}
               subtitle="Toutes périodes"
               icon={MessageSquareText}
-              iconColor="text-blue-500"
-              iconBg="bg-blue-50"
+              iconColor="text-[#6C5CE7]"
+              iconBg="bg-[#6C5CE7]/10"
             />
             <KpiCard
               title="Avis positifs"
@@ -165,7 +165,7 @@ export default async function ReviewsPage() {
           {/* Recent activity badge */}
           {recentCount > 0 && (
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-blue-500" />
+              <Activity className="w-4 h-4 text-[#6C5CE7]" />
               <span className="text-sm text-gray-600">
                 <span className="font-semibold text-gray-900">{recentCount} avis</span>{' '}
                 reçus ces 30 derniers jours

@@ -60,17 +60,17 @@ export default async function DashboardPage() {
         <Header title="Vue d'ensemble" subtitle="Tableau de bord superadmin" />
 
         {/* Banner superadmin */}
-        <div className="flex items-center gap-3 p-4 rounded-xl bg-blue-50 border border-blue-200">
-          <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0" />
+        <div className="flex items-center gap-3 p-4 rounded-xl bg-[#6C5CE7]/8 border border-[#6C5CE7]/20">
+          <ShieldCheck className="w-5 h-5 text-[#6C5CE7] shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-blue-900">Mode superadmin</p>
-            <p className="text-xs text-blue-600 mt-0.5">
+            <p className="text-sm font-semibold text-[#6C5CE7]">Mode superadmin</p>
+            <p className="text-xs text-[#6C5CE7] mt-0.5">
               Tu vois ici le résumé global de la plateforme. Les clients voient uniquement leurs propres données.
             </p>
           </div>
           <Link
             href="/dashboard/admin"
-            className="flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-800 shrink-0"
+            className="flex items-center gap-1 text-xs font-medium text-[#6C5CE7] hover:text-[#9B8FF2] shrink-0"
           >
             Gérer les clients <ArrowRight className="w-3 h-3" />
           </Link>
@@ -83,8 +83,8 @@ export default async function DashboardPage() {
             value={orgsRes.count ?? 0}
             subtitle="organisations"
             icon={Building2}
-            iconColor="text-blue-600"
-            iconBg="bg-blue-50"
+            iconColor="text-[#6C5CE7]"
+            iconBg="bg-[#6C5CE7]/10"
           />
           <KpiCard
             title="Business surveillés"
@@ -286,8 +286,8 @@ export default async function DashboardPage() {
           value={reviews.length}
           subtitle="ce mois"
           icon={MessageSquare}
-          iconColor="text-blue-600"
-          iconBg="bg-blue-50"
+          iconColor="text-[#6C5CE7]"
+          iconBg="bg-[#6C5CE7]/10"
         />
         <KpiCard
           title="Engagement social"
@@ -319,10 +319,10 @@ export default async function DashboardPage() {
         ) : (
           <div className="relative">
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-xl">
-              <Lock className="w-7 h-7 text-blue-400" />
+              <Lock className="w-7 h-7 text-[#9B8FF2]" />
               <p className="text-sm font-semibold text-gray-700 dark:text-slate-300">Disponible en Premium</p>
               <p className="text-xs text-gray-500 dark:text-slate-400 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                <Sparkles className="w-3.5 h-3.5 text-[#9B8FF2]" />
                 Contactez votre administrateur pour passer en Premium.
               </p>
             </div>

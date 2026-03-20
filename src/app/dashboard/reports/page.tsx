@@ -85,23 +85,23 @@ export default async function ReportsPage() {
 
       {/* ── Gate standard (sans grace period) ── */}
       {!isPremium && !isInGracePeriod && (
-        <Card className="p-6 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40">
+        <Card className="p-6 border-[#6C5CE7]/20 bg-gradient-to-br from-[#6C5CE7]/5 to-[#00CEC9]/5 dark:from-[#6C5CE7]/10 dark:to-[#00CEC9]/10">
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-blue-600 shrink-0">
+            <div className="p-3 rounded-xl bg-[#6C5CE7] shrink-0">
               <Lock className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <h3 className="font-semibold text-gray-900 dark:text-white">Fonctionnalité Premium</h3>
-                <Badge className="bg-blue-600">Premium</Badge>
+                <Badge className="bg-[#6C5CE7]">Premium</Badge>
               </div>
               <p className="text-sm text-gray-600 dark:text-slate-300 mb-3">
                 La génération de rapports AI est réservée aux abonnés Premium. Passez au plan Premium pour accéder à :
               </p>
               <ul className="space-y-1.5 text-sm text-gray-700 dark:text-slate-300">
-                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-blue-500 shrink-0" /> 1 rapport AI automatique chaque semaine</li>
-                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-blue-500 shrink-0" /> 5 rapports manuels par mois</li>
-                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-blue-500 shrink-0" /> Jusqu'à 5 concurrents surveillés (vs 2 en standard)</li>
+                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-[#9B8FF2] shrink-0" /> 1 rapport AI automatique chaque semaine</li>
+                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-[#9B8FF2] shrink-0" /> 5 rapports manuels par mois</li>
+                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-[#9B8FF2] shrink-0" /> Jusqu'à 5 concurrents surveillés (vs 2 en standard)</li>
               </ul>
               <p className="text-xs text-gray-500 mt-3">Contactez votre administrateur pour passer en Premium.</p>
             </div>
@@ -186,7 +186,7 @@ export default async function ReportsPage() {
                     <ScoreCircle score={latestContent.score_global} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        <Brain className="w-4 h-4 text-blue-600" />
+                        <Brain className="w-4 h-4 text-[#6C5CE7]" />
                         <h3 className="font-semibold text-gray-900 dark:text-white">Synthèse</h3>
                       </div>
                       <p className="text-sm text-gray-700 dark:text-slate-300 leading-relaxed">{latestContent.summary}</p>

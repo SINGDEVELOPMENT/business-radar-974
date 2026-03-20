@@ -77,10 +77,7 @@ function DashboardMockup({ mockupT }: { mockupT: { title: string; body: string }
           {/* Sidebar */}
           <aside className="w-32 flex-none bg-[#1A1A2E] flex flex-col p-2 gap-0.5">
             <div className="flex items-center gap-1.5 px-2 py-2 mb-1.5">
-              <div className="w-5 h-5 rounded-[4px] flex-none overflow-hidden">
-                <img src="/logo-white.svg" alt="" className="w-full h-full" />
-              </div>
-              <span className="text-[9px] font-bold text-white truncate">Axora Data</span>
+              <img src="/favicon.svg" alt="" className="w-5 h-5 flex-none" />
             </div>
             {NAV_ITEMS.map(({ Icon, label, active }) => (
               <div key={label} className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md ${active ? 'bg-[#6C5CE7]/20' : ''}`}>
@@ -310,10 +307,9 @@ export default function LandingPage() {
       <header className={`sticky top-0 z-50 border-b border-gray-200 dark:border-white/[0.06] bg-white/80 dark:bg-gray-950/80 backdrop-blur-md transition-shadow duration-200 ${scrolled ? 'shadow-sm' : ''}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           {/* Logo */}
-          <div className="flex items-center gap-2.5 shrink-0">
-            <Image src="/logo.svg" alt="Axora Data" width={28} height={28} className="dark:hidden" />
-            <Image src="/logo-white.svg" alt="Axora Data" width={28} height={28} className="hidden dark:block" />
-            <span className="text-base font-bold tracking-tight text-gray-900 dark:text-white">Axora Data</span>
+          <div className="flex items-center shrink-0">
+            <Image src="/logo.svg" alt="Axora Data" width={147} height={32} className="h-8 w-auto dark:hidden" />
+            <Image src="/logo-white.svg" alt="Axora Data" width={147} height={32} className="h-8 w-auto hidden dark:block" />
           </div>
 
           {/* Nav desktop */}
@@ -720,9 +716,8 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
             {/* Col 1 — Brand */}
             <div className="lg:col-span-1">
-              <div className="flex items-center gap-2.5 mb-4">
-                <Image src="/logo-white.svg" alt="Axora Data" width={26} height={26} className="opacity-90" />
-                <span className="font-bold text-white text-sm">Axora Data</span>
+              <div className="flex items-center mb-4">
+                <Image src="/logo-white.svg" alt="Axora Data" width={128} height={28} className="h-7 w-auto opacity-90" />
               </div>
               <p className="text-sm leading-relaxed text-gray-400 mb-6">{t.footer.desc}</p>
               <p className="text-xs text-gray-500">© 2026 Axora Data. {t.footer.rights}</p>

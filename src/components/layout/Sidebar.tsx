@@ -133,8 +133,7 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-5 h-16">
-          <img src="/logo-white.svg" alt="Axora Data" className="w-8 h-8 shrink-0" />
-          <span className="text-white font-bold text-lg leading-tight tracking-tight">Axora Data</span>
+          <img src="/logo-white.svg" alt="Axora Data" className="h-7 w-auto" />
         </div>
 
         <Separator className="bg-white/[0.06]" />

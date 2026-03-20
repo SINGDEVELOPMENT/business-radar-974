@@ -11,9 +11,8 @@ export default function MentionsLegalesPage() {
     <div className="min-h-screen bg-background text-foreground">
       <nav className="sticky top-0 z-10 flex items-center gap-3 px-6 h-14 bg-background/95 backdrop-blur border-b border-border">
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <img src="/logo.svg" alt="Axora Data" className="w-7 h-7 dark:hidden" />
-          <img src="/logo-white.svg" alt="Axora Data" className="w-7 h-7 hidden dark:block" />
-          <span className="font-bold text-foreground">Axora Data</span>
+          <img src="/logo.svg" alt="Axora Data" className="h-7 w-auto dark:hidden" />
+          <img src="/logo-white.svg" alt="Axora Data" className="h-7 w-auto hidden dark:block" />
         </Link>
         <span className="text-muted-foreground">/</span>
         <span className="text-muted-foreground text-sm">Mentions légales</span>

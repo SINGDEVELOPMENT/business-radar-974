@@ -89,7 +89,7 @@ function LoginForm() {
               <button
                 type="button"
                 onClick={() => { setView('forgot'); setError('') }}
-                className="text-xs text-blue-500 hover:text-blue-400 transition-colors"
+                className="text-xs text-[#6C5CE7] hover:text-[#9B8FF2] transition-colors"
               >
                 Mot de passe oublié ?
               </button>
@@ -115,7 +115,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
+            className="w-full py-2.5 px-4 bg-[#6C5CE7] hover:bg-[#9B8FF2] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
           >
             {loading ? 'Connexion…' : 'Se connecter'}
           </button>
@@ -128,7 +128,7 @@ function LoginForm() {
           </p>
           <button
             onClick={() => { setView('login'); setResetSent(false) }}
-            className="text-sm text-blue-500 hover:text-blue-400 transition-colors"
+            className="text-sm text-[#6C5CE7] hover:text-[#9B8FF2] transition-colors"
           >
             Retour à la connexion
           </button>
@@ -160,7 +160,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
+            className="w-full py-2.5 px-4 bg-[#6C5CE7] hover:bg-[#9B8FF2] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
           >
             {loading ? 'Envoi…' : 'Envoyer le lien de réinitialisation'}
           </button>
@@ -199,7 +199,7 @@ export default function LoginPage() {
         className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
         style={{
           background:
-            'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(37,99,235,0.10) 0%, transparent 70%)',
+            'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(108,92,231,0.12) 0%, transparent 70%)',
         }}
       />
 
@@ -209,10 +209,9 @@ export default function LoginPage() {
 
       <div className="relative z-10 w-full max-w-md px-4">
         <div className="text-center mb-8">
-          <img src="/logo.svg" alt="Axora Data" className="w-12 h-12 mx-auto block mb-4 dark:hidden" />
-          <img src="/logo-white.svg" alt="Axora Data" className="w-12 h-12 mx-auto hidden mb-4 dark:block" />
+          <img src="/icon.svg" alt="Axora Data" className="w-14 h-14 mx-auto block mb-4 dark:opacity-90" />
           <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            Axora Data
+            Connexion
           </h1>
           <p className="mt-1.5 text-sm text-gray-500 dark:text-slate-400">
             Connectez-vous à votre tableau de bord
