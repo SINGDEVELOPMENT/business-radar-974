@@ -6,7 +6,7 @@ import { collectGoogleReviews } from '@/lib/collectors/google-reviews'
 import { collectSeoAudit } from '@/lib/collectors/seo-audit'
 import { collectFacebookPosts } from '@/lib/collectors/facebook'
 import { collectInstagramPosts } from '@/lib/collectors/instagram'
-import { refreshCustomCompetitors } from '@/lib/collectors/competitors'
+import { refreshCustomCompetitors, collectCompetitorSeo } from '@/lib/collectors/competitors'
 import { analyzeMonthly } from '@/lib/ai/analyze'
 import type { BusinessData } from '@/types'
 
@@ -157,8 +157,8 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Concurrents custom : refresh Google + SEO en parallèle
-    const [refreshResult, { data: competitorsWithSite }] = await Promise.all([
+    // Concurrents custom : refresh Google + récupération de tous les concurrents avec site
+    const [refreshResult, { data: customWithSite }, { data: allWithSite }] = await Promise.all([
       refreshCustomCompetitors().catch(e => ({ error: e instanceof Error ? e.message : 'unknown' })),
       supabase
         .from('businesses')
@@ -166,15 +166,25 @@ export async function GET(request: NextRequest) {
         .eq('is_competitor', true)
         .eq('custom_competitor', true)
         .not('website_url', 'is', null),
+      supabase
+        .from('businesses')
+        .select('id, website_url')
+        .eq('is_competitor', true)
+        .not('website_url', 'is', null),
     ])
     customCompetitorsRefresh = refreshResult
 
-    // Audit SEO des concurrents — tous EN PARALLÈLE
-    await Promise.all(
-      (competitorsWithSite ?? [])
+    // Audit SEO complet (custom uniquement) + PageSpeed léger (tous concurrents) — EN PARALLÈLE
+    await Promise.all([
+      // Audit complet Lighthouse pour les concurrents custom
+      ...(customWithSite ?? [])
         .filter(comp => comp.website_url)
-        .map(comp => collectSeoAudit(comp.id, comp.website_url!).catch(() => {}))
-    )
+        .map(comp => collectSeoAudit(comp.id, comp.website_url!).catch(() => {})),
+      // Score PageSpeed léger pour tous les concurrents avec un site (alimente competitor_seo_score)
+      ...(allWithSite ?? [])
+        .filter(comp => comp.website_url)
+        .map(comp => collectCompetitorSeo(comp.id, comp.website_url!).catch(() => {})),
+    ])
   }
 
   return NextResponse.json({
