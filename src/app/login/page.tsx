@@ -209,7 +209,8 @@ export default function LoginPage() {
 
       <div className="relative z-10 w-full max-w-md px-4">
         <div className="text-center mb-8">
-          <img src="/icon.svg" alt="Axora Data" className="w-14 h-14 mx-auto block mb-4 dark:opacity-90" />
+          <img src="/logo.svg" alt="Axora Data" className="h-10 w-auto mx-auto block mb-4 dark:hidden" />
+          <img src="/logo-white.svg" alt="Axora Data" className="h-10 w-auto mx-auto block mb-4 hidden dark:block" />
           <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
             Connexion
           </h1>
