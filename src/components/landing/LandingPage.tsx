@@ -304,18 +304,17 @@ export default function LandingPage() {
       }) }} />
 
       {/* ─── NAVBAR ──────────────────────────────────────────────────────────── */}
-      <header className={`sticky top-0 z-50 border-b border-gray-200 dark:border-white/[0.06] bg-white/80 dark:bg-gray-950/80 backdrop-blur-md transition-shadow duration-200 ${scrolled ? 'shadow-sm' : ''}`}>
+      <header className={`sticky top-0 z-50 border-b border-white/[0.06] bg-[#1A1A2E]/80 dark:bg-[#1A1A2E]/80 backdrop-blur-md transition-shadow duration-200 ${scrolled ? 'shadow-sm' : ''}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           {/* Logo */}
           <div className="flex items-center shrink-0">
-            <Image src="/logo.svg" alt="Axora Data" width={147} height={32} className="h-8 w-auto dark:hidden" />
-            <Image src="/logo-white.svg" alt="Axora Data" width={147} height={32} className="h-8 w-auto hidden dark:block" />
+            <Image src="/logo-white.svg" alt="Axora Data" width={147} height={32} className="h-8 w-auto" />
           </div>
 
           {/* Nav desktop */}
           <nav className="hidden md:flex items-center gap-7">
             {navItems.map(([href, label]) => (
-              <a key={href} href={href} className="text-sm font-medium text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-colors">{label}</a>
+              <a key={href} href={href} className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{label}</a>
             ))}
           </nav>
 
@@ -337,9 +336,9 @@ export default function LandingPage() {
         </div>
 
         {menuOpen && (
-          <div className="md:hidden border-t border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#0d0d1a] px-4 py-5 flex flex-col gap-4">
+          <div className="md:hidden border-t border-white/[0.06] bg-[#1A1A2E] px-4 py-5 flex flex-col gap-4">
             {navItems.map(([href, label]) => (
-              <a key={href} href={href} onClick={() => setMenuOpen(false)} className="text-base font-medium text-gray-700 dark:text-slate-200">{label}</a>
+              <a key={href} href={href} onClick={() => setMenuOpen(false)} className="text-base font-medium text-slate-200">{label}</a>
             ))}
             <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-white/[0.06]">
               <div className="flex items-center border border-gray-200 dark:border-white/[0.1] rounded-lg overflow-hidden text-xs font-semibold">
@@ -357,18 +356,15 @@ export default function LandingPage() {
       </header>
 
       {/* ─── HERO ────────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-0">
+      <section className="relative overflow-hidden pt-0 bg-[#1A1A2E]">
         {/* Background */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Light mode: subtle radial gradient */}
-          <div className="absolute inset-0 dark:opacity-0" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(108,92,231,0.07) 0%, transparent 70%)' }} />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#6C5CE7]/[0.04] via-transparent to-[#00CEC9]/[0.03] dark:opacity-0" />
-          {/* Dark mode: dot grid */}
-          <div className="absolute inset-0 opacity-0 dark:opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
-          {/* Dark mode: orbs */}
-          <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] rounded-full opacity-0 dark:opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(108,92,231,0.5) 0%, transparent 70%)', animation: 'orb-float 9s ease-in-out infinite' }} />
-          <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] rounded-full opacity-0 dark:opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(0,206,201,0.4) 0%, transparent 70%)', animation: 'orb-float 13s ease-in-out infinite reverse' }} />
-          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-gray-50 dark:from-[#0d0d1a] to-transparent" />
+          {/* Dot grid */}
+          <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+          {/* Orbs */}
+          <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(108,92,231,0.5) 0%, transparent 70%)', animation: 'orb-float 9s ease-in-out infinite' }} />
+          <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(0,206,201,0.4) 0%, transparent 70%)', animation: 'orb-float 13s ease-in-out infinite reverse' }} />
+          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#1A1A2E] to-transparent" />
         </div>
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-24 sm:py-32 w-full">
@@ -380,25 +376,25 @@ export default function LandingPage() {
                 {t.hero.badge}
               </div>
 
-              <h1 className="hero-animate hero-animate-delay-1 text-4xl sm:text-5xl lg:text-[3.2rem] font-extrabold leading-[1.1] tracking-tight mb-6">
+              <h1 className="hero-animate hero-animate-delay-1 font-[family-name:var(--font-jakarta)] text-4xl sm:text-5xl lg:text-[3.2rem] font-extrabold leading-[1.1] tracking-tight mb-6">
                 {t.hero.title1}{' '}
                 <span className={`bg-gradient-to-r ${isDark ? 'from-[#9B8FF2] to-[#00CEC9]' : 'from-[#6C5CE7] to-[#00CEC9]'} bg-clip-text text-transparent`}>
                   {t.hero.title2}
                 </span>
               </h1>
 
-              <p className="hero-animate hero-animate-delay-2 text-lg text-gray-600 dark:text-slate-300 leading-relaxed mb-8 max-w-lg">{t.hero.sub}</p>
+              <p className="hero-animate hero-animate-delay-2 text-lg text-slate-300 leading-relaxed mb-8 max-w-lg">{t.hero.sub}</p>
 
               <div className="hero-animate hero-animate-delay-3 flex flex-col sm:flex-row gap-3 mb-10">
                 <Link href="/demo" className="inline-flex items-center justify-center gap-2 bg-[#6C5CE7] hover:bg-[#9B8FF2] text-white font-semibold px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-[#6C5CE7]/25 text-sm">
                   {t.hero.cta1} <ArrowRight className="w-4 h-4" />
                 </Link>
-                <a href="#contact" className="inline-flex items-center justify-center gap-2 border border-gray-300 dark:border-white/[0.12] hover:border-gray-400 dark:hover:border-white/[0.25] bg-white dark:bg-white/[0.03] hover:bg-gray-50 dark:hover:bg-white/[0.06] text-gray-700 dark:text-white font-semibold px-6 py-3.5 rounded-xl transition-all text-sm">
+                <a href="#contact" className="inline-flex items-center justify-center gap-2 border border-white/[0.15] hover:border-white/[0.25] bg-white/[0.05] hover:bg-white/[0.08] text-white font-semibold px-6 py-3.5 rounded-xl transition-all text-sm">
                   {t.hero.cta2}
                 </a>
               </div>
 
-              <div className="hero-animate hero-animate-delay-4 flex flex-wrap gap-5 text-sm text-gray-600 dark:text-slate-400">
+              <div className="hero-animate hero-animate-delay-4 flex flex-wrap gap-5 text-sm text-slate-400">
                 {t.hero.trust.map((s) => (
                   <span key={s} className="flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />{s}
@@ -444,7 +440,7 @@ export default function LandingPage() {
             <span className="inline-block bg-red-100 dark:bg-red-500/[0.12] text-red-600 dark:text-red-400 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-5">
               {t.problem.label}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight mb-5">{t.problem.title}</h2>
+            <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight mb-5">{t.problem.title}</h2>
             <p className="text-gray-600 dark:text-slate-300 text-lg leading-relaxed">{t.problem.sub}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
@@ -472,7 +468,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="reveal">
               <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.solution.label}</p>
-              <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight mb-6">{t.solution.title1}<br />{t.solution.title2}</h2>
+              <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight mb-6">{t.solution.title1}<br />{t.solution.title2}</h2>
               <p className="text-gray-600 dark:text-slate-300 text-lg leading-relaxed mb-8">{t.solution.sub}</p>
               <ul className="space-y-4">
                 {t.solution.bullets.map((item) => (
@@ -483,7 +479,37 @@ export default function LandingPage() {
               </ul>
             </div>
             <div className="reveal reveal-delay-2 hidden lg:block">
-              <DashboardMockup mockupT={t.mockup} />
+              <div className="relative rounded-2xl border border-[#6C5CE7]/20 dark:border-[#6C5CE7]/15 bg-white dark:bg-[#1A1A2E] shadow-xl dark:shadow-black/40 overflow-hidden p-6">
+                {/* Header carte rapport */}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-[#6C5CE7]/10 flex items-center justify-center">
+                      <Brain className="w-4 h-4 text-[#6C5CE7]" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-gray-900 dark:text-white">{t.mockup.title}</p>
+                      <p className="text-[10px] text-gray-500 dark:text-slate-500">Axora AI · Claude</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2 py-1 rounded-full">Score 72/100</span>
+                </div>
+                {/* Recommandations */}
+                {[
+                  { priority: 'Haute', color: 'text-red-500 bg-red-50 dark:bg-red-500/10', action: 'Répondre aux 3 avis négatifs Google sous 24h' },
+                  { priority: 'Haute', color: 'text-red-500 bg-red-50 dark:bg-red-500/10', action: 'Optimiser la balise title de votre page d\'accueil' },
+                  { priority: 'Moy.', color: 'text-amber-500 bg-amber-50 dark:bg-amber-500/10', action: 'Publier 2 posts Instagram cette semaine' },
+                ].map((r, i) => (
+                  <div key={i} className="flex items-start gap-3 py-3 border-b border-gray-100 dark:border-white/[0.05] last:border-0">
+                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${r.color} shrink-0 mt-0.5`}>{r.priority}</span>
+                    <p className="text-xs text-gray-600 dark:text-slate-300 leading-relaxed">{r.action}</p>
+                  </div>
+                ))}
+                {/* Footer */}
+                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-white/[0.05] flex items-center justify-between">
+                  <p className="text-[10px] text-gray-400 dark:text-slate-500">Généré le 20 mars 2026</p>
+                  <span className="text-[10px] text-[#6C5CE7] dark:text-[#9B8FF2] font-semibold">+2 recommandations →</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -513,7 +539,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.features.label}</p>
-            <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight">{t.features.title1}<br />{t.features.title2}</h2>
+            <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight">{t.features.title1}<br />{t.features.title2}</h2>
           </div>
 
           {/* Feature IA en grand */}
@@ -562,7 +588,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.how.label}</p>
-            <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight">{t.how.title}</h2>
+            <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight">{t.how.title}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
             {/* Ligne horizontale de connexion (desktop) */}
@@ -591,7 +617,7 @@ export default function LandingPage() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-16 reveal">
               <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.testimonials.label}</p>
-              <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight">{t.testimonials.title}</h2>
+              <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight">{t.testimonials.title}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {t.testimonials.items.map((item, i) => (
@@ -619,7 +645,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16 reveal">
             <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.pricing.label}</p>
-            <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight mb-4">{t.pricing.title}</h2>
+            <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight mb-4">{t.pricing.title}</h2>
             <p className="text-gray-600 dark:text-slate-300 text-base">{t.pricing.sub}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
@@ -666,7 +692,7 @@ export default function LandingPage() {
         <div className="max-w-lg mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 reveal">
             <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.contact.label}</p>
-            <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight mb-4">{t.contact.title}</h2>
+            <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight mb-4">{t.contact.title}</h2>
             <p className="text-gray-600 dark:text-slate-300 text-base leading-relaxed">{t.contact.sub}</p>
           </div>
 
