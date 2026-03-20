@@ -97,10 +97,10 @@ export default function CgvPage() {
                 </div>
                 <div className="mb-4 space-y-1">
                   <p className="text-2xl font-bold text-foreground">
-                    1 500 € <span className="text-sm font-normal text-muted-foreground">HT setup</span>
+                    2 000 € <span className="text-sm font-normal text-muted-foreground">HT setup</span>
                   </p>
                   <p className="text-foreground/70">
-                    + <strong>200 € HT/mois</strong> de maintenance
+                    + <strong>250 € HT/mois</strong> de maintenance
                   </p>
                 </div>
                 <ul className="space-y-1.5 text-sm text-foreground/70">

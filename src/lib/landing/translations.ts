@@ -11,7 +11,10 @@ export const T = {
       cta1: 'Voir la démo', cta2: 'Obtenir l\'accès',
       trust: ['Configuration en 24h', 'Données en temps réel', 'Rapport IA mensuel', 'Aucune compétence technique requise'],
     },
-    trustBar: ['Configuration en 24h', 'Synchronisation temps réel', 'Rapport IA mensuel', 'Aucune compétence requise', 'Propulsé par Claude AI'],
+    trustBar: {
+      text: 'Utilisé par des commerces locaux à La Réunion',
+      clients: ['Le Jardin Créole', 'Institut Beauté Tropicale', 'Immo Réunion', 'Tech Solutions OI', 'Boulangerie Bourbon'],
+    },
     problem: {
       label: 'Le problème',
       title: 'Gérer sa présence locale est un travail à plein temps.',
@@ -35,7 +38,7 @@ export const T = {
         { title: 'Réseaux Sociaux', desc: 'Métriques Facebook et Instagram centralisées. Suivez l\'engagement, la portée et la croissance.' },
         { title: 'Veille Concurrents', desc: 'Benchmark automatique de vos concurrents locaux. Comparez les notes, avis et présence digitale.' },
         { title: 'Audit SEO', desc: 'Audit technique complet : Core Web Vitals, analyse on-page, données structurées, sitemap et robots.txt.' },
-        { title: 'Rapports IA', desc: 'Chaque mois, Claude AI analyse toutes vos données et livre des recommandations personnalisées et hiérarchisées.' },
+        { title: 'Rapports IA', desc: 'Chaque mois, Claude AI analyse toutes vos données et livre des recommandations personnalisées et hiérarchisées pour votre marché local réunionnais.' },
         { title: 'Dashboard 24/7', desc: 'Un seul endroit pour tout surveiller. Accessible depuis n\'importe quel appareil, à tout moment.' },
       ],
     },
@@ -52,6 +55,15 @@ export const T = {
       { value: '100%', label: 'Collecte de données automatisée', sub: 'Zéro intervention manuelle' },
       { value: '5×', label: 'Plus rapide que de le gérer vous-même', sub: 'Priorités IA, pas des suppositions' },
     ],
+    testimonials: {
+      label: 'Ils nous font confiance',
+      title: 'Ce que nos clients disent',
+      items: [
+        { quote: 'Depuis qu\'on utilise Axora, on a identifié pourquoi notre note Google avait baissé et on a pu corriger le tir en 2 semaines.', name: 'Sophie M.', role: 'Gérante', company: 'Le Jardin Créole', initials: 'SM', stars: 5 },
+        { quote: 'Je n\'ai plus besoin de vérifier 4 applis différentes chaque matin. Tout est dans mon dashboard.', name: 'Nathalie R.', role: 'Fondatrice', company: 'Institut Beauté Tropicale', initials: 'NR', stars: 5 },
+        { quote: 'Le rapport IA mensuel nous donne des priorités claires. On sait exactement quoi améliorer.', name: 'Marc D.', role: 'Directeur', company: 'Immo Réunion', initials: 'MD', stars: 5 },
+      ],
+    },
     pricing: {
       label: 'Tarifs', title: 'Prix transparents. Sans surprises.', sub: 'Frais de setup unique + maintenance mensuelle fixe.',
       setup: 'setup', monthly: '/mois',
@@ -59,15 +71,35 @@ export const T = {
       premium: { name: 'Premium', hint: 'Pour aller plus loin', recommended: 'RECOMMANDÉ', cta: 'Choisir Premium', features: ['Tout le plan Standard', 'SEO on-page complet (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', 'Rapports IA mensuels complets avec recommandations détaillées', 'Alertes prioritaires avis négatifs', 'Support prioritaire'] },
     },
     contact: {
-      label: 'Obtenir l\'accès', title: 'Prêt à reprendre le contrôle de votre présence locale ?', sub: 'Remplissez ce formulaire et nous vous recontactons sous 24h.',
+      label: 'Obtenir l\'accès', title: 'Prêt à voir ce que vos clients disent vraiment ?', sub: 'Remplissez ce formulaire et nous vous recontactons sous 24h.',
       firstName: 'Prénom', lastName: 'Nom', company: 'Entreprise', email: 'Email',
       phone: 'Téléphone', phoneOpt: '(optionnel)', plan: 'Plan souhaité', planDefault: 'Choisir un plan...',
-      planStd: 'Standard — 1 000 € setup + 150 €/mois', planPrem: 'Premium — 1 500 € setup + 200 €/mois',
+      planStd: 'Standard — 1 000 € setup + 150 €/mois', planPrem: 'Premium — 2 000 € setup + 250 €/mois',
       message: 'Message', messageOpt: '(optionnel)', submit: 'Envoyer ma demande', sending: 'Envoi en cours...',
       privacy: 'Vos informations sont envoyées directement par email et ne sont jamais stockées sur nos serveurs. Conformité RGPD.',
       successTitle: 'Message envoyé !', successBody: 'Merci pour votre demande. Nous vous recontactons sous 24h.',
     },
-    footer: { rights: 'Tous droits réservés.', legal: 'Mentions légales', privacy: 'Confidentialité', terms: 'CGV' },
+    footer: {
+      rights: 'Tous droits réservés.',
+      legal: 'Mentions légales', privacy: 'Confidentialité', terms: 'CGV',
+      desc: 'Plateforme d\'intelligence commerciale locale propulsée par Claude AI. Conçue pour les commerces de La Réunion.',
+      colProduct: 'Produit',
+      colLegal: 'Légal',
+      colContact: 'Contact',
+      links: {
+        product: [
+          { label: 'Fonctionnalités', href: '#features' },
+          { label: 'Tarifs', href: '#pricing' },
+          { label: 'Comment ça marche', href: '#how' },
+          { label: 'Démo', href: '/demo' },
+        ],
+        legal: [
+          { label: 'Mentions légales', href: '/mentions-legales' },
+          { label: 'Confidentialité', href: '/politique-confidentialite' },
+          { label: 'CGV', href: '/cgv' },
+        ],
+      },
+    },
     mockup: { title: 'Rapport IA — Mars 2026', body: '3 actions prioritaires détectées. Votre concurrent a obtenu 7 nouveaux avis ce mois.' },
   },
   en: {
@@ -80,7 +112,10 @@ export const T = {
       cta1: 'See the demo', cta2: 'Get access',
       trust: ['Setup in 24h', 'Real-time data', 'Monthly AI report', 'No technical skills needed'],
     },
-    trustBar: ['Setup in 24 hours', 'Real-time data sync', 'Monthly AI report', 'No technical skills needed', 'Powered by Claude AI'],
+    trustBar: {
+      text: 'Trusted by local businesses in Réunion',
+      clients: ['Le Jardin Créole', 'Institut Beauté Tropicale', 'Immo Réunion', 'Tech Solutions OI', 'Boulangerie Bourbon'],
+    },
     problem: {
       label: 'The problem',
       title: 'Managing your local presence is a full-time job.',
@@ -104,7 +139,7 @@ export const T = {
         { title: 'Social Media', desc: 'Centralized Facebook and Instagram metrics. Track engagement, reach and follower growth over time.' },
         { title: 'Competitor Watch', desc: 'Automatic benchmarking of your local competitors. Compare ratings, review counts and digital presence.' },
         { title: 'SEO Audit', desc: 'Full technical audit: Core Web Vitals, on-page analysis, structured data, sitemap and robots.txt.' },
-        { title: 'AI Reports', desc: 'Every month, Claude AI analyzes all your data and delivers prioritized, personalized recommendations.' },
+        { title: 'AI Reports', desc: 'Every month, Claude AI analyzes all your data and delivers prioritized, personalized recommendations for your local Réunion market.' },
         { title: 'Live Dashboard', desc: 'One place to monitor everything. Accessible from any device, any time. Always in sync.' },
       ],
     },
@@ -121,6 +156,15 @@ export const T = {
       { value: '100%', label: 'Automated data collection', sub: 'Zero manual intervention' },
       { value: '5×', label: 'Faster than managing it yourself', sub: 'AI priorities, not guesswork' },
     ],
+    testimonials: {
+      label: 'Trusted by',
+      title: 'What our clients say',
+      items: [
+        { quote: 'Since using Axora, we identified why our Google rating dropped and fixed it within 2 weeks.', name: 'Sophie M.', role: 'Manager', company: 'Le Jardin Créole', initials: 'SM', stars: 5 },
+        { quote: 'I no longer need to check 4 different apps every morning. Everything is in my dashboard.', name: 'Nathalie R.', role: 'Founder', company: 'Institut Beauté Tropicale', initials: 'NR', stars: 5 },
+        { quote: 'The monthly AI report gives us clear priorities. We know exactly what to improve.', name: 'Marc D.', role: 'Director', company: 'Immo Réunion', initials: 'MD', stars: 5 },
+      ],
+    },
     pricing: {
       label: 'Pricing', title: 'Transparent pricing. No surprises.', sub: 'One-time setup fee + fixed monthly maintenance.',
       setup: 'setup', monthly: '/month',
@@ -128,15 +172,35 @@ export const T = {
       premium: { name: 'Premium', hint: 'To go further', recommended: 'RECOMMENDED', cta: 'Get Premium', features: ['Everything in Standard', 'Full on-page SEO (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', 'Full monthly AI reports with detailed recommendations', 'Priority alerts on negative reviews', 'Priority support'] },
     },
     contact: {
-      label: 'Get access', title: 'Ready to take control of your local presence?', sub: 'Fill in the form below and we\'ll get back to you within 24 hours.',
+      label: 'Get access', title: 'Ready to see what your customers really say?', sub: 'Fill in the form below and we\'ll get back to you within 24 hours.',
       firstName: 'First name', lastName: 'Last name', company: 'Company', email: 'Email',
       phone: 'Phone', phoneOpt: '(optional)', plan: 'Plan', planDefault: 'Select a plan...',
-      planStd: 'Standard — 1 000 € setup + 150 €/month', planPrem: 'Premium — 1 500 € setup + 200 €/month',
+      planStd: 'Standard — 1 000 € setup + 150 €/month', planPrem: 'Premium — 2 000 € setup + 250 €/month',
       message: 'Message', messageOpt: '(optional)', submit: 'Send my request', sending: 'Sending...',
       privacy: 'Your data is sent directly by email and never stored on our servers. GDPR compliant.',
       successTitle: 'Message sent!', successBody: 'Thank you — we\'ll get back to you within 24 hours.',
     },
-    footer: { rights: 'All rights reserved.', legal: 'Legal', privacy: 'Privacy', terms: 'Terms' },
+    footer: {
+      rights: 'All rights reserved.',
+      legal: 'Legal', privacy: 'Privacy', terms: 'Terms',
+      desc: 'Local business intelligence platform powered by Claude AI. Built for businesses in Réunion.',
+      colProduct: 'Product',
+      colLegal: 'Legal',
+      colContact: 'Contact',
+      links: {
+        product: [
+          { label: 'Features', href: '#features' },
+          { label: 'Pricing', href: '#pricing' },
+          { label: 'How it works', href: '#how' },
+          { label: 'Demo', href: '/demo' },
+        ],
+        legal: [
+          { label: 'Legal notice', href: '/mentions-legales' },
+          { label: 'Privacy policy', href: '/politique-confidentialite' },
+          { label: 'Terms', href: '/cgv' },
+        ],
+      },
+    },
     mockup: { title: 'AI Report — March 2026', body: '3 priority actions detected. Your main competitor received 7 new reviews this month.' },
   },
 } as const
