@@ -304,17 +304,18 @@ export default function LandingPage() {
       }) }} />
 
       {/* ─── NAVBAR ──────────────────────────────────────────────────────────── */}
-      <header className={`sticky top-0 z-50 border-b border-white/[0.06] bg-[#1A1A2E]/80 dark:bg-[#1A1A2E]/80 backdrop-blur-md transition-shadow duration-200 ${scrolled ? 'shadow-sm' : ''}`}>
+      <header className={`sticky top-0 z-50 border-b border-gray-200 dark:border-white/[0.06] bg-white/80 dark:bg-gray-950/80 backdrop-blur-md transition-shadow duration-200 ${scrolled ? 'shadow-sm' : ''}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           {/* Logo */}
           <div className="flex items-center shrink-0">
-            <Image src="/logo-white.svg" alt="Axora Data" width={147} height={32} className="h-8 w-auto" />
+            <Image src="/logo.svg" alt="Axora Data" width={147} height={32} className="h-8 w-auto dark:hidden" />
+            <Image src="/logo-white.svg" alt="Axora Data" width={147} height={32} className="h-8 w-auto hidden dark:block" />
           </div>
 
           {/* Nav desktop */}
           <nav className="hidden md:flex items-center gap-7">
             {navItems.map(([href, label]) => (
-              <a key={href} href={href} className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{label}</a>
+              <a key={href} href={href} className="text-sm font-medium text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-colors">{label}</a>
             ))}
           </nav>
 
@@ -336,9 +337,9 @@ export default function LandingPage() {
         </div>
 
         {menuOpen && (
-          <div className="md:hidden border-t border-white/[0.06] bg-[#1A1A2E] px-4 py-5 flex flex-col gap-4">
+          <div className="md:hidden border-t border-gray-200 dark:border-white/[0.06] bg-white dark:bg-[#0d0d1a] px-4 py-5 flex flex-col gap-4">
             {navItems.map(([href, label]) => (
-              <a key={href} href={href} onClick={() => setMenuOpen(false)} className="text-base font-medium text-slate-200">{label}</a>
+              <a key={href} href={href} onClick={() => setMenuOpen(false)} className="text-base font-medium text-gray-700 dark:text-slate-200">{label}</a>
             ))}
             <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-white/[0.06]">
               <div className="flex items-center border border-gray-200 dark:border-white/[0.1] rounded-lg overflow-hidden text-xs font-semibold">
@@ -356,15 +357,18 @@ export default function LandingPage() {
       </header>
 
       {/* ─── HERO ────────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-0 bg-[#1A1A2E]">
+      <section className="relative overflow-hidden pt-0">
         {/* Background */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Dot grid */}
-          <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
-          {/* Orbs */}
-          <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(108,92,231,0.5) 0%, transparent 70%)', animation: 'orb-float 9s ease-in-out infinite' }} />
-          <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] rounded-full opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(0,206,201,0.4) 0%, transparent 70%)', animation: 'orb-float 13s ease-in-out infinite reverse' }} />
-          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#1A1A2E] to-transparent" />
+          {/* Light mode: subtle radial gradient */}
+          <div className="absolute inset-0 dark:opacity-0" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(108,92,231,0.07) 0%, transparent 70%)' }} />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#6C5CE7]/[0.04] via-transparent to-[#00CEC9]/[0.03] dark:opacity-0" />
+          {/* Dark mode: dot grid */}
+          <div className="absolute inset-0 opacity-0 dark:opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+          {/* Dark mode: orbs */}
+          <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] rounded-full opacity-0 dark:opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(108,92,231,0.5) 0%, transparent 70%)', animation: 'orb-float 9s ease-in-out infinite' }} />
+          <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] rounded-full opacity-0 dark:opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(0,206,201,0.4) 0%, transparent 70%)', animation: 'orb-float 13s ease-in-out infinite reverse' }} />
+          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-gray-50 dark:from-[#0d0d1a] to-transparent" />
         </div>
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-24 sm:py-32 w-full">
@@ -383,13 +387,13 @@ export default function LandingPage() {
                 </span>
               </h1>
 
-              <p className="hero-animate hero-animate-delay-2 text-lg text-slate-300 leading-relaxed mb-8 max-w-lg">{t.hero.sub}</p>
+              <p className="hero-animate hero-animate-delay-2 text-lg text-gray-600 dark:text-slate-300 leading-relaxed mb-8 max-w-lg">{t.hero.sub}</p>
 
               <div className="hero-animate hero-animate-delay-3 flex flex-col sm:flex-row gap-3 mb-10">
                 <Link href="/demo" className="inline-flex items-center justify-center gap-2 bg-[#6C5CE7] hover:bg-[#9B8FF2] text-white font-semibold px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-[#6C5CE7]/25 text-sm">
                   {t.hero.cta1} <ArrowRight className="w-4 h-4" />
                 </Link>
-                <a href="#contact" className="inline-flex items-center justify-center gap-2 border border-white/[0.15] hover:border-white/[0.25] bg-white/[0.05] hover:bg-white/[0.08] text-white font-semibold px-6 py-3.5 rounded-xl transition-all text-sm">
+                <a href="#contact" className="inline-flex items-center justify-center gap-2 border border-gray-300 dark:border-white/[0.12] hover:border-gray-400 dark:hover:border-white/[0.25] bg-white dark:bg-white/[0.03] hover:bg-gray-50 dark:hover:bg-white/[0.06] text-gray-700 dark:text-white font-semibold px-6 py-3.5 rounded-xl transition-all text-sm">
                   {t.hero.cta2}
                 </a>
               </div>
