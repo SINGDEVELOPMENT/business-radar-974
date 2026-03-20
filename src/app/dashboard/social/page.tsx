@@ -117,8 +117,8 @@ export default async function SocialPage() {
               title="Posts collectés"
               value={totalPosts}
               icon={Share2}
-              iconColor="text-indigo-600"
-              iconBg="bg-indigo-50"
+              iconColor="text-[#6C5CE7]"
+              iconBg="bg-[#6C5CE7]/10"
             />
             <KpiCard
               title="Engagement total"
@@ -131,8 +131,8 @@ export default async function SocialPage() {
               title="Moy. engagement/post"
               value={avgEngagement.toLocaleString('fr-FR')}
               icon={BarChart2}
-              iconColor="text-orange-500"
-              iconBg="bg-orange-50"
+              iconColor="text-[#00CEC9]"
+              iconBg="bg-[#00CEC9]/10"
             />
             <KpiCard
               title="Meilleur post"

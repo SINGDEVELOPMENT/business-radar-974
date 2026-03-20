@@ -44,7 +44,7 @@ const KPIS = [
   { label: 'Note Google',   value: '4.7 / 5',   sub: '124 avis',      color: 'text-amber-500',  bg: 'bg-amber-50 dark:bg-amber-500/[0.1]',   border: 'border-amber-100 dark:border-amber-500/[0.1]', pulse: true },
   { label: 'Avis ce mois',  value: '18',         sub: '+6 vs préc.',   color: 'text-[#6C5CE7]',  bg: 'bg-[#6C5CE7]/[0.08] dark:bg-[#6C5CE7]/[0.1]', border: 'border-[#6C5CE7]/20 dark:border-[#6C5CE7]/20', pulse: false },
   { label: 'Engagement',    value: '1 240',      sub: '+12 % vs préc.', color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-500/[0.1]', border: 'border-emerald-100 dark:border-emerald-500/[0.1]', pulse: false },
-  { label: 'Score SEO',     value: '87 / 100',  sub: '+5 pts',        color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-500/[0.1]',  border: 'border-purple-100 dark:border-purple-500/[0.1]', pulse: false },
+  { label: 'Score SEO',     value: '87 / 100',  sub: '+5 pts',        color: 'text-[#6C5CE7]', bg: 'bg-[#6C5CE7]/[0.1] dark:bg-[#6C5CE7]/[0.1]',  border: 'border-[#6C5CE7]/[0.1] dark:border-[#6C5CE7]/[0.1]', pulse: false },
 ]
 
 const REVIEWS = [
@@ -112,10 +112,10 @@ function DashboardMockup({ mockupT }: { mockupT: { title: string; body: string }
             <div className="bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.04] rounded-lg p-2">
               <div className="flex justify-between mb-1">
                 <span className="text-[8px] text-gray-500 dark:text-slate-500">Score SEO global</span>
-                <span className="text-[8px] font-bold text-purple-600 dark:text-purple-400">87%</span>
+                <span className="text-[8px] font-bold text-[#6C5CE7] dark:text-[#9B8FF2]">87%</span>
               </div>
               <div className="h-1 rounded-full bg-gray-200 dark:bg-white/[0.08] overflow-hidden">
-                <div className="h-full rounded-full bg-purple-500" style={{ width: '87%', animation: 'progress-fill 1.8s ease-out forwards' }} />
+                <div className="h-full rounded-full bg-[#6C5CE7]" style={{ width: '87%', animation: 'progress-fill 1.8s ease-out forwards' }} />
               </div>
             </div>
 
@@ -244,9 +244,9 @@ export default function LandingPage() {
     { Icon: Star,          iconColor: 'text-amber-500',   iconBg: 'bg-amber-50 dark:bg-amber-500/[0.1]',   iconBorder: 'border-amber-200 dark:border-amber-500/[0.15]' },
     { Icon: Share2,        iconColor: 'text-violet-600',  iconBg: 'bg-violet-50 dark:bg-violet-500/[0.1]', iconBorder: 'border-violet-200 dark:border-violet-500/[0.15]' },
     { Icon: Users,         iconColor: 'text-emerald-600', iconBg: 'bg-emerald-50 dark:bg-emerald-500/[0.1]', iconBorder: 'border-emerald-200 dark:border-emerald-500/[0.15]' },
-    { Icon: Search,        iconColor: 'text-orange-600',  iconBg: 'bg-orange-50 dark:bg-orange-500/[0.1]', iconBorder: 'border-orange-200 dark:border-orange-500/[0.15]' },
+    { Icon: Search,        iconColor: 'text-[#00CEC9]',  iconBg: 'bg-[#00CEC9]/[0.08] dark:bg-[#00CEC9]/[0.08]', iconBorder: 'border-[#00CEC9]/20 dark:border-[#00CEC9]/20' },
     { Icon: Brain,         iconColor: 'text-[#6C5CE7]',   iconBg: 'bg-[#6C5CE7]/[0.08] dark:bg-[#6C5CE7]/[0.1]', iconBorder: 'border-[#6C5CE7]/20 dark:border-[#6C5CE7]/20' },
-    { Icon: LayoutDashboard, iconColor: 'text-indigo-600', iconBg: 'bg-indigo-50 dark:bg-indigo-500/[0.1]', iconBorder: 'border-indigo-200 dark:border-indigo-500/[0.15]' },
+    { Icon: LayoutDashboard, iconColor: 'text-[#6C5CE7]', iconBg: 'bg-[#6C5CE7]/[0.08] dark:bg-[#6C5CE7]/[0.08]', iconBorder: 'border-[#6C5CE7]/20 dark:border-[#6C5CE7]/20' },
   ]
 
   // Problem card icon config
@@ -254,7 +254,7 @@ export default function LandingPage() {
     { Icon: LayoutDashboard, iconColor: 'text-red-500',    iconBg: 'bg-red-100 dark:bg-red-500/[0.1]',    iconBorder: 'border-red-200 dark:border-red-500/[0.15]',    cardBg: 'bg-red-50/60 dark:bg-red-500/[0.04]',    cardBorder: 'border-red-200 dark:border-red-500/[0.12]' },
     { Icon: EyeOff,          iconColor: 'text-amber-600',  iconBg: 'bg-amber-100 dark:bg-amber-500/[0.1]', iconBorder: 'border-amber-200 dark:border-amber-500/[0.15]', cardBg: 'bg-amber-50/60 dark:bg-amber-500/[0.04]', cardBorder: 'border-amber-200 dark:border-amber-500/[0.12]' },
     { Icon: Clock,           iconColor: 'text-red-500',    iconBg: 'bg-red-100 dark:bg-red-500/[0.1]',    iconBorder: 'border-red-200 dark:border-red-500/[0.15]',    cardBg: 'bg-red-50/60 dark:bg-red-500/[0.04]',    cardBorder: 'border-red-200 dark:border-red-500/[0.12]' },
-    { Icon: ListX,           iconColor: 'text-orange-500', iconBg: 'bg-orange-100 dark:bg-orange-500/[0.1]', iconBorder: 'border-orange-200 dark:border-orange-500/[0.15]', cardBg: 'bg-orange-50/60 dark:bg-orange-500/[0.04]', cardBorder: 'border-orange-200 dark:border-orange-500/[0.12]' },
+    { Icon: ListX,           iconColor: 'text-amber-600', iconBg: 'bg-amber-100 dark:bg-amber-500/[0.1]', iconBorder: 'border-amber-200 dark:border-amber-500/[0.15]', cardBg: 'bg-amber-50/60 dark:bg-amber-500/[0.04]', cardBorder: 'border-amber-200 dark:border-amber-500/[0.12]' },
   ]
 
   // Testimonial avatar colors

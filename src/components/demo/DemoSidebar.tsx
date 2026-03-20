@@ -107,7 +107,7 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
 
   const logoHeader = (
     <div className="flex items-center gap-3 px-5 h-16">
-      <img src="/logo-white.svg" alt="Axora Data" className="h-7 w-auto" />
+      <img src="/logo-white.svg" alt="Axora Data" className="h-8 w-auto" />
       <DemoBadge variant={variant} />
     </div>
   )

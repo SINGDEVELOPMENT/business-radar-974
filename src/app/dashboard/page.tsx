@@ -304,8 +304,8 @@ export default async function DashboardPage() {
           subtitle="dernière analyse"
           trend={seoDelta !== null ? { value: seoDelta, label: 'vs 30j' } : undefined}
           icon={Activity}
-          iconColor="text-purple-600"
-          iconBg="bg-purple-50"
+          iconColor="text-[#6C5CE7]"
+          iconBg="bg-[#6C5CE7]/10"
         />
       </div>
 

@@ -28,7 +28,7 @@ function EditField({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full px-3 py-1.5 text-sm bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+        className="w-full px-3 py-1.5 text-sm bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]/30 focus:border-[#6C5CE7]"
       />
     </div>
   )
@@ -227,7 +227,7 @@ function InlineEditClientForm({ orgId, orgName, orgPlan, orgApiKeyClaude, orgMet
       <button
         type="submit"
         disabled={loading}
-        className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+        className="flex items-center gap-2 px-4 py-2 bg-[#6C5CE7] hover:bg-[#9B8FF2] disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
       >
         {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : success ? <Check className="w-3.5 h-3.5" /> : null}
         {success ? 'Sauvegardé !' : 'Sauvegarder'}
@@ -360,21 +360,21 @@ function InlineCompetitorsManager({ orgId, competitors: initial }: CompetitorsPr
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Nom du concurrent *"
-            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]/30"
           />
           <input
             type="text"
             value={googlePlaceId}
             onChange={(e) => setGooglePlaceId(e.target.value)}
             placeholder="Google Place ID (optionnel)"
-            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]/30"
           />
           <input
             type="url"
             value={websiteUrl}
             onChange={(e) => setWebsiteUrl(e.target.value)}
             placeholder="Site web (optionnel)"
-            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]/30"
           />
           <div className="flex gap-2">
             <button
