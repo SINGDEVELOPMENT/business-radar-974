@@ -76,7 +76,7 @@ export async function GET() {
     google_reviews_count: c.google_reviews_count ?? null,
     website_url: c.website_url ?? null,
     seo_score: seoMap[c.id]?.score ?? c.competitor_seo_score ?? null,
-    load_time_ms: seoMap[c.id]?.loadTime ?? null,
+    load_time_ms: seoMap[c.id]?.loadTime ?? c.competitor_lcp_ms ?? null,
     opening_hours: c.opening_hours ?? null,
     google_photos_count: c.google_photos_count ?? 0,
     // Premium
