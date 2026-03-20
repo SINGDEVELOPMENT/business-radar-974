@@ -33,7 +33,7 @@ export default function HeaderUserMenu({ displayName, email, initials, role }: H
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-gray-100 transition-colors">
+        <button className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
           <Avatar className="h-8 w-8">
             <AvatarFallback className="text-xs">{initials}</AvatarFallback>
           </Avatar>
@@ -43,7 +43,7 @@ export default function HeaderUserMenu({ displayName, email, initials, role }: H
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{displayName}</p>
-            <p className="text-xs leading-none text-gray-500">{email}</p>
+            <p className="text-xs leading-none text-gray-500 dark:text-slate-400">{email}</p>
             {role && (
               <p className="text-xs leading-none text-blue-600 capitalize">{role}</p>
             )}
@@ -59,7 +59,7 @@ export default function HeaderUserMenu({ displayName, email, initials, role }: H
           Mon profil
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600 focus:bg-red-50">
+        <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-500/15">
           <LogOut className="w-4 h-4" />
           Déconnexion
         </DropdownMenuItem>

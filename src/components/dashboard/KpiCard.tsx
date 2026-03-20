@@ -42,17 +42,17 @@ export default function KpiCard({
                 <span
                   className={cn(
                     'text-xs font-semibold',
-                    isNeutral && 'text-gray-500',
+                    isNeutral && 'text-gray-500 dark:text-slate-400',
                     !isNeutral && isPositive && 'text-emerald-600',
                     !isNeutral && !isPositive && 'text-red-500',
                   )}
                 >
                   {isNeutral ? '→' : isPositive ? '▲' : '▼'}{' '}
                   {trend.value > 0 ? '+' : ''}{trend.value}{' '}
-                  <span className="font-normal text-gray-500">{trend.label}</span>
+                  <span className="font-normal text-gray-500 dark:text-slate-400">{trend.label}</span>
                 </span>
               )}
-              {subtitle && <span className="text-xs text-gray-500">{subtitle}</span>}
+              {subtitle && <span className="text-xs text-gray-500 dark:text-slate-400">{subtitle}</span>}
             </div>
           )}
         </div>

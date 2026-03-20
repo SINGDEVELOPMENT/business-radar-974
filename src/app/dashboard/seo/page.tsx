@@ -3,38 +3,19 @@ import Header from '@/components/layout/Header'
 import EmptyState from '@/components/dashboard/EmptyState'
 import KpiCard from '@/components/dashboard/KpiCard'
 import SeoHistoryChart from '@/components/dashboard/SeoHistoryChart'
+import ScoreCard from '@/components/dashboard/seo/ScoreCard'
+import CwvCard from '@/components/dashboard/seo/CwvCard'
+import OnPageRow from '@/components/dashboard/seo/OnPageRow'
+import { cwvStatus } from '@/components/dashboard/seo/cwv-utils'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
-  Search, Activity, Clock, ShieldCheck, FileText, Gauge,
+  Search, Activity, Clock, ShieldCheck, Gauge,
   AlertTriangle, CheckCircle2, Zap, Eye, Smartphone,
-  Link2, Image, Code2, Globe, Map, FileCode, FileDown, Lock,
+  Code2, FileCode, Lock,
 } from 'lucide-react'
-import { computeSeoIssues, seoScoreColor, seoScoreLabel } from '@/lib/utils/seo'
+import { computeSeoIssues } from '@/lib/utils/seo'
 import { cn } from '@/lib/utils'
-
-// Seuils Core Web Vitals (Google)
-function cwvStatus(metric: 'lcp' | 'fcp' | 'cls' | 'tbt' | 'si', value: number): 'good' | 'needs-improvement' | 'poor' {
-  if (metric === 'lcp') return value <= 2500 ? 'good' : value <= 4000 ? 'needs-improvement' : 'poor'
-  if (metric === 'fcp') return value <= 1800 ? 'good' : value <= 3000 ? 'needs-improvement' : 'poor'
-  if (metric === 'cls') return value <= 0.1 ? 'good' : value <= 0.25 ? 'needs-improvement' : 'poor'
-  if (metric === 'tbt') return value <= 200 ? 'good' : value <= 600 ? 'needs-improvement' : 'poor'
-  if (metric === 'si') return value <= 3400 ? 'good' : value <= 5800 ? 'needs-improvement' : 'poor'
-  return 'good'
-}
-
-function statusColor(s: 'good' | 'needs-improvement' | 'poor') {
-  return s === 'good' ? 'text-emerald-600' : s === 'needs-improvement' ? 'text-orange-500' : 'text-red-500'
-}
-function statusBg(s: 'good' | 'needs-improvement' | 'poor') {
-  return s === 'good' ? 'bg-emerald-50' : s === 'needs-improvement' ? 'bg-orange-50' : 'bg-red-50'
-}
-function statusBadge(s: 'good' | 'needs-improvement' | 'poor'): 'success' | 'warning' | 'destructive' {
-  return s === 'good' ? 'success' : s === 'needs-improvement' ? 'warning' : 'destructive'
-}
-function statusLabel(s: 'good' | 'needs-improvement' | 'poor') {
-  return s === 'good' ? 'Bon' : s === 'needs-improvement' ? 'À améliorer' : 'Mauvais'
-}
 
 type SeoSnapshot = {
   url: string | null; status_code: number | null; load_time_ms: number | null
@@ -363,68 +344,6 @@ export default async function SeoPage() {
           </p>
         </>
       )}
-    </div>
-  )
-}
-
-// ── Composants locaux ────────────────────────────────────────────────────────
-
-function ScoreCard({ label, score, icon: Icon }: { label: string; score: number | null; icon: React.ElementType }) {
-  const color = score == null ? 'text-gray-300' : score >= 90 ? 'text-emerald-600' : score >= 50 ? 'text-orange-500' : 'text-red-500'
-  const variant = score == null ? undefined : score >= 90 ? 'success' as const : score >= 50 ? 'warning' as const : 'destructive' as const
-  return (
-    <Card className="p-4 flex flex-col items-center gap-1 text-center">
-      <Icon className="w-4 h-4 text-gray-400 mb-1" />
-      <p className={cn('text-3xl font-extrabold', color)}>{score ?? '--'}</p>
-      <p className="text-sm text-gray-600 font-medium">{label}</p>
-      {variant && score != null && <Badge variant={variant} className="text-[10px] px-1.5 mt-0.5">{score >= 90 ? 'Excellent' : score >= 50 ? 'Moyen' : 'Faible'}</Badge>}
-    </Card>
-  )
-}
-
-function CwvCard({ label, value, status, hint }: { label: string; value: string; status: 'good' | 'needs-improvement' | 'poor'; hint: string }) {
-  return (
-    <div className={cn('rounded-xl p-3 flex flex-col gap-1', statusBg(status))}>
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-bold text-gray-600">{label}</span>
-        <Badge variant={statusBadge(status)} className="text-[9px] px-1 py-0">{statusLabel(status)}</Badge>
-      </div>
-      <p className={cn('text-xl font-bold', statusColor(status))}>{value}</p>
-      <p className="text-xs text-gray-500">{hint}</p>
-    </div>
-  )
-}
-
-function OnPageRow({
-  label, value, status, mono = false,
-}: {
-  label: string
-  value: string
-  status: 'good' | 'warn' | 'bad' | 'neutral'
-  mono?: boolean
-}) {
-  const icon = status === 'good'
-    ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
-    : status === 'bad'
-    ? <AlertTriangle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
-    : status === 'warn'
-    ? <AlertTriangle className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
-    : <span className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-
-  return (
-    <div className="flex items-start gap-2 text-sm">
-      {icon}
-      <span className="text-gray-600 shrink-0 min-w-[120px]">{label}</span>
-      <span className={cn(
-        'text-right flex-1 min-w-0 truncate',
-        mono && 'font-mono text-xs',
-        status === 'bad' && 'text-red-500',
-        status === 'warn' && 'text-orange-500',
-        status === 'good' && 'text-gray-900 dark:text-white',
-        status === 'neutral' && 'text-gray-600 dark:text-gray-300',
-      )}>
-        {value}
-      </span>
     </div>
   )
 }

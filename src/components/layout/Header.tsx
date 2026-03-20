@@ -39,8 +39,8 @@ export default async function Header({ title, subtitle }: HeaderProps) {
   return (
     <header className="sticky top-0 z-30 -mx-4 -mt-4 md:-mx-6 md:-mt-6 flex items-center justify-between h-14 md:h-16 px-4 md:px-6 bg-white/80 backdrop-blur-sm border-b border-gray-200 dark:bg-slate-900/80 dark:border-slate-800">
       <div className="flex flex-col min-w-0">
-        <h1 className="text-base md:text-lg font-semibold text-gray-900 truncate">{title}</h1>
-        {subtitle && <p className="text-xs md:text-sm text-gray-500 truncate">{subtitle}</p>}
+        <h1 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white truncate">{title}</h1>
+        {subtitle && <p className="text-xs md:text-sm text-gray-500 dark:text-slate-400 truncate">{subtitle}</p>}
       </div>
 
       <div className="flex items-center gap-2 md:gap-3 shrink-0">

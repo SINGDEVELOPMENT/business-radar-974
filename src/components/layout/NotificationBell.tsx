@@ -49,7 +49,7 @@ export default function NotificationBell() {
     <div ref={ref} className="relative">
       <button
         onClick={handleOpen}
-        className="relative p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors"
+        className="relative p-2 rounded-lg text-gray-400 dark:text-slate-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors"
         aria-label="Notifications"
       >
         <Bell className="w-[18px] h-[18px]" />
@@ -77,8 +77,8 @@ export default function NotificationBell() {
           <div className="max-h-80 overflow-y-auto divide-y divide-gray-50 dark:divide-slate-800">
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 text-center px-4">
-                <Bell className="w-6 h-6 text-gray-300 mb-2" />
-                <p className="text-sm text-gray-400">Aucune notification cette semaine</p>
+                <Bell className="w-6 h-6 text-gray-300 dark:text-slate-600 mb-2" />
+                <p className="text-sm text-gray-400 dark:text-slate-400">Aucune notification cette semaine</p>
               </div>
             ) : (
               items.map(item => {
@@ -104,11 +104,11 @@ export default function NotificationBell() {
                         {isUnread && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />}
                       </div>
                       <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5 line-clamp-2">{item.message}</p>
-                      <p className="text-[10px] text-gray-400 mt-1">
+                      <p className="text-[10px] text-gray-400 dark:text-slate-500 mt-1">
                         {new Date(item.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
-                    <ExternalLink className="w-3 h-3 text-gray-300 shrink-0 mt-1" />
+                    <ExternalLink className="w-3 h-3 text-gray-300 dark:text-slate-600 shrink-0 mt-1" />
                   </Link>
                 )
               })
@@ -117,7 +117,7 @@ export default function NotificationBell() {
 
           {items.length > 0 && (
             <div className="px-4 py-2 border-t border-gray-100 dark:border-slate-800">
-              <p className="text-[10px] text-gray-400 text-center">Notifications des 7 derniers jours</p>
+              <p className="text-[10px] text-gray-400 dark:text-slate-500 text-center">Notifications des 7 derniers jours</p>
             </div>
           )}
         </div>
