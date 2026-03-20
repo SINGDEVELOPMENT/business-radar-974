@@ -71,11 +71,9 @@ async function runAnalysis(
   client: Anthropic,
   prompt: string
 ): Promise<AiReportContent> {
-  // Streaming + adaptive thinking + tool_use forcé → sortie structurée garantie
   const stream = client.messages.stream({
     model: 'claude-opus-4-6',
     max_tokens: 4096,
-    thinking: { type: 'adaptive' },
     tools: [ANALYSIS_TOOL],
     tool_choice: { type: 'tool', name: 'submit_analysis' },
     messages: [{ role: 'user', content: prompt }],
@@ -169,7 +167,6 @@ export async function analyzeAlert(
     const stream = client.messages.stream({
       model: 'claude-opus-4-6',
       max_tokens: 1024,
-      thinking: { type: 'adaptive' },
       tools: [ALERT_TOOL],
       tool_choice: { type: 'tool', name: 'submit_alert' },
       messages: [{ role: 'user', content: prompt }],
