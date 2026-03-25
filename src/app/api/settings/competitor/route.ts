@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  revalidatePath('/dashboard/competitors')
+
   return NextResponse.json({ ok: true, competitor: data })
 }
 
@@ -114,6 +114,6 @@ export async function DELETE(request: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  revalidatePath('/dashboard/competitors')
+
   return NextResponse.json({ ok: true })
 }
