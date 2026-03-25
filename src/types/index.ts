@@ -24,8 +24,16 @@ export interface Business {
   google_place_id?: string
   facebook_page_id?: string
   instagram_username?: string
+  instagram_business_id?: string | null
   website_url?: string
   is_competitor: boolean
+  google_rating?: number | null
+  google_reviews_count?: number | null
+  lat?: number | null
+  lng?: number | null
+  custom_competitor?: boolean
+  social_consent_given?: boolean
+  social_consent_date?: string | null
   created_at: string
 }
 
@@ -96,6 +104,8 @@ export interface SeoSnapshot {
   schema_types?: string[] | null
   title_length?: number | null
   meta_description_length?: number | null
+  mobile_performance_score?: number | null
+  desktop_performance_score?: number | null
 }
 
 export interface AiReport {

@@ -90,7 +90,7 @@ export default function CookieBanner() {
                 </button>
                 <button
                   onClick={accept}
-                  className="px-4 py-2 text-xs font-semibold bg-[#6C5CE7] hover:bg-[#9B8FF2] text-white rounded-lg transition-colors"
+                  className="px-4 py-2 text-xs font-semibold bg-brand hover:bg-brand-light text-white rounded-lg transition-colors"
                 >
                   Accepter tous les cookies
                 </button>
@@ -108,7 +108,7 @@ export default function CookieBanner() {
       {hasConsent && !bannerVisible && (
         <button
           onClick={() => setBannerVisible(true)}
-          className="fixed bottom-6 right-6 z-40 w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 shadow-lg hover:shadow-xl hover:border-[#6C5CE7] dark:hover:border-[#6C5CE7] text-gray-500 dark:text-slate-400 hover:text-[#6C5CE7] dark:hover:text-[#6C5CE7] transition-all duration-200"
+          className="fixed bottom-6 right-6 z-40 w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 shadow-lg hover:shadow-xl hover:border-brand dark:hover:border-brand text-gray-500 dark:text-slate-400 hover:text-brand dark:hover:text-brand transition-all duration-200"
           title="Gérer mes préférences cookies"
           aria-label="Gérer mes préférences cookies"
         >

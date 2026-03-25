@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { ChevronDown, ChevronUp, Calendar, CheckCircle2, XCircle, TrendingUp, TrendingDown, Minus, ArrowRight } from 'lucide-react'
+import { ChevronDown, ChevronUp, Calendar, CheckCircle2, XCircle, ArrowRight, TrendingUp } from 'lucide-react'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import type { AiReportContent, AiRecommendation } from '@/types'
+import ReportTypeBadge from '@/components/ui/ReportTypeBadge'
 
 interface OldReportCardProps {
   report: {
@@ -14,12 +14,6 @@ interface OldReportCardProps {
     summary?: string | null
     content?: AiReportContent | null
   }
-}
-
-function ReportTypeBadge({ type }: { type: string }) {
-  const label = type === 'monthly' ? 'Mensuel' : type === 'weekly' ? 'Hebdomadaire' : 'Alerte'
-  const variant = type === 'monthly' ? 'default' as const : type === 'weekly' ? 'secondary' as const : 'destructive' as const
-  return <Badge variant={variant}>{label}</Badge>
 }
 
 function RecommendationRow({ rec, index }: { rec: AiRecommendation; index: number }) {

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
 import PDFDocument from 'pdfkit'
 import type { AiReportContent, AiRecommendation } from '@/types'
 
@@ -33,9 +32,7 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const admin = createAdminClient()
-
-  const { data: profile } = await admin
+  const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
     .eq('id', user.id)
@@ -45,10 +42,10 @@ export async function GET() {
   if (!orgId) return NextResponse.json({ error: 'Organisation introuvable' }, { status: 400 })
 
   const [{ data: org }, { data: report }, { data: business }] = await Promise.all([
-    admin.from('organizations').select('name').eq('id', orgId).single(),
-    admin.from('ai_reports').select('*').eq('organization_id', orgId)
+    supabase.from('organizations').select('name').eq('id', orgId).single(),
+    supabase.from('ai_reports').select('id, content, generated_at').eq('organization_id', orgId)
       .order('generated_at', { ascending: false }).limit(1).single(),
-    admin.from('businesses').select('id, name, google_rating, google_reviews_count, website_url')
+    supabase.from('businesses').select('id, name, google_rating, google_reviews_count, website_url')
       .eq('organization_id', orgId).eq('is_competitor', false).limit(1).single(),
   ])
 
@@ -57,13 +54,13 @@ export async function GET() {
   // Récupère les dernières données SEO et concurrents pour enrichir le PDF
   const [{ data: lastSeo }, { data: competitors }, { data: reviews }] = await Promise.all([
     business
-      ? admin.from('seo_snapshots').select('lighthouse_score, accessibility_score, seo_audit_score, load_time_ms, has_ssl, mobile_friendly')
+      ? supabase.from('seo_snapshots').select('lighthouse_score, accessibility_score, seo_audit_score, load_time_ms, has_ssl, mobile_friendly')
           .eq('business_id', business.id).order('collected_at', { ascending: false }).limit(1).single()
       : Promise.resolve({ data: null }),
-    admin.from('businesses').select('name, google_rating, google_reviews_count').eq('organization_id', orgId)
+    supabase.from('businesses').select('name, google_rating, google_reviews_count').eq('organization_id', orgId)
       .eq('is_competitor', true).order('google_rating', { ascending: false }),
     business
-      ? admin.from('reviews').select('rating').eq('business_id', business.id)
+      ? supabase.from('reviews').select('rating').eq('business_id', business.id)
       : Promise.resolve({ data: null }),
   ])
 
@@ -193,7 +190,7 @@ export async function GET() {
   const orgSlug = orgName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
   const dateStr = new Date(report.generated_at).toISOString().slice(0, 10)
 
-  return new Response(pdfBuffer as unknown as BodyInit, {
+  return new Response(new Uint8Array(pdfBuffer), {
     headers: {
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename="rapport-${orgSlug}-${dateStr}.pdf"`,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { slugify } from '@/lib/utils/formatters'
+import { validateUrl } from '@/lib/utils/url-validator'
 
 // Crée une organisation + business pour un nouveau client, et invite son utilisateur
 export async function POST(request: NextRequest) {
@@ -38,6 +39,11 @@ export async function POST(request: NextRequest) {
 
   if (!orgName || !businessName) {
     return NextResponse.json({ error: 'orgName et businessName requis' }, { status: 400 })
+  }
+
+  if (websiteUrl) {
+    const urlCheck = validateUrl(websiteUrl)
+    if (!urlCheck.valid) return NextResponse.json({ error: urlCheck.error }, { status: 400 })
   }
 
   const adminClient = createAdminClient()

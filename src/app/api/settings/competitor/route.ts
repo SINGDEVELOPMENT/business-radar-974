@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { validateUrl } from '@/lib/utils/url-validator'
 
 // Limite dynamique selon le plan — récupérée depuis la DB
 
@@ -11,10 +10,7 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  // Toutes les opérations DB via admin client (bypass RLS)
-  const admin = createAdminClient()
-
-  const { data: profile } = await admin
+  const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
     .eq('id', user.id)
@@ -24,15 +20,20 @@ export async function POST(request: NextRequest) {
   if (!orgId) return NextResponse.json({ error: 'Organisation introuvable' }, { status: 400 })
 
   // Limite selon le plan
-  const { data: orgData } = await admin.from('organizations').select('plan').eq('id', orgId).single()
+  const { data: orgData } = await supabase.from('organizations').select('plan').eq('id', orgId).single()
   const FREE_LIMIT = orgData?.plan === 'premium' ? 5 : 2
 
   const { name, googlePlaceId, websiteUrl } = await request.json()
   if (!name?.trim()) return NextResponse.json({ error: 'Nom requis' }, { status: 400 })
 
+  if (websiteUrl) {
+    const urlCheck = validateUrl(websiteUrl)
+    if (!urlCheck.valid) return NextResponse.json({ error: urlCheck.error }, { status: 400 })
+  }
+
   // Si Place ID fourni → vérifier si déjà présent
   if (googlePlaceId) {
-    const { data: existing } = await admin
+    const { data: existing } = await supabase
       .from('businesses')
       .select('id')
       .eq('organization_id', orgId)
@@ -41,20 +42,20 @@ export async function POST(request: NextRequest) {
       .maybeSingle()
 
     if (existing) {
-      const { data: updated, error: updateErr } = await admin
+      const { data: updated, error: updateErr } = await supabase
         .from('businesses')
         .update({ custom_competitor: true, name: name.trim(), website_url: websiteUrl || null })
         .eq('id', existing.id)
         .select()
         .single()
       if (updateErr) return NextResponse.json({ error: updateErr.message }, { status: 500 })
-      revalidatePath('/dashboard/competitors')
+
       return NextResponse.json({ ok: true, competitor: updated })
     }
   }
 
   // Vérifier la limite
-  const { count } = await admin
+  const { count } = await supabase
     .from('businesses')
     .select('id', { count: 'exact', head: true })
     .eq('organization_id', orgId)
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const { data, error } = await admin
+  const { data, error } = await supabase
     .from('businesses')
     .insert({
       organization_id: orgId,
@@ -91,9 +92,7 @@ export async function DELETE(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const admin = createAdminClient()
-
-  const { data: profile } = await admin
+  const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
     .eq('id', user.id)
@@ -106,7 +105,7 @@ export async function DELETE(request: NextRequest) {
   if (!id) return NextResponse.json({ error: 'id requis' }, { status: 400 })
 
   // Supprimer uniquement si appartient à l'org du user
-  const { error } = await admin
+  const { error } = await supabase
     .from('businesses')
     .delete()
     .eq('id', id)

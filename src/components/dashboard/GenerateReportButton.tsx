@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Brain, Loader2, CheckCircle2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface GenerateReportButtonProps {
   remaining?: number
@@ -39,9 +40,12 @@ export default function GenerateReportButton({ remaining = 5 }: GenerateReportBu
         throw new Error(body.error ?? `Erreur ${res.status}`)
       }
       setDetails(`Terminé en ${elapsedRef.current}s`)
+      toast.success('Rapport généré avec succès')
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur inconnue')
+      const msg = err instanceof Error ? err.message : 'Erreur inconnue'
+      setError(msg)
+      toast.error('Erreur lors de la génération du rapport')
     } finally {
       if (timerRef.current) clearInterval(timerRef.current)
       setLoading(false)

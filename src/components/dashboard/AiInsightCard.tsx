@@ -39,7 +39,7 @@ export default function AiInsightCard({
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Brain className="w-5 h-5 text-[#6C5CE7]" />
+          <Brain className="w-5 h-5 text-brand" />
           <h3 className="font-semibold text-gray-900 dark:text-white">Analyse AI</h3>
         </div>
         <div className="flex items-center gap-2">

@@ -78,11 +78,11 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
         className={cn(
           'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
           isActive
-            ? 'bg-[#6C5CE7]/20 text-[#9B8FF2]'
+            ? 'bg-brand/20 text-brand-light'
             : 'text-slate-400 hover:bg-white/[0.06] hover:text-slate-200'
         )}
       >
-        <Icon className={cn('w-4 h-4 shrink-0', isActive && 'text-[#9B8FF2]')} />
+        <Icon className={cn('w-4 h-4 shrink-0', isActive && 'text-brand-light')} />
         <span className="flex-1">{label}</span>
         {href === '/dashboard/reports' && recentReports > 0 && (
           <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold leading-none">
@@ -108,7 +108,7 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
 
         <button
           onClick={() => setMobileOpen((v) => !v)}
-          className="w-12 h-12 flex items-center justify-center rounded-full bg-[#6C5CE7] text-white shadow-lg shadow-[#6C5CE7]/40 transition-transform duration-200"
+          className="w-12 h-12 flex items-center justify-center rounded-full bg-brand text-white shadow-lg shadow-brand/40 transition-transform duration-200"
           aria-label={mobileOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
         >
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

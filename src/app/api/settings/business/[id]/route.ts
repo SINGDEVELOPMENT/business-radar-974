@@ -1,23 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
-
-async function getOrgId(userId: string) {
-  const admin = createAdminClient()
-  const { data: profile } = await admin
-    .from('profiles')
-    .select('organization_id')
-    .eq('id', userId)
-    .single()
-  return profile?.organization_id ?? null
-}
+import { validateUrl } from '@/lib/utils/url-validator'
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const orgId = await getOrgId(user.id)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('organization_id')
+    .eq('id', user.id)
+    .single()
+  const orgId = profile?.organization_id ?? null
   if (!orgId) return NextResponse.json({ error: 'Organisation introuvable' }, { status: 400 })
 
   const { id } = await params
@@ -31,8 +26,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
   }
 
-  const admin = createAdminClient()
-  const { error } = await admin
+  if (updates.website_url) {
+    const urlCheck = validateUrl(updates.website_url)
+    if (!urlCheck.valid) return NextResponse.json({ error: urlCheck.error }, { status: 400 })
+  }
+
+  const { error } = await supabase
     .from('businesses')
     .update(updates)
     .eq('id', id)
@@ -49,13 +48,17 @@ export async function DELETE(_request: NextRequest, { params }: { params: Promis
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const orgId = await getOrgId(user.id)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('organization_id')
+    .eq('id', user.id)
+    .single()
+  const orgId = profile?.organization_id ?? null
   if (!orgId) return NextResponse.json({ error: 'Organisation introuvable' }, { status: 400 })
 
   const { id } = await params
-  const admin = createAdminClient()
 
-  const { error } = await admin
+  const { error } = await supabase
     .from('businesses')
     .delete()
     .eq('id', id)

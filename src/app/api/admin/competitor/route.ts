@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -43,7 +42,7 @@ export async function POST(request: NextRequest) {
         .select()
         .single()
       if (updateErr) return NextResponse.json({ error: updateErr.message }, { status: 500 })
-      revalidatePath('/dashboard/competitors')
+  
       return NextResponse.json({ ok: true, competitor: updated })
     }
   }

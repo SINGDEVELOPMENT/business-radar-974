@@ -7,9 +7,18 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  // Look up user's organization
+  const { data: profile } = await supabase.from('profiles').select('organization_id').eq('id', user.id).single()
+  if (!profile) return NextResponse.json({ error: 'Profile not found' }, { status: 403 })
+
   const { organizationId, lat, lng, type, radius } = await request.json()
   if (!organizationId || !lat || !lng || !type) {
     return NextResponse.json({ error: 'organizationId, lat, lng et type requis' }, { status: 400 })
+  }
+
+  // Verify organizationId matches user's org
+  if (organizationId !== profile.organization_id) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
   try {

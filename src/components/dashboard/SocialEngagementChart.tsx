@@ -1,23 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts'
 import { Card } from '@/components/ui/card'
 import { TrendingUp } from 'lucide-react'
-
-function useIsDark() {
-  const [isDark, setIsDark] = useState(false)
-  useEffect(() => {
-    const root = document.documentElement
-    setIsDark(root.classList.contains('dark'))
-    const obs = new MutationObserver(() => setIsDark(root.classList.contains('dark')))
-    obs.observe(root, { attributes: true, attributeFilter: ['class'] })
-    return () => obs.disconnect()
-  }, [])
-  return isDark
-}
+import { useIsDark } from '@/hooks/useIsDark'
 
 export interface EngagementPoint { date: string; facebook: number; instagram: number }
 

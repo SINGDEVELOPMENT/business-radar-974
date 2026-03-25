@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,9 +10,7 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const admin = createAdminClient()
-
-  const { data: profile } = await admin
+  const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
     .eq('id', user.id)
@@ -23,7 +20,7 @@ export async function POST(request: NextRequest) {
   if (!orgId) return NextResponse.json({ error: 'Organisation introuvable' }, { status: 400 })
 
   // Auto-créer le bucket si absent
-  await admin.storage.createBucket(BUCKET, { public: true }).catch(() => {})
+  await supabase.storage.createBucket(BUCKET, { public: true }).catch(() => {})
 
   const formData = await request.formData()
   const file = formData.get('file') as File | null
@@ -42,7 +39,7 @@ export async function POST(request: NextRequest) {
   const bytes = await file.arrayBuffer()
   const path = `${orgId}.${ext}`
 
-  const { error: uploadError } = await admin.storage
+  const { error: uploadError } = await supabase.storage
     .from(BUCKET)
     .upload(path, bytes, { contentType: file.type, upsert: true })
 
@@ -50,10 +47,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: uploadError.message }, { status: 500 })
   }
 
-  const { data: { publicUrl } } = admin.storage.from(BUCKET).getPublicUrl(path)
+  const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(path)
 
   // Sauvegarder l'URL dans organizations
-  await admin.from('organizations').update({ avatar_url: publicUrl }).eq('id', orgId)
+  await supabase.from('organizations').update({ avatar_url: publicUrl }).eq('id', orgId)
 
   return NextResponse.json({ ok: true, url: publicUrl })
 }

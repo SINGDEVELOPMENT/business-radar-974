@@ -5,15 +5,17 @@ import KpiCard from '@/components/dashboard/KpiCard'
 import ReviewsChart from '@/components/dashboard/ReviewsChart'
 import { Star, MessageSquareText, ThumbsUp, ThumbsDown, Activity, FileDown } from 'lucide-react'
 import ReviewsFilterList from '@/components/dashboard/ReviewsFilterList'
+import { redirect } from 'next/navigation'
 
 export default async function ReviewsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
-    .eq('id', user!.id)
+    .eq('id', user.id)
     .single()
 
   const orgId = profile?.organization_id
@@ -138,8 +140,8 @@ export default async function ReviewsPage() {
               value={totalReviews}
               subtitle="Toutes périodes"
               icon={MessageSquareText}
-              iconColor="text-[#6C5CE7]"
-              iconBg="bg-[#6C5CE7]/10"
+              iconColor="text-brand"
+              iconBg="bg-brand/10"
             />
             <KpiCard
               title="Avis positifs"
@@ -165,7 +167,7 @@ export default async function ReviewsPage() {
           {/* Recent activity badge */}
           {recentCount > 0 && (
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-[#6C5CE7]" />
+              <Activity className="w-4 h-4 text-brand" />
               <span className="text-sm text-gray-600">
                 <span className="font-semibold text-gray-900">{recentCount} avis</span>{' '}
                 reçus ces 30 derniers jours

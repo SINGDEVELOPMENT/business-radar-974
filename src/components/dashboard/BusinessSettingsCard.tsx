@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Globe, MapPin, Facebook, Instagram, Pencil, Trash2, Check, X, AlertTriangle } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface Business {
   id: string
@@ -44,17 +45,19 @@ export default function BusinessSettingsCard({ business, onDelete, onUpdate }: P
       body: JSON.stringify(form),
     })
     setLoading(false)
-    if (!res.ok) { setError((await res.json()).error); return }
+    if (!res.ok) { setError((await res.json()).error); toast.error('Erreur lors de la mise à jour'); return }
 
     onUpdate(business.id, form)
     setEditing(false)
+    toast.success('Business mis à jour')
   }
 
   async function handleDelete() {
     setLoading(true)
     const res = await fetch(`/api/settings/business/${business.id}`, { method: 'DELETE' })
     setLoading(false)
-    if (!res.ok) { setError((await res.json()).error); return }
+    if (!res.ok) { setError((await res.json()).error); toast.error('Erreur lors de la suppression'); return }
+    toast.success('Business supprimé')
     onDelete(business.id)
   }
 

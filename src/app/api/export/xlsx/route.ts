@@ -1,5 +1,5 @@
+import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
 import * as XLSX from 'xlsx'
 
 export const dynamic = 'force-dynamic'
@@ -7,22 +7,20 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return new Response('Unauthorized', { status: 401 })
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const admin = createAdminClient()
-
-  const { data: profile } = await admin
+  const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
     .eq('id', user.id)
     .single()
 
   const orgId = profile?.organization_id
-  if (!orgId) return new Response('Organisation introuvable', { status: 400 })
+  if (!orgId) return NextResponse.json({ error: 'Organisation introuvable' }, { status: 400 })
 
   const [{ data: org }, { data: business }] = await Promise.all([
-    admin.from('organizations').select('name').eq('id', orgId).single(),
-    admin.from('businesses').select('id, name, google_rating, google_reviews_count, website_url')
+    supabase.from('organizations').select('name').eq('id', orgId).single(),
+    supabase.from('businesses').select('id, name, google_rating, google_reviews_count, website_url')
       .eq('organization_id', orgId).eq('is_competitor', false).limit(1).single(),
   ])
 
@@ -31,11 +29,11 @@ export async function GET() {
   // ── Feuille 0 : Vue d'ensemble ──
   if (business) {
     const [{ data: reviews }, { data: seo }, { data: competitors }, { data: lastReport }] = await Promise.all([
-      admin.from('reviews').select('rating').eq('business_id', business.id),
-      admin.from('seo_snapshots').select('lighthouse_score, accessibility_score, seo_audit_score, load_time_ms')
+      supabase.from('reviews').select('rating').eq('business_id', business.id),
+      supabase.from('seo_snapshots').select('lighthouse_score, accessibility_score, seo_audit_score, load_time_ms')
         .eq('business_id', business.id).order('collected_at', { ascending: false }).limit(1).single(),
-      admin.from('businesses').select('name, google_rating').eq('organization_id', orgId).eq('is_competitor', true),
-      admin.from('ai_reports').select('summary, generated_at').eq('organization_id', orgId)
+      supabase.from('businesses').select('name, google_rating').eq('organization_id', orgId).eq('is_competitor', true),
+      supabase.from('ai_reports').select('summary, generated_at').eq('organization_id', orgId)
         .order('generated_at', { ascending: false }).limit(1).single(),
     ])
 
@@ -74,7 +72,7 @@ export async function GET() {
 
   // ── Feuille 1 : Avis clients ──
   if (business) {
-    const { data: reviews } = await admin
+    const { data: reviews } = await supabase
       .from('reviews')
       .select('author_name, rating, text, published_at, source, collected_at')
       .eq('business_id', business.id)
@@ -98,7 +96,7 @@ export async function GET() {
 
   // ── Feuille 2 : Historique SEO ──
   if (business) {
-    const { data: seo } = await admin
+    const { data: seo } = await supabase
       .from('seo_snapshots')
       .select('collected_at, lighthouse_score, accessibility_score, seo_audit_score, best_practices_score, load_time_ms, has_ssl, mobile_friendly, page_size_kb, h1_count, h2_count, h3_count, word_count, has_schema, has_og_tags, has_sitemap, has_robots_txt, images_without_alt, total_images, internal_links_count, external_links_count')
       .eq('business_id', business.id)
@@ -136,7 +134,7 @@ export async function GET() {
 
   // ── Feuille 3 : Posts réseaux sociaux ──
   if (business) {
-    const { data: posts } = await admin
+    const { data: posts } = await supabase
       .from('social_posts')
       .select('platform, content, likes, comments, shares, published_at, collected_at')
       .eq('business_id', business.id)
@@ -162,7 +160,7 @@ export async function GET() {
   }
 
   // ── Feuille 4 : Concurrents ──
-  const { data: competitors } = await admin
+  const { data: competitors } = await supabase
     .from('businesses')
     .select('name, google_rating, google_reviews_count, website_url, created_at')
     .eq('organization_id', orgId)
@@ -184,7 +182,7 @@ export async function GET() {
   }
 
   // ── Feuille 5 : Rapports IA ──
-  const { data: reports } = await admin
+  const { data: reports } = await supabase
     .from('ai_reports')
     .select('report_type, summary, generated_at, content')
     .eq('organization_id', orgId)
@@ -215,7 +213,7 @@ export async function GET() {
 
   const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' }) as Buffer
 
-  return new Response(buffer as unknown as BodyInit, {
+  return new Response(new Uint8Array(buffer), {
     headers: {
       'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Disposition': `attachment; filename="${filename}"`,

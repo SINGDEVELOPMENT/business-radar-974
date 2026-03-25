@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { computeSeoScore } from '@/lib/utils/seo'
+import { validateUrl } from '@/lib/utils/url-validator'
 
 const OPPORTUNITY_KEYS = [
   'render-blocking-resources',
@@ -14,6 +15,11 @@ const OPPORTUNITY_KEYS = [
 ]
 
 export async function collectSeoAudit(businessId: string, websiteUrl: string) {
+  const urlCheck = validateUrl(websiteUrl)
+  if (!urlCheck.valid) {
+    return { error: urlCheck.error, collected: 0 }
+  }
+
   const start = Date.now()
 
   let statusCode = 0

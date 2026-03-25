@@ -4,10 +4,11 @@ import { Badge } from '@/components/ui/badge'
 import ReportsOldSection from '@/components/dashboard/ReportsOldSection'
 import {
   Brain, Calendar, CheckCircle2, XCircle, ArrowRight, Users,
-  TrendingUp, TrendingDown, Minus, FileDown, Sparkles,
+  TrendingUp, FileDown, Sparkles,
 } from 'lucide-react'
 import { DEMO_REPORT, DEMO_REPORTS_USED, DEMO_REPORTS_LIMIT, DEMO_OLD_REPORTS } from '@/lib/demo-data'
 import type { AiReportContent } from '@/types'
+import ScoreCircle from '@/components/ui/ScoreCircle'
 
 export default function DemoPremiumReportsPage() {
   const { score_global, summary, strengths, weaknesses, recommendations, competitor_analysis, generated_at, previous_score } = DEMO_REPORT
@@ -145,13 +146,3 @@ export default function DemoPremiumReportsPage() {
   )
 }
 
-function ScoreCircle({ score }: { score: number }) {
-  const color = score >= 75 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444'
-  const TrendIcon = score >= 60 ? TrendingUp : score >= 40 ? Minus : TrendingDown
-  return (
-    <div className="flex flex-col items-center justify-center w-20 h-20 rounded-full border-4 shrink-0" style={{ borderColor: color }}>
-      <span className="text-xl font-bold" style={{ color }}>{score}</span>
-      <TrendIcon className="w-4 h-4" style={{ color }} />
-    </div>
-  )
-}

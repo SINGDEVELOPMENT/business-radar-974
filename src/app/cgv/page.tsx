@@ -106,7 +106,7 @@ export default function CgvPage() {
                 <ul className="space-y-1.5 text-sm text-foreground/70">
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Tout le Standard</li>
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Analyse SEO on-page complète</li>
-                  <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Core Web Vitals (PageSpeed)</li>
+                  <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Core Web Vitals détaillés (LCP, FCP, CLS, TBT, Speed Index)</li>
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> % de réponses aux avis (vous vs concurrents)</li>
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Avis récents 30 jours par concurrent</li>
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Score PageSpeed des sites concurrents</li>

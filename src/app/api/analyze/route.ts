@@ -34,7 +34,7 @@ export async function POST() {
     }, { status: 403 })
   }
 
-  // ── 3. Compteur mensuel ────────────────────────────────────────────────
+  // ── 3. Compteur mensuel (pré-vérification — l'incrément atomique est post-génération) ──
   const now = new Date()
   const resetAt = org.manual_reports_reset_at ? new Date(org.manual_reports_reset_at) : null
   const needsReset = !resetAt ||
@@ -181,16 +181,19 @@ export async function POST() {
   try {
     const report = await analyzeMonthly(orgId, businessData, org?.api_key_claude ?? undefined)
 
-    // Incrémenter le compteur mensuel
-    await supabase
-      .from('organizations')
-      .update({
-        manual_reports_this_month: usedThisMonth + 1,
-        ...(needsReset ? { manual_reports_reset_at: now.toISOString() } : {}),
+    // Incrémenter atomiquement le compteur mensuel (RPC Supabase)
+    const { data: newCount, error: counterError } = await supabase
+      .rpc('increment_report_counter', {
+        org_id: orgId,
+        max_limit: MANUAL_LIMIT,
+        current_month_start: now.toISOString(),
       })
-      .eq('id', orgId)
+    if (counterError || newCount == null) {
+      // Le rapport a été généré mais le compteur n'a pas pu être incrémenté — log seulement
+      console.error('Failed to increment report counter:', counterError?.message ?? 'limit reached post-generation')
+    }
 
-    return NextResponse.json({ ...report, _meta: { used: usedThisMonth + 1, limit: MANUAL_LIMIT } })
+    return NextResponse.json({ ...report, _meta: { used: newCount ?? usedThisMonth + 1, limit: MANUAL_LIMIT } })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Erreur inconnue'
     return NextResponse.json({ error: message }, { status: 500 })

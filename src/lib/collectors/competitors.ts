@@ -97,7 +97,6 @@ export async function collectCompetitors(
     google_place_id: p.place_id,
     google_rating: p.rating ?? null,
     google_reviews_count: p.user_ratings_total ?? null,
-    category: p.types?.[0]?.replace(/_/g, ' ') ?? null,
     is_competitor: true,
   }))
 

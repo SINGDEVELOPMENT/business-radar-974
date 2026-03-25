@@ -8,20 +8,24 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
   Brain, Calendar, CheckCircle2, XCircle, ArrowRight, Users,
-  TrendingUp, TrendingDown, Minus, FileDown, Lock, Sparkles,
+  TrendingUp, FileDown, Lock, Sparkles,
 } from 'lucide-react'
 import type { AiReportContent, AiRecommendation } from '@/types'
+import { redirect } from 'next/navigation'
+import ScoreCircle from '@/components/ui/ScoreCircle'
+import ReportTypeBadge from '@/components/ui/ReportTypeBadge'
 
 const MANUAL_LIMIT = 5
 
 export default async function ReportsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
-    .eq('id', user!.id)
+    .eq('id', user.id)
     .single()
 
   const orgId = profile?.organization_id
@@ -58,7 +62,7 @@ export default async function ReportsPage() {
   const { data: reports } = orgId
     ? await supabase
         .from('ai_reports')
-        .select('*')
+        .select('id, report_type, content, summary, generated_at')
         .eq('organization_id', orgId)
         .order('generated_at', { ascending: false })
         .limit(10)
@@ -85,23 +89,23 @@ export default async function ReportsPage() {
 
       {/* ── Gate standard (sans grace period) ── */}
       {!isPremium && !isInGracePeriod && (
-        <Card className="p-6 border-[#6C5CE7]/20 bg-gradient-to-br from-[#6C5CE7]/5 to-[#00CEC9]/5 dark:from-[#6C5CE7]/10 dark:to-[#00CEC9]/10">
+        <Card className="p-6 border-brand/20 bg-gradient-to-br from-brand/5 to-accent/5 dark:from-brand/10 dark:to-accent/10">
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-[#6C5CE7] shrink-0">
+            <div className="p-3 rounded-xl bg-brand shrink-0">
               <Lock className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <h3 className="font-semibold text-gray-900 dark:text-white">Fonctionnalité Premium</h3>
-                <Badge className="bg-[#6C5CE7]">Premium</Badge>
+                <Badge className="bg-brand">Premium</Badge>
               </div>
               <p className="text-sm text-gray-600 dark:text-slate-300 mb-3">
                 La génération de rapports AI est réservée aux abonnés Premium. Passez au plan Premium pour accéder à :
               </p>
               <ul className="space-y-1.5 text-sm text-gray-700 dark:text-slate-300">
-                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-[#9B8FF2] shrink-0" /> 1 rapport AI automatique chaque semaine</li>
-                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-[#9B8FF2] shrink-0" /> 5 rapports manuels par mois</li>
-                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-[#9B8FF2] shrink-0" /> Jusqu'à 5 concurrents surveillés (vs 2 en standard)</li>
+                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-brand-light shrink-0" /> 1 rapport AI automatique chaque semaine</li>
+                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-brand-light shrink-0" /> 5 rapports manuels par mois</li>
+                <li className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5 text-brand-light shrink-0" /> Jusqu'à 5 concurrents surveillés (vs 2 en standard)</li>
               </ul>
               <p className="text-xs text-gray-500 mt-3">Contactez votre administrateur pour passer en Premium.</p>
             </div>
@@ -186,7 +190,7 @@ export default async function ReportsPage() {
                     <ScoreCircle score={latestContent.score_global} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        <Brain className="w-4 h-4 text-[#6C5CE7]" />
+                        <Brain className="w-4 h-4 text-brand" />
                         <h3 className="font-semibold text-gray-900 dark:text-white">Synthèse</h3>
                       </div>
                       <p className="text-sm text-gray-700 dark:text-slate-300 leading-relaxed">{latestContent.summary}</p>
@@ -262,23 +266,6 @@ export default async function ReportsPage() {
           )}
         </div>
       )}
-    </div>
-  )
-}
-
-function ReportTypeBadge({ type }: { type: string }) {
-  const label = type === 'monthly' ? 'Mensuel' : type === 'weekly' ? 'Hebdomadaire' : 'Alerte'
-  const variant = type === 'monthly' ? 'default' as const : type === 'weekly' ? 'secondary' as const : 'destructive' as const
-  return <Badge variant={variant}>{label}</Badge>
-}
-
-function ScoreCircle({ score }: { score: number }) {
-  const color = score >= 75 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444'
-  const TrendIcon = score >= 60 ? TrendingUp : score >= 40 ? Minus : TrendingDown
-  return (
-    <div className="flex flex-col items-center justify-center w-20 h-20 rounded-full border-4 shrink-0" style={{ borderColor: color }}>
-      <span className="text-xl font-bold" style={{ color }}>{score}</span>
-      <TrendIcon className="w-4 h-4" style={{ color }} />
     </div>
   )
 }

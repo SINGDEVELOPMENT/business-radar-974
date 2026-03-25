@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Building2, Pencil, Check, X, Upload, ImageIcon } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface Props {
   orgName: string
@@ -33,9 +34,10 @@ export default function OrgEditCard({ orgName, orgPlan, avatarUrl }: Props) {
       body: JSON.stringify({ name }),
     })
     setLoading(false)
-    if (!res.ok) { setError((await res.json()).error); return }
+    if (!res.ok) { setError((await res.json()).error); toast.error('Erreur lors de la mise à jour'); return }
     setSuccess(true)
     setEditing(false)
+    toast.success('Organisation mise à jour')
     setTimeout(() => setSuccess(false), 3000)
   }
 
@@ -60,10 +62,12 @@ export default function OrgEditCard({ orgName, orgPlan, avatarUrl }: Props) {
       const { error: err } = await res.json()
       setUploadError(err)
       setAvatarPreview(avatarUrl ?? null)
+      toast.error('Erreur lors de l\'upload du logo')
       return
     }
     const { url } = await res.json()
     setAvatarPreview(url)
+    toast.success('Logo mis à jour')
   }
 
   const planLabel = orgPlan === 'premium' ? 'Premium' : 'Standard'

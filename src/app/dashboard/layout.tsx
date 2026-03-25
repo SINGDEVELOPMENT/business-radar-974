@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import AuthGuard from '@/components/auth/AuthGuard'
 import Sidebar from '@/components/layout/Sidebar'
+import { Toaster } from 'sonner'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -25,6 +26,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             {children}
           </main>
         </div>
+        <Toaster richColors position="top-right" />
       </div>
     </AuthGuard>
   )

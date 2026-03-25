@@ -116,13 +116,14 @@ export async function analyzeMonthly(
   }
 
   const supabase = createAdminClient()
-  await supabase.from('ai_reports').insert({
+  const { error: insertError } = await supabase.from('ai_reports').insert({
     organization_id: organizationId,
     report_type: 'monthly',
     content: parsed,
     summary: parsed.summary,
     recommendations: parsed.recommendations,
   })
+  if (insertError) throw new Error(`Failed to save report: ${insertError.message}`)
 
   return parsed
 }
@@ -143,13 +144,14 @@ export async function analyzeWeekly(
   }
 
   const supabase = createAdminClient()
-  await supabase.from('ai_reports').insert({
+  const { error: insertError } = await supabase.from('ai_reports').insert({
     organization_id: organizationId,
     report_type: 'weekly',
     content: parsed,
     summary: parsed.summary,
     recommendations: parsed.recommendations,
   })
+  if (insertError) throw new Error(`Failed to save report: ${insertError.message}`)
 
   return parsed
 }
@@ -181,13 +183,14 @@ export async function analyzeAlert(
     const result = toolUse.input as { alert: string; recommendations: AiReportContent['recommendations'] }
 
     const supabase = createAdminClient()
-    await supabase.from('ai_reports').insert({
+    const { error: insertError } = await supabase.from('ai_reports').insert({
       organization_id: organizationId,
       report_type: 'alert',
       content: result,
       summary: result.alert,
       recommendations: result.recommendations,
     })
+    if (insertError) throw new Error(`Failed to save report: ${insertError.message}`)
 
     return result
   } catch (err) {

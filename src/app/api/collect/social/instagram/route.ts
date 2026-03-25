@@ -7,13 +7,26 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { businessId, igUserId, accessToken } = await request.json()
-  if (!businessId || !igUserId || !accessToken) {
+  // Look up user's organization
+  const { data: profile } = await supabase.from('profiles').select('organization_id').eq('id', user.id).single()
+  if (!profile) return NextResponse.json({ error: 'Profile not found' }, { status: 403 })
+
+  const { businessId, igUserId } = await request.json()
+  if (!businessId || !igUserId) {
     return NextResponse.json(
-      { error: 'businessId, igUserId et accessToken requis' },
+      { error: 'businessId et igUserId requis' },
       { status: 400 },
     )
   }
+
+  // Verify business belongs to user's org
+  const { data: business } = await supabase.from('businesses').select('id').eq('id', businessId).eq('organization_id', profile.organization_id).single()
+  if (!business) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  // Look up Meta access token from organization
+  const { data: org } = await supabase.from('organizations').select('meta_access_token').eq('id', profile.organization_id).single()
+  if (!org?.meta_access_token) return NextResponse.json({ error: 'Meta access token not configured' }, { status: 400 })
+  const accessToken = org.meta_access_token
 
   try {
     const result = await collectInstagramPosts(businessId, igUserId, accessToken)

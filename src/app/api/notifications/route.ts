@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,9 +16,7 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const admin = createAdminClient()
-
-  const { data: profile } = await admin
+  const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
     .eq('id', user.id)
@@ -31,7 +28,7 @@ export async function GET() {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
 
   // Récupérer le business principal de l'org
-  const { data: business } = await admin
+  const { data: business } = await supabase
     .from('businesses')
     .select('id, name')
     .eq('organization_id', orgId)
@@ -42,7 +39,7 @@ export async function GET() {
   const [reviewsRes, reportsRes] = await Promise.all([
     // Avis négatifs récents (note <= 2)
     business
-      ? admin
+      ? supabase
           .from('reviews')
           .select('id, author_name, rating, published_at')
           .eq('business_id', business.id)
@@ -52,7 +49,7 @@ export async function GET() {
       : Promise.resolve({ data: [] }),
 
     // Nouveaux rapports AI
-    admin
+    supabase
       .from('ai_reports')
       .select('id, report_type, generated_at, summary')
       .eq('organization_id', orgId)

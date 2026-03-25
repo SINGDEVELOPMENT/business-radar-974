@@ -4,21 +4,11 @@ import { useState, useMemo } from 'react'
 import KpiCard from '@/components/dashboard/KpiCard'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Star, MessageSquare, TrendingUp, Activity, Brain, Calendar, ArrowRight, Lightbulb, TrendingDown, Minus, FileDown } from 'lucide-react'
+import { Star, MessageSquare, TrendingUp, Activity, Brain, Calendar, ArrowRight, Lightbulb, FileDown } from 'lucide-react'
 import Link from 'next/link'
 import { DEMO_BUSINESS, DEMO_REVIEWS, DEMO_SOCIAL_POSTS, DEMO_SEO_LATEST, DEMO_OLD_REPORTS } from '@/lib/demo-data'
 import type { AiRecommendation } from '@/types'
-
-function ScoreCircle({ score }: { score: number }) {
-  const color = score >= 75 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444'
-  const TrendIcon = score >= 60 ? TrendingUp : score >= 40 ? Minus : TrendingDown
-  return (
-    <div className="flex flex-col items-center justify-center w-14 h-14 rounded-full border-[3px] shrink-0" style={{ borderColor: color }}>
-      <span className="text-sm font-bold leading-none" style={{ color }}>{score}</span>
-      <TrendIcon className="w-3 h-3 mt-0.5" style={{ color }} />
-    </div>
-  )
-}
+import ScoreCircle from '@/components/ui/ScoreCircle'
 
 const MONTH_LABELS = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
 
@@ -151,7 +141,7 @@ export default function DemoPremiumPage() {
               return (
                 <Card key={report.id} className="p-5">
                   <div className="flex items-start gap-4">
-                    {score != null && <ScoreCircle score={score} />}
+                    {score != null && <ScoreCircle score={score} size="sm" />}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
                         <div className="flex items-center gap-2">

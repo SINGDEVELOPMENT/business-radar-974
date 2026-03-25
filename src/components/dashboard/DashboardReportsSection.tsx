@@ -3,9 +3,10 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Brain, Calendar, FileDown, ArrowRight, Lightbulb, TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { Brain, Calendar, FileDown, ArrowRight, Lightbulb } from 'lucide-react'
 import type { AiRecommendation } from '@/types'
+import ScoreCircle from '@/components/ui/ScoreCircle'
+import ReportTypeBadge from '@/components/ui/ReportTypeBadge'
 
 interface Report {
   id: string
@@ -20,23 +21,6 @@ interface Report {
 
 interface Props {
   reports: Report[]
-}
-
-function ScoreCircle({ score }: { score: number }) {
-  const color = score >= 75 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444'
-  const TrendIcon = score >= 60 ? TrendingUp : score >= 40 ? Minus : TrendingDown
-  return (
-    <div className="flex flex-col items-center justify-center w-14 h-14 rounded-full border-[3px] shrink-0" style={{ borderColor: color }}>
-      <span className="text-sm font-bold leading-none" style={{ color }}>{score}</span>
-      <TrendIcon className="w-3 h-3 mt-0.5" style={{ color }} />
-    </div>
-  )
-}
-
-function ReportTypeBadge({ type }: { type: string }) {
-  const label = type === 'monthly' ? 'Mensuel' : type === 'weekly' ? 'Hebdomadaire' : 'Alerte'
-  const variant = type === 'monthly' ? 'default' as const : type === 'weekly' ? 'secondary' as const : 'destructive' as const
-  return <Badge variant={variant} className="text-[10px]">{label}</Badge>
 }
 
 export default function DashboardReportsSection({ reports }: Props) {
@@ -136,7 +120,7 @@ export default function DashboardReportsSection({ reports }: Props) {
           return (
             <Card key={report.id} className="p-5">
               <div className="flex items-start gap-4">
-                {score != null && <ScoreCircle score={score} />}
+                {score != null && <ScoreCircle score={score} size="sm" />}
 
                 <div className="flex-1 min-w-0">
                   {/* Header */}

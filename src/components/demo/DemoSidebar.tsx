@@ -95,11 +95,11 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
 
   const activeClass = variant === 'premium'
     ? 'bg-amber-500/20 text-amber-400'
-    : 'bg-[#6C5CE7]/20 text-[#9B8FF2]'
+    : 'bg-brand/20 text-brand-light'
 
   const fabClass = variant === 'premium'
     ? 'bg-amber-500 shadow-amber-500/40'
-    : 'bg-[#6C5CE7] shadow-[#6C5CE7]/40'
+    : 'bg-brand shadow-brand/40'
 
   function isActive(href: string) {
     return href === base ? pathname === base : pathname.startsWith(href)
@@ -135,7 +135,7 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
           <Separator className="bg-white/[0.06] mb-3" />
           <div className="flex items-center gap-2 px-3">
             <ThemeToggle className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-700 text-slate-400" />
-            <Link href="/login" className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-[#9B8FF2] hover:bg-[#6C5CE7]/10 transition-all">
+            <Link href="/login" className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-brand-light hover:bg-brand/10 transition-all">
               Se connecter →
             </Link>
           </div>
@@ -182,7 +182,7 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
           ))}
         </nav>
         <div className="px-6 py-4">
-          <Link href="/login" className="text-sm font-medium text-[#9B8FF2] hover:text-[#6C5CE7]">Se connecter →</Link>
+          <Link href="/login" className="text-sm font-medium text-brand-light hover:text-brand">Se connecter →</Link>
         </div>
       </aside>
 

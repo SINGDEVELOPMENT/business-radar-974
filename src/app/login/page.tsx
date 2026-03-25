@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import ThemeToggle from '@/components/ui/ThemeToggle'
@@ -24,6 +24,24 @@ function LoginForm() {
   const [error, setError] = useState(urlError === 'lien_invalide' ? 'Le lien est invalide ou a expiré.' : '')
   const [loading, setLoading] = useState(false)
   const [resetSent, setResetSent] = useState(false)
+  const [failCount, setFailCount] = useState(0)
+  const [lockUntil, setLockUntil] = useState<number | null>(null)
+  const [lockRemaining, setLockRemaining] = useState(0)
+
+  // Countdown timer for lock display
+  useEffect(() => {
+    if (!lockUntil) { setLockRemaining(0); return }
+    const tick = () => {
+      const diff = Math.ceil((lockUntil - Date.now()) / 1000)
+      if (diff <= 0) { setLockUntil(null); setLockRemaining(0) }
+      else setLockRemaining(diff)
+    }
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [lockUntil])
+
+  const isLocked = lockUntil != null && Date.now() < lockUntil
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -34,11 +52,20 @@ function LoginForm() {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
+      const newCount = failCount + 1
+      setFailCount(newCount)
+      if (newCount >= 5) {
+        setLockUntil(Date.now() + 120_000)
+      } else if (newCount >= 3) {
+        setLockUntil(Date.now() + 30_000)
+      }
       setError(error.message)
       setLoading(false)
       return
     }
 
+    setFailCount(0)
+    setLockUntil(null)
     router.push('/dashboard')
     router.refresh()
   }
@@ -89,7 +116,7 @@ function LoginForm() {
               <button
                 type="button"
                 onClick={() => { setView('forgot'); setError('') }}
-                className="text-xs text-[#6C5CE7] hover:text-[#9B8FF2] transition-colors"
+                className="text-xs text-brand hover:text-brand-light transition-colors"
               >
                 Mot de passe oublié ?
               </button>
@@ -114,10 +141,12 @@ function LoginForm() {
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full py-2.5 px-4 bg-[#6C5CE7] hover:bg-[#9B8FF2] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
+            disabled={loading || isLocked}
+            className="w-full py-2.5 px-4 bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
           >
-            {loading ? 'Connexion…' : 'Se connecter'}
+            {isLocked
+              ? `Réessayez dans ${lockRemaining}s`
+              : loading ? 'Connexion…' : 'Se connecter'}
           </button>
         </form>
       ) : resetSent ? (
@@ -128,7 +157,7 @@ function LoginForm() {
           </p>
           <button
             onClick={() => { setView('login'); setResetSent(false) }}
-            className="text-sm text-[#6C5CE7] hover:text-[#9B8FF2] transition-colors"
+            className="text-sm text-brand hover:text-brand-light transition-colors"
           >
             Retour à la connexion
           </button>
@@ -160,7 +189,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-[#6C5CE7] hover:bg-[#9B8FF2] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
+            className="w-full py-2.5 px-4 bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
           >
             {loading ? 'Envoi…' : 'Envoyer le lien de réinitialisation'}
           </button>

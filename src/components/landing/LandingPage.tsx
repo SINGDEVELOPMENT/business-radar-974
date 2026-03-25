@@ -42,9 +42,9 @@ const NAV_ITEMS = [
 
 const KPIS = [
   { label: 'Note Google',   value: '4.7 / 5',   sub: '124 avis',      color: 'text-amber-500',  bg: 'bg-amber-50 dark:bg-amber-500/[0.1]',   border: 'border-amber-100 dark:border-amber-500/[0.1]', pulse: true },
-  { label: 'Avis ce mois',  value: '18',         sub: '+6 vs préc.',   color: 'text-[#6C5CE7]',  bg: 'bg-[#6C5CE7]/[0.08] dark:bg-[#6C5CE7]/[0.1]', border: 'border-[#6C5CE7]/20 dark:border-[#6C5CE7]/20', pulse: false },
+  { label: 'Avis ce mois',  value: '18',         sub: '+6 vs préc.',   color: 'text-brand',  bg: 'bg-brand/[0.08] dark:bg-brand/[0.1]', border: 'border-brand/20 dark:border-brand/20', pulse: false },
   { label: 'Engagement',    value: '1 240',      sub: '+12 % vs préc.', color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-500/[0.1]', border: 'border-emerald-100 dark:border-emerald-500/[0.1]', pulse: false },
-  { label: 'Score SEO',     value: '87 / 100',  sub: '+5 pts',        color: 'text-[#6C5CE7]', bg: 'bg-[#6C5CE7]/[0.1] dark:bg-[#6C5CE7]/[0.1]',  border: 'border-[#6C5CE7]/[0.1] dark:border-[#6C5CE7]/[0.1]', pulse: false },
+  { label: 'Score SEO',     value: '87 / 100',  sub: '+5 pts',        color: 'text-brand', bg: 'bg-brand/[0.1] dark:bg-brand/[0.1]',  border: 'border-brand/[0.1] dark:border-brand/[0.1]', pulse: false },
 ]
 
 const REVIEWS = [
@@ -80,9 +80,9 @@ function DashboardMockup({ mockupT }: { mockupT: { title: string; body: string }
               <img src="/favicon.svg" alt="" className="w-5 h-5 flex-none" />
             </div>
             {NAV_ITEMS.map(({ Icon, label, active }) => (
-              <div key={label} className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md ${active ? 'bg-[#6C5CE7]/20' : ''}`}>
-                <Icon className={`w-3 h-3 flex-none ${active ? 'text-[#9B8FF2]' : 'text-slate-600'}`} />
-                <span className={`text-[8px] truncate ${active ? 'text-[#9B8FF2] font-medium' : 'text-slate-600'}`}>{label}</span>
+              <div key={label} className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md ${active ? 'bg-brand/20' : ''}`}>
+                <Icon className={`w-3 h-3 flex-none ${active ? 'text-brand-light' : 'text-slate-600'}`} />
+                <span className={`text-[8px] truncate ${active ? 'text-brand-light font-medium' : 'text-slate-600'}`}>{label}</span>
               </div>
             ))}
           </aside>
@@ -91,10 +91,10 @@ function DashboardMockup({ mockupT }: { mockupT: { title: string; body: string }
           <div className="flex-1 p-3 space-y-2.5 min-w-0 overflow-hidden">
 
             {/* Badge rapport IA — clignote */}
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#6C5CE7]/[0.08] dark:bg-[#6C5CE7]/[0.1] border border-[#6C5CE7]/20 dark:border-[#6C5CE7]/30 w-fit"
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-brand/[0.08] dark:bg-brand/[0.1] border border-brand/20 dark:border-brand/30 w-fit"
               style={{ animation: 'badge-blink 3s ease-in-out infinite' }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#6C5CE7] shrink-0" style={{ animation: 'badge-blink 3s ease-in-out infinite' }} />
-              <span className="text-[8px] text-[#6C5CE7] dark:text-[#9B8FF2] font-semibold">Nouveau rapport IA disponible</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" style={{ animation: 'badge-blink 3s ease-in-out infinite' }} />
+              <span className="text-[8px] text-brand dark:text-brand-light font-semibold">Nouveau rapport IA disponible</span>
             </div>
 
             {/* KPI grid 2×2 */}
@@ -112,10 +112,10 @@ function DashboardMockup({ mockupT }: { mockupT: { title: string; body: string }
             <div className="bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.04] rounded-lg p-2">
               <div className="flex justify-between mb-1">
                 <span className="text-[8px] text-gray-500 dark:text-slate-500">Score SEO global</span>
-                <span className="text-[8px] font-bold text-[#6C5CE7] dark:text-[#9B8FF2]">87%</span>
+                <span className="text-[8px] font-bold text-brand dark:text-brand-light">87%</span>
               </div>
               <div className="h-1 rounded-full bg-gray-200 dark:bg-white/[0.08] overflow-hidden">
-                <div className="h-full rounded-full bg-[#6C5CE7]" style={{ width: '87%', animation: 'progress-fill 1.8s ease-out forwards' }} />
+                <div className="h-full rounded-full bg-brand" style={{ width: '87%', animation: 'progress-fill 1.8s ease-out forwards' }} />
               </div>
             </div>
 
@@ -140,12 +140,12 @@ function DashboardMockup({ mockupT }: { mockupT: { title: string; body: string }
             </div>
 
             {/* Rapport IA */}
-            <div className="flex items-start gap-2 bg-[#6C5CE7]/[0.06] dark:bg-[#6C5CE7]/[0.08] border border-[#6C5CE7]/20 dark:border-[#6C5CE7]/20 rounded-lg p-2">
-              <div className="w-5 h-5 rounded-md bg-[#6C5CE7]/10 dark:bg-[#6C5CE7]/20 border border-[#6C5CE7]/20 flex items-center justify-center shrink-0 mt-0.5">
-                <Brain className="w-3 h-3 text-[#6C5CE7] dark:text-[#9B8FF2]" />
+            <div className="flex items-start gap-2 bg-brand/[0.06] dark:bg-brand/[0.08] border border-brand/20 dark:border-brand/20 rounded-lg p-2">
+              <div className="w-5 h-5 rounded-md bg-brand/10 dark:bg-brand/20 border border-brand/20 flex items-center justify-center shrink-0 mt-0.5">
+                <Brain className="w-3 h-3 text-brand dark:text-brand-light" />
               </div>
               <div className="min-w-0">
-                <p className="text-[9px] text-[#6C5CE7] dark:text-[#9B8FF2] font-semibold mb-0.5">{mockupT.title}</p>
+                <p className="text-[9px] text-brand dark:text-brand-light font-semibold mb-0.5">{mockupT.title}</p>
                 <p className="text-[9px] text-gray-600 dark:text-slate-400 leading-snug line-clamp-2">{mockupT.body}</p>
               </div>
             </div>
@@ -230,7 +230,7 @@ export default function LandingPage() {
     else setError("Erreur lors de l'envoi. Réessayez ou contactez-nous directement.")
   }
 
-  const inputCls = 'w-full bg-gray-50 dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08] focus:border-[#6C5CE7] dark:focus:border-[#6C5CE7]/50 focus:ring-1 focus:ring-[#6C5CE7]/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-600 outline-none transition-all'
+  const inputCls = 'w-full bg-gray-50 dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08] focus:border-brand dark:focus:border-brand/50 focus:ring-1 focus:ring-brand/20 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-600 outline-none transition-all'
 
   const navItems: [string, string][] = [
     ['#features', t.nav.features],
@@ -244,9 +244,9 @@ export default function LandingPage() {
     { Icon: Star,          iconColor: 'text-amber-500',   iconBg: 'bg-amber-50 dark:bg-amber-500/[0.1]',   iconBorder: 'border-amber-200 dark:border-amber-500/[0.15]' },
     { Icon: Share2,        iconColor: 'text-violet-600',  iconBg: 'bg-violet-50 dark:bg-violet-500/[0.1]', iconBorder: 'border-violet-200 dark:border-violet-500/[0.15]' },
     { Icon: Users,         iconColor: 'text-emerald-600', iconBg: 'bg-emerald-50 dark:bg-emerald-500/[0.1]', iconBorder: 'border-emerald-200 dark:border-emerald-500/[0.15]' },
-    { Icon: Search,        iconColor: 'text-[#00CEC9]',  iconBg: 'bg-[#00CEC9]/[0.08] dark:bg-[#00CEC9]/[0.08]', iconBorder: 'border-[#00CEC9]/20 dark:border-[#00CEC9]/20' },
-    { Icon: Brain,         iconColor: 'text-[#6C5CE7]',   iconBg: 'bg-[#6C5CE7]/[0.08] dark:bg-[#6C5CE7]/[0.1]', iconBorder: 'border-[#6C5CE7]/20 dark:border-[#6C5CE7]/20' },
-    { Icon: LayoutDashboard, iconColor: 'text-[#6C5CE7]', iconBg: 'bg-[#6C5CE7]/[0.08] dark:bg-[#6C5CE7]/[0.08]', iconBorder: 'border-[#6C5CE7]/20 dark:border-[#6C5CE7]/20' },
+    { Icon: Search,        iconColor: 'text-accent',  iconBg: 'bg-accent/[0.08] dark:bg-accent/[0.08]', iconBorder: 'border-accent/20 dark:border-accent/20' },
+    { Icon: Brain,         iconColor: 'text-brand',   iconBg: 'bg-brand/[0.08] dark:bg-brand/[0.1]', iconBorder: 'border-brand/20 dark:border-brand/20' },
+    { Icon: LayoutDashboard, iconColor: 'text-brand', iconBg: 'bg-brand/[0.08] dark:bg-brand/[0.08]', iconBorder: 'border-brand/20 dark:border-brand/20' },
   ]
 
   // Problem card icon config
@@ -259,7 +259,7 @@ export default function LandingPage() {
 
   // Testimonial avatar colors
   const avatarColors = [
-    'bg-[#6C5CE7]',
+    'bg-brand',
     'bg-purple-500',
     'bg-emerald-500',
   ]
@@ -322,12 +322,12 @@ export default function LandingPage() {
           {/* Actions desktop */}
           <div className="hidden md:flex items-center gap-3">
             <div className="flex items-center border border-gray-200 dark:border-white/[0.1] rounded-lg overflow-hidden text-xs font-semibold">
-              <button onClick={() => setLang('fr')} className={`px-2.5 py-1.5 transition-colors ${lang === 'fr' ? 'bg-[#6C5CE7] text-white' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/[0.05]'}`}>FR</button>
-              <button onClick={() => setLang('en')} className={`px-2.5 py-1.5 transition-colors ${lang === 'en' ? 'bg-[#6C5CE7] text-white' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/[0.05]'}`}>EN</button>
+              <button onClick={() => setLang('fr')} className={`px-2.5 py-1.5 transition-colors ${lang === 'fr' ? 'bg-brand text-white' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/[0.05]'}`}>FR</button>
+              <button onClick={() => setLang('en')} className={`px-2.5 py-1.5 transition-colors ${lang === 'en' ? 'bg-brand text-white' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/[0.05]'}`}>EN</button>
             </div>
             <ThemeToggle />
             <Link href="/login" className="text-sm font-medium text-gray-700 dark:text-slate-200 hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-1.5 border border-gray-200 dark:border-white/[0.1] rounded-lg hover:border-gray-300 dark:hover:border-white/[0.2]">{t.nav.login}</Link>
-            <a href="#contact" className="text-sm font-semibold bg-[#6C5CE7] hover:bg-[#9B8FF2] text-white px-4 py-2 rounded-lg transition-colors shadow-sm shadow-[#6C5CE7]/20">{t.nav.cta}</a>
+            <a href="#contact" className="text-sm font-semibold bg-brand hover:bg-brand-light text-white px-4 py-2 rounded-lg transition-colors shadow-sm shadow-brand/20">{t.nav.cta}</a>
           </div>
 
           {/* Mobile burger */}
@@ -343,14 +343,14 @@ export default function LandingPage() {
             ))}
             <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-white/[0.06]">
               <div className="flex items-center border border-gray-200 dark:border-white/[0.1] rounded-lg overflow-hidden text-xs font-semibold">
-                <button onClick={() => setLang('fr')} className={`px-2.5 py-1.5 ${lang === 'fr' ? 'bg-[#6C5CE7] text-white' : 'text-gray-600 dark:text-slate-300'}`}>FR</button>
-                <button onClick={() => setLang('en')} className={`px-2.5 py-1.5 ${lang === 'en' ? 'bg-[#6C5CE7] text-white' : 'text-gray-600 dark:text-slate-300'}`}>EN</button>
+                <button onClick={() => setLang('fr')} className={`px-2.5 py-1.5 ${lang === 'fr' ? 'bg-brand text-white' : 'text-gray-600 dark:text-slate-300'}`}>FR</button>
+                <button onClick={() => setLang('en')} className={`px-2.5 py-1.5 ${lang === 'en' ? 'bg-brand text-white' : 'text-gray-600 dark:text-slate-300'}`}>EN</button>
               </div>
               <ThemeToggle />
             </div>
             <div className="flex flex-col gap-2">
               <Link href="/login" className="text-sm font-medium text-center border border-gray-200 dark:border-white/[0.1] text-gray-700 dark:text-slate-200 px-4 py-2.5 rounded-lg">{t.nav.login}</Link>
-              <a href="#contact" onClick={() => setMenuOpen(false)} className="text-sm font-semibold bg-[#6C5CE7] text-white px-4 py-2.5 rounded-lg text-center">{t.nav.cta}</a>
+              <a href="#contact" onClick={() => setMenuOpen(false)} className="text-sm font-semibold bg-brand text-white px-4 py-2.5 rounded-lg text-center">{t.nav.cta}</a>
             </div>
           </div>
         )}
@@ -362,7 +362,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 pointer-events-none">
           {/* Light mode: subtle radial gradient */}
           <div className="absolute inset-0 dark:opacity-0" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(108,92,231,0.07) 0%, transparent 70%)' }} />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#6C5CE7]/[0.04] via-transparent to-[#00CEC9]/[0.03] dark:opacity-0" />
+          <div className="absolute inset-0 bg-gradient-to-br from-brand/[0.04] via-transparent to-accent/[0.03] dark:opacity-0" />
           {/* Dark mode: dot grid */}
           <div className="absolute inset-0 opacity-0 dark:opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
           {/* Dark mode: orbs */}
@@ -375,14 +375,14 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
             {/* Text */}
             <div>
-              <div className="hero-animate inline-flex items-center gap-2 bg-[#6C5CE7]/[0.08] dark:bg-[#6C5CE7]/[0.1] border border-[#6C5CE7]/20 dark:border-[#6C5CE7]/30 text-[#6C5CE7] dark:text-[#9B8FF2] text-xs font-semibold px-3.5 py-1.5 rounded-full mb-8 tracking-wide">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#6C5CE7] animate-pulse shrink-0" />
+              <div className="hero-animate inline-flex items-center gap-2 bg-brand/[0.08] dark:bg-brand/[0.1] border border-brand/20 dark:border-brand/30 text-brand dark:text-brand-light text-xs font-semibold px-3.5 py-1.5 rounded-full mb-8 tracking-wide">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse shrink-0" />
                 {t.hero.badge}
               </div>
 
               <h1 className="hero-animate hero-animate-delay-1 font-[family-name:var(--font-jakarta)] text-4xl sm:text-5xl lg:text-[3.2rem] font-extrabold leading-[1.1] tracking-tight mb-6">
                 {t.hero.title1}{' '}
-                <span className={`bg-gradient-to-r ${isDark ? 'from-[#9B8FF2] to-[#00CEC9]' : 'from-[#6C5CE7] to-[#00CEC9]'} bg-clip-text text-transparent`}>
+                <span className={`bg-gradient-to-r ${isDark ? 'from-brand-light to-accent' : 'from-brand to-accent'} bg-clip-text text-transparent`}>
                   {t.hero.title2}
                 </span>
               </h1>
@@ -390,7 +390,7 @@ export default function LandingPage() {
               <p className="hero-animate hero-animate-delay-2 text-lg text-gray-600 dark:text-slate-300 leading-relaxed mb-8 max-w-lg">{t.hero.sub}</p>
 
               <div className="hero-animate hero-animate-delay-3 flex flex-col sm:flex-row gap-3 mb-10">
-                <Link href="/demo" className="inline-flex items-center justify-center gap-2 bg-[#6C5CE7] hover:bg-[#9B8FF2] text-white font-semibold px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-[#6C5CE7]/25 text-sm">
+                <Link href="/demo" className="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-light text-white font-semibold px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-brand/25 text-sm">
                   {t.hero.cta1} <ArrowRight className="w-4 h-4" />
                 </Link>
                 <a href="#contact" className="inline-flex items-center justify-center gap-2 border border-gray-300 dark:border-white/[0.12] hover:border-gray-400 dark:hover:border-white/[0.25] bg-white dark:bg-white/[0.03] hover:bg-gray-50 dark:hover:bg-white/[0.06] text-gray-700 dark:text-white font-semibold px-6 py-3.5 rounded-xl transition-all text-sm">
@@ -471,24 +471,24 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="reveal">
-              <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.solution.label}</p>
+              <p className="text-xs font-semibold text-brand dark:text-brand-light uppercase tracking-widest mb-4">{t.solution.label}</p>
               <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight mb-6">{t.solution.title1}<br />{t.solution.title2}</h2>
               <p className="text-gray-600 dark:text-slate-300 text-lg leading-relaxed mb-8">{t.solution.sub}</p>
               <ul className="space-y-4">
                 {t.solution.bullets.map((item) => (
                   <li key={item} className="flex items-start gap-3 text-base text-gray-600 dark:text-slate-300">
-                    <CheckCircle2 className="w-4 h-4 text-[#6C5CE7] dark:text-[#9B8FF2] shrink-0 mt-0.5" />{item}
+                    <CheckCircle2 className="w-4 h-4 text-brand dark:text-brand-light shrink-0 mt-0.5" />{item}
                   </li>
                 ))}
               </ul>
             </div>
             <div className="reveal reveal-delay-2 hidden lg:block">
-              <div className="relative rounded-2xl border border-[#6C5CE7]/20 dark:border-[#6C5CE7]/15 bg-white dark:bg-[#1A1A2E] shadow-xl dark:shadow-black/40 overflow-hidden p-6">
+              <div className="relative rounded-2xl border border-brand/20 dark:border-brand/15 bg-white dark:bg-[#1A1A2E] shadow-xl dark:shadow-black/40 overflow-hidden p-6">
                 {/* Header carte rapport */}
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-[#6C5CE7]/10 flex items-center justify-center">
-                      <Brain className="w-4 h-4 text-[#6C5CE7]" />
+                    <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center">
+                      <Brain className="w-4 h-4 text-brand" />
                     </div>
                     <div>
                       <p className="text-xs font-bold text-gray-900 dark:text-white">{t.mockup.title}</p>
@@ -511,7 +511,7 @@ export default function LandingPage() {
                 {/* Footer */}
                 <div className="mt-4 pt-3 border-t border-gray-100 dark:border-white/[0.05] flex items-center justify-between">
                   <p className="text-[10px] text-gray-400 dark:text-slate-500">Généré le 20 mars 2026</p>
-                  <span className="text-[10px] text-[#6C5CE7] dark:text-[#9B8FF2] font-semibold">+2 recommandations →</span>
+                  <span className="text-[10px] text-brand dark:text-brand-light font-semibold">+2 recommandations →</span>
                 </div>
               </div>
             </div>
@@ -542,7 +542,7 @@ export default function LandingPage() {
       <section id="features" className="py-28 bg-gray-50 dark:bg-[#0d0d1a]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16 reveal">
-            <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.features.label}</p>
+            <p className="text-xs font-semibold text-brand dark:text-brand-light uppercase tracking-widest mb-4">{t.features.label}</p>
             <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight">{t.features.title1}<br />{t.features.title2}</h2>
           </div>
 
@@ -551,7 +551,7 @@ export default function LandingPage() {
             const aiItem = t.features.items[4]
             const aiCfg = featureConfig[4]
             return (
-              <div className="reveal mb-4 p-8 rounded-2xl border border-[#6C5CE7]/20 dark:border-[#6C5CE7]/20 bg-gradient-to-br from-[#6C5CE7]/[0.04] to-[#00CEC9]/[0.02] dark:from-[#6C5CE7]/[0.05] dark:to-[#00CEC9]/[0.02] hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+              <div className="reveal mb-4 p-8 rounded-2xl border border-brand/20 dark:border-brand/20 bg-gradient-to-br from-brand/[0.04] to-accent/[0.02] dark:from-brand/[0.05] dark:to-accent/[0.02] hover:-translate-y-1 hover:shadow-md transition-all duration-300">
                 <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                   <div className={`w-14 h-14 rounded-2xl ${aiCfg.iconBg} border ${aiCfg.iconBorder} flex items-center justify-center shrink-0`}>
                     <aiCfg.Icon className={`w-7 h-7 ${aiCfg.iconColor}`} />
@@ -571,7 +571,7 @@ export default function LandingPage() {
               const realIdx = idx < 4 ? idx : idx + 1
               const cfg = featureConfig[realIdx]
               return (
-                <div key={idx} className={`reveal reveal-delay-${idx + 1} group relative p-6 rounded-2xl border border-gray-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.02] hover:border-[#6C5CE7]/30 dark:hover:border-[#6C5CE7]/20 hover:bg-[#6C5CE7]/[0.02] dark:hover:bg-white/[0.04] hover:-translate-y-1 hover:shadow-md transition-all duration-300`}>
+                <div key={idx} className={`reveal reveal-delay-${idx + 1} group relative p-6 rounded-2xl border border-gray-200 dark:border-white/[0.07] bg-white dark:bg-white/[0.02] hover:border-brand/30 dark:hover:border-brand/20 hover:bg-brand/[0.02] dark:hover:bg-white/[0.04] hover:-translate-y-1 hover:shadow-md transition-all duration-300`}>
                   <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 0%, rgba(108,92,231,0.04) 0%, transparent 60%)' }} />
                   <div className="relative">
                     <div className={`w-10 h-10 rounded-xl ${cfg.iconBg} border ${cfg.iconBorder} flex items-center justify-center mb-4 transition-colors`}>
@@ -591,20 +591,20 @@ export default function LandingPage() {
       <section id="how" className="py-28 bg-white dark:bg-[#1A1A2E] border-y border-gray-100 dark:border-white/[0.04]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16 reveal">
-            <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.how.label}</p>
+            <p className="text-xs font-semibold text-brand dark:text-brand-light uppercase tracking-widest mb-4">{t.how.label}</p>
             <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight">{t.how.title}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
             {/* Ligne horizontale de connexion (desktop) */}
-            <div className="hidden md:block absolute top-7 left-[calc(16.5%+2.5rem)] right-[calc(16.5%+2.5rem)] h-px bg-gradient-to-r from-transparent via-[#6C5CE7]/40 dark:via-[#6C5CE7]/25 to-transparent" />
+            <div className="hidden md:block absolute top-7 left-[calc(16.5%+2.5rem)] right-[calc(16.5%+2.5rem)] h-px bg-gradient-to-r from-transparent via-brand/40 dark:via-brand/25 to-transparent" />
             {t.how.steps.map(({ num, title, desc }, i) => {
               const icons = [Zap, BarChart2, Brain]
               const Icon = icons[i]
               return (
                 <div key={i} className={`reveal reveal-delay-${i + 1} flex flex-col items-center md:items-start text-center md:text-left`}>
-                  <div className="relative w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shrink-0 bg-gradient-to-br from-[#6C5CE7] to-[#00CEC9] shadow-lg shadow-[#6C5CE7]/25">
+                  <div className="relative w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shrink-0 bg-gradient-to-br from-brand to-accent shadow-lg shadow-brand/25">
                     <Icon className="w-6 h-6 text-white" />
-                    <span className="absolute -top-2.5 -right-2.5 text-[10px] font-bold text-[#6C5CE7] dark:text-[#9B8FF2] bg-white dark:bg-[#1A1A2E] border border-[#6C5CE7]/20 dark:border-[#6C5CE7]/30 px-1.5 py-0.5 rounded-md">{num}</span>
+                    <span className="absolute -top-2.5 -right-2.5 text-[10px] font-bold text-brand dark:text-brand-light bg-white dark:bg-[#1A1A2E] border border-brand/20 dark:border-brand/30 px-1.5 py-0.5 rounded-md">{num}</span>
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{title}</h3>
                   <p className="text-base text-gray-600 dark:text-slate-400 leading-relaxed">{desc}</p>
@@ -620,7 +620,7 @@ export default function LandingPage() {
         <section className="py-28 bg-gray-50 dark:bg-[#0d0d1a]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-16 reveal">
-              <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.testimonials.label}</p>
+              <p className="text-xs font-semibold text-brand dark:text-brand-light uppercase tracking-widest mb-4">{t.testimonials.label}</p>
               <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight">{t.testimonials.title}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -648,7 +648,7 @@ export default function LandingPage() {
       <section id="pricing" className="py-28 bg-white dark:bg-[#1A1A2E] border-y border-gray-100 dark:border-white/[0.04]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16 reveal">
-            <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.pricing.label}</p>
+            <p className="text-xs font-semibold text-brand dark:text-brand-light uppercase tracking-widest mb-4">{t.pricing.label}</p>
             <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight mb-4">{t.pricing.title}</h2>
             <p className="text-gray-600 dark:text-slate-300 text-base">{t.pricing.sub}</p>
           </div>
@@ -668,16 +668,16 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <a href="#contact" className="w-full text-center border border-gray-300 dark:border-white/[0.1] hover:border-[#6C5CE7]/40 dark:hover:border-[#6C5CE7]/40 hover:text-[#6C5CE7] dark:hover:text-[#9B8FF2] text-gray-600 dark:text-slate-300 font-semibold py-3 rounded-xl transition-all text-sm">{t.pricing.standard.cta}</a>
+              <a href="#contact" className="w-full text-center border border-gray-300 dark:border-white/[0.1] hover:border-brand/40 dark:hover:border-brand/40 hover:text-brand dark:hover:text-brand-light text-gray-600 dark:text-slate-300 font-semibold py-3 rounded-xl transition-all text-sm">{t.pricing.standard.cta}</a>
             </div>
             {/* Premium */}
-            <div className="reveal reveal-delay-2 relative p-8 rounded-2xl border-2 border-[#6C5CE7] dark:border-[#6C5CE7]/50 bg-[#6C5CE7]/[0.03] dark:bg-[#6C5CE7]/[0.04] flex flex-col shadow-xl shadow-[#6C5CE7]/10 hover:-translate-y-1 transition-all duration-300">
-              <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-[#6C5CE7]/60 to-transparent" />
+            <div className="reveal reveal-delay-2 relative p-8 rounded-2xl border-2 border-brand dark:border-brand/50 bg-brand/[0.03] dark:bg-brand/[0.04] flex flex-col shadow-xl shadow-brand/10 hover:-translate-y-1 transition-all duration-300">
+              <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-brand/60 to-transparent" />
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                <span className="bg-gradient-to-r from-[#6C5CE7] to-[#00CEC9] text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg shadow-[#6C5CE7]/30 tracking-wide">{t.pricing.premium.recommended}</span>
+                <span className="bg-gradient-to-r from-brand to-accent text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg shadow-brand/30 tracking-wide">{t.pricing.premium.recommended}</span>
               </div>
-              <p className="text-xs font-bold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-1">{t.pricing.premium.hint}</p>
-              <p className="text-xs font-bold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-3">{t.pricing.premium.name}</p>
+              <p className="text-xs font-bold text-brand dark:text-brand-light uppercase tracking-widest mb-1">{t.pricing.premium.hint}</p>
+              <p className="text-xs font-bold text-brand dark:text-brand-light uppercase tracking-widest mb-3">{t.pricing.premium.name}</p>
               <div className="mb-0.5"><span className="text-4xl font-extrabold text-gray-900 dark:text-white">2 000 € <span className="text-lg font-bold">HT</span></span><span className="text-gray-400 dark:text-slate-500 text-sm ml-2">{t.pricing.setup}</span></div>
               <p className="text-xs text-gray-400 dark:text-slate-500 mb-1">(2 170 € TTC)</p>
               <div className="mb-1"><span className="text-xl font-bold text-gray-600 dark:text-slate-300">250 € HT</span><span className="text-gray-400 dark:text-slate-500 text-sm ml-1">{t.pricing.monthly}</span></div>
@@ -685,11 +685,11 @@ export default function LandingPage() {
               <ul className="space-y-3 mb-8 flex-1">
                 {t.pricing.premium.features.map((f) => (
                   <li key={f} className="flex items-start gap-2.5 text-base text-gray-700 dark:text-slate-300">
-                    <CheckCircle2 className="w-4 h-4 text-[#6C5CE7] dark:text-[#9B8FF2] shrink-0 mt-0.5" />{f}
+                    <CheckCircle2 className="w-4 h-4 text-brand dark:text-brand-light shrink-0 mt-0.5" />{f}
                   </li>
                 ))}
               </ul>
-              <a href="#contact" className="w-full text-center bg-[#6C5CE7] hover:bg-[#9B8FF2] text-white font-semibold py-3 rounded-xl transition-all text-sm shadow-lg shadow-[#6C5CE7]/20">{t.pricing.premium.cta}</a>
+              <a href="#contact" className="w-full text-center bg-brand hover:bg-brand-light text-white font-semibold py-3 rounded-xl transition-all text-sm shadow-lg shadow-brand/20">{t.pricing.premium.cta}</a>
             </div>
           </div>
           <p className="text-center text-xs text-gray-400 dark:text-slate-500 mt-6">TVA applicable : 8,5 % (La Réunion). Prix TTC calculés sur cette base.</p>
@@ -697,10 +697,10 @@ export default function LandingPage() {
       </section>
 
       {/* ─── CONTACT ─────────────────────────────────────────────────────────── */}
-      <section id="contact" className="py-28 bg-gradient-to-br from-slate-50 to-[#6C5CE7]/[0.04] dark:from-slate-900 dark:to-[#6C5CE7]/[0.06]">
+      <section id="contact" className="py-28 bg-gradient-to-br from-slate-50 to-brand/[0.04] dark:from-slate-900 dark:to-brand/[0.06]">
         <div className="max-w-lg mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 reveal">
-            <p className="text-xs font-semibold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-4">{t.contact.label}</p>
+            <p className="text-xs font-semibold text-brand dark:text-brand-light uppercase tracking-widest mb-4">{t.contact.label}</p>
             <h2 className="font-[family-name:var(--font-jakarta)] text-3xl sm:text-4xl font-extrabold leading-tight mb-4">{t.contact.title}</h2>
             <p className="text-gray-600 dark:text-slate-300 text-base leading-relaxed">{t.contact.sub}</p>
           </div>
@@ -734,7 +734,7 @@ export default function LandingPage() {
 
               {error && <div className="bg-red-50 dark:bg-red-500/[0.08] border border-red-200 dark:border-red-500/[0.15] text-red-500 dark:text-red-400 text-sm rounded-xl px-4 py-3">{error}</div>}
 
-              <button type="submit" disabled={loading} className="w-full bg-[#6C5CE7] hover:bg-[#9B8FF2] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-all text-base shadow-lg shadow-[#6C5CE7]/20 flex items-center justify-center gap-2">
+              <button type="submit" disabled={loading} className="w-full bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-all text-base shadow-lg shadow-brand/20 flex items-center justify-center gap-2">
                 {loading
                   ? <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>{t.contact.sending}</>
                   : <>{t.contact.submit} <ArrowRight className="w-4 h-4" /></>}

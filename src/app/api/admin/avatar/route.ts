@@ -26,7 +26,11 @@ export async function POST(request: NextRequest) {
   if (!orgId) return NextResponse.json({ error: 'orgId manquant' }, { status: 400 })
   if (file.size > 500_000) return NextResponse.json({ error: 'Fichier trop volumineux (max 500 Ko)' }, { status: 400 })
 
-  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
+  const ext = file.name.split('.').pop()?.toLowerCase()
+  const allowed = ['jpg', 'jpeg', 'png', 'webp']
+  if (!ext || !allowed.includes(ext)) {
+    return NextResponse.json({ error: 'Format non autorisé. Formats acceptés : JPG, PNG, WebP' }, { status: 400 })
+  }
   const bytes = await file.arrayBuffer()
   const path = `${orgId}.${ext}`
 

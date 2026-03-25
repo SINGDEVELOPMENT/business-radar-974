@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,10 +8,7 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const admin = createAdminClient()
-
-  // Récupérer l'org du user via admin client (bypass RLS profiles)
-  const { data: profile } = await admin
+  const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
     .eq('id', user.id)
@@ -22,7 +18,7 @@ export async function GET() {
   if (!orgId) return NextResponse.json({ competitors: [], ownRating: null, ownReviewCount: 0 })
 
   // Nos établissements (avec note Google globale)
-  const { data: ownBusinesses } = await admin
+  const { data: ownBusinesses } = await supabase
     .from('businesses')
     .select('id, name, google_rating, google_reviews_count')
     .eq('organization_id', orgId)
@@ -33,7 +29,7 @@ export async function GET() {
   const ownReviewCount = ownBusiness?.google_reviews_count ?? 0
 
   // Concurrents
-  const { data: competitors, error: competitorsError } = await admin
+  const { data: competitors, error: competitorsError } = await supabase
     .from('businesses')
     .select('id, name, google_rating, google_reviews_count, website_url, google_place_id, opening_hours, google_photos_count, review_response_rate, recent_reviews_count, competitor_seo_score, competitor_lcp_ms')
     .eq('organization_id', orgId)
@@ -41,8 +37,8 @@ export async function GET() {
     .order('google_rating', { ascending: false })
 
   if (competitorsError) {
-    console.error('[GET /api/competitors] DB error:', competitorsError)
-    return NextResponse.json({ error: competitorsError.message, _debug: { orgId } }, { status: 500 })
+    console.error('Competitors fetch error:', competitorsError.message, { orgId })
+    return NextResponse.json({ error: competitorsError.message }, { status: 500 })
   }
 
   const competitorList = competitors ?? []
@@ -52,7 +48,7 @@ export async function GET() {
   const seoMap: Record<string, { score: number | null; loadTime: number | null }> = {}
 
   if (competitorIds.length > 0) {
-    const { data: snapshots } = await admin
+    const { data: snapshots } = await supabase
       .from('seo_snapshots')
       .select('business_id, lighthouse_score, load_time_ms, collected_at')
       .in('business_id', competitorIds)
@@ -89,7 +85,7 @@ export async function GET() {
   const clientName = ownBusiness?.name ?? 'Mon établissement'
 
   // Limite basée sur le plan
-  const { data: orgData } = await admin
+  const { data: orgData } = await supabase
     .from('organizations')
     .select('plan')
     .eq('id', orgId)

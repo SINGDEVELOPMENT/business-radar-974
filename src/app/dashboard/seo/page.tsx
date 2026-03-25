@@ -16,48 +16,18 @@ import {
 } from 'lucide-react'
 import { computeSeoIssues } from '@/lib/utils/seo'
 import { cn } from '@/lib/utils'
-
-type SeoSnapshot = {
-  url: string | null; status_code: number | null; load_time_ms: number | null
-  title: string | null; meta_description: string | null; h1_count: number | null
-  has_ssl: boolean | null; mobile_friendly: boolean | null; lighthouse_score: number | null
-  page_size_kb?: number | null; collected_at: string
-  fcp_ms?: number | null; lcp_ms?: number | null; cls_score?: number | null
-  tbt_ms?: number | null; speed_index_ms?: number | null
-  accessibility_score?: number | null; seo_audit_score?: number | null
-  best_practices_score?: number | null
-  opportunities?: { id: string; title: string; displayValue: string; score: number }[] | null
-  // On-page SEO
-  canonical_url?: string | null
-  has_og_tags?: boolean | null
-  og_title?: string | null
-  og_description?: string | null
-  og_image?: string | null
-  h2_count?: number | null
-  h3_count?: number | null
-  images_without_alt?: number | null
-  total_images?: number | null
-  internal_links_count?: number | null
-  external_links_count?: number | null
-  word_count?: number | null
-  has_sitemap?: boolean | null
-  has_robots_txt?: boolean | null
-  has_schema?: boolean | null
-  schema_types?: string[] | null
-  title_length?: number | null
-  meta_description_length?: number | null
-  mobile_performance_score?: number | null
-  desktop_performance_score?: number | null
-}
+import { redirect } from 'next/navigation'
+import type { SeoSnapshot } from '@/types'
 
 export default async function SeoPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
-    .eq('id', user!.id)
+    .eq('id', user.id)
     .single()
 
   const orgId = profile?.organization_id
@@ -67,26 +37,13 @@ export default async function SeoPage() {
     : { data: null }
   const isPremium = orgData?.plan === 'premium'
 
-  const { data: snapshots } = orgId
-    ? await supabase
-        .from('seo_snapshots')
-        .select('*')
-        .eq('businesses.organization_id', orgId)
-        .eq('businesses.is_competitor', false)
-        .order('collected_at', { ascending: false })
-        .limit(30)
-    : { data: [] }
-
-  // Fallback si la jointure ne marche pas : chercher via business_id
   let snapshotList: SeoSnapshot[] = []
-  if ((snapshots ?? []).length === 0 && orgId) {
+  if (orgId) {
     const { data: biz } = await supabase.from('businesses').select('id').eq('organization_id', orgId).eq('is_competitor', false).limit(1).single()
     if (biz) {
-      const { data: snaps } = await supabase.from('seo_snapshots').select('*').eq('business_id', biz.id).order('collected_at', { ascending: false }).limit(30)
+      const { data: snaps } = await supabase.from('seo_snapshots').select('url, status_code, load_time_ms, title, meta_description, h1_count, has_ssl, mobile_friendly, lighthouse_score, page_size_kb, collected_at, fcp_ms, lcp_ms, cls_score, tbt_ms, speed_index_ms, accessibility_score, seo_audit_score, best_practices_score, opportunities, canonical_url, has_og_tags, og_title, og_description, og_image, h2_count, h3_count, images_without_alt, total_images, internal_links_count, external_links_count, word_count, has_sitemap, has_robots_txt, has_schema, schema_types, title_length, meta_description_length, mobile_performance_score, desktop_performance_score').eq('business_id', biz.id).order('collected_at', { ascending: false }).limit(30)
       snapshotList = (snaps ?? []) as SeoSnapshot[]
     }
-  } else {
-    snapshotList = (snapshots ?? []) as SeoSnapshot[]
   }
 
   const latest = snapshotList[0] ?? null
@@ -356,15 +313,15 @@ export default async function SeoPage() {
             </div>
           ) : (
             <div className="relative">
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-xl border border-[#6C5CE7]/20 dark:border-[#6C5CE7]/30">
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#6C5CE7]/10 dark:bg-[#6C5CE7]/20">
-                  <Lock className="w-6 h-6 text-[#6C5CE7]" />
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/70 dark:bg-slate-950/70 backdrop-blur-sm rounded-xl border border-brand/20 dark:border-brand/30">
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-brand/10 dark:bg-brand/20">
+                  <Lock className="w-6 h-6 text-brand" />
                 </div>
                 <div className="text-center px-4">
                   <p className="text-sm font-bold text-gray-800 dark:text-white">Analyse on-page & données structurées</p>
                   <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Disponible avec le plan Premium</p>
                 </div>
-                <a href="/#pricing" className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#6C5CE7] hover:bg-[#9B8FF2] text-white text-xs font-semibold rounded-lg transition-colors">
+                <a href="/#pricing" className="inline-flex items-center gap-1.5 px-4 py-2 bg-brand hover:bg-brand-light text-white text-xs font-semibold rounded-lg transition-colors">
                   ✦ Passer au Premium
                 </a>
               </div>

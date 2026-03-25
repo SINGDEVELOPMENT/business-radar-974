@@ -19,8 +19,8 @@ function Step({ done, label }: { done: boolean; label: string }) {
 }
 
 export default function OnboardingBanner({ hasReviews, hasSeo, hasSocial, hasReport }: Props) {
-  const doneCount = [hasReviews, hasSeo, hasSocial, hasReport].filter(Boolean).length
-  const totalCount = 4
+  const doneCount = [true, hasReviews, hasSeo, hasSocial, hasReport].filter(Boolean).length
+  const totalCount = 5
 
   return (
     <div className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 p-5 text-white shadow-md">
@@ -38,6 +38,7 @@ export default function OnboardingBanner({ hasReviews, hasSeo, hasSocial, hasRep
             <Step done label="Configuration du business" />
             <Step done={hasReviews} label="Premiers avis Google" />
             <Step done={hasSeo} label="Audit SEO" />
+            <Step done={hasSocial} label="Réseaux sociaux" />
             <Step done={hasReport} label="Premier rapport AI" />
           </div>
 

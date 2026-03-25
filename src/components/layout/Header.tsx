@@ -1,6 +1,7 @@
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Building2 } from 'lucide-react'
+import { Building2, ChevronRight } from 'lucide-react'
 import HeaderUserMenu from '@/components/layout/HeaderUserMenu'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import NotificationBell from '@/components/layout/NotificationBell'
@@ -39,7 +40,13 @@ export default async function Header({ title, subtitle }: HeaderProps) {
   return (
     <header className="sticky top-0 z-30 -mx-4 -mt-4 md:-mx-6 md:-mt-6 flex items-center justify-between h-14 md:h-16 px-4 md:px-6 bg-white/80 backdrop-blur-sm border-b border-gray-200 dark:bg-slate-900/80 dark:border-slate-800">
       <div className="flex flex-col min-w-0">
-        <h1 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white truncate">{title}</h1>
+        <div className="flex items-center gap-1.5 text-base md:text-lg">
+          <Link href="/dashboard" className="font-medium text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 transition-colors">
+            Dashboard
+          </Link>
+          <ChevronRight className="w-4 h-4 text-gray-300 dark:text-slate-600 shrink-0" />
+          <h1 className="font-semibold text-gray-900 dark:text-white truncate">{title}</h1>
+        </div>
         {subtitle && <p className="text-xs md:text-sm text-gray-500 dark:text-slate-400 truncate">{subtitle}</p>}
       </div>
 

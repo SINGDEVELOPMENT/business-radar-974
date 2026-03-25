@@ -187,13 +187,19 @@ export async function GET(request: NextRequest) {
     ])
   }
 
+  // Log detailed results for debugging, return only summary
+  const errorsCount = results.filter(r =>
+    r.reviewsError || r.seoError || r.facebookError || r.instagramError
+  ).length
+  const weeklyErrors = weeklyReports.filter(r => r.error).length
+
+  console.error('[CRON daily] Detailed results:', JSON.stringify({ results, customCompetitorsRefresh, weeklyReports }))
+
   return NextResponse.json({
-    ok: true,
+    status: 'completed',
     runAt: new Date().toISOString(),
     weeklyRun: isWeeklyDay,
     processed: results.length,
-    results,
-    customCompetitorsRefresh,
-    weeklyReports,
+    errorsCount: errorsCount + weeklyErrors,
   })
 }

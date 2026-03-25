@@ -1,15 +1,35 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
+import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import CompetitorChart, { type CompetitorPoint } from '@/components/dashboard/CompetitorChart'
 import KpiCard from '@/components/dashboard/KpiCard'
+import CompetitorCard from '@/components/dashboard/CompetitorCard'
+import CompetitorForm from '@/components/dashboard/CompetitorForm'
 import {
   Users, Star, TrendingUp, TrendingDown, Minus,
-  Globe, Clock, Gauge, ExternalLink, Plus, Trash2, Loader2,
-  Camera, MessageSquare, Monitor, Image as ImageIcon,
+  Globe, Clock, Gauge, Plus, Trash2, Loader2,
 } from 'lucide-react'
+
+// ── Exported interface (used by CompetitorCard) ────────────────────────────
+
+export interface Competitor {
+  id: string
+  name: string
+  google_place_id: string | null
+  google_rating: number | null
+  google_reviews_count: number | null
+  website_url: string | null
+  seo_score: number | null
+  load_time_ms: number | null
+  opening_hours: string | null
+  google_photos_count: number
+  review_response_rate: number | null
+  recent_reviews_count: number | null
+  competitor_seo_score: number | null
+  competitor_lcp_ms: number | null
+}
 
 // ── Skeleton components (mirrors loading.tsx) ──────────────────────────────
 
@@ -110,22 +130,7 @@ function CompetitorsSkeleton() {
   )
 }
 
-interface Competitor {
-  id: string
-  name: string
-  google_place_id: string | null
-  google_rating: number | null
-  google_reviews_count: number | null
-  website_url: string | null
-  seo_score: number | null
-  load_time_ms: number | null
-  opening_hours: string | null
-  google_photos_count: number
-  review_response_rate: number | null
-  recent_reviews_count: number | null
-  competitor_seo_score: number | null
-  competitor_lcp_ms: number | null
-}
+// ── Types ──────────────────────────────────────────────────────────────────
 
 interface ApiData {
   competitors: Competitor[]
@@ -136,17 +141,13 @@ interface ApiData {
   isPremium: boolean
 }
 
+// ── Main component ─────────────────────────────────────────────────────────
+
 export default function CompetitorsPageClient() {
   const [data, setData] = useState<ApiData | null>(null)
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState<string | null>(null)
-
-  // Formulaire ajout
   const [showForm, setShowForm] = useState(false)
-  const [name, setName] = useState('')
-  const [googlePlaceId, setGooglePlaceId] = useState('')
-  const [websiteUrl, setWebsiteUrl] = useState('')
-  const [adding, setAdding] = useState(false)
   const [addError, setAddError] = useState('')
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
@@ -172,42 +173,42 @@ export default function CompetitorsPageClient() {
 
   useEffect(() => { fetchData() }, [fetchData])
 
-  async function handleAdd(e: React.FormEvent) {
-    e.preventDefault()
-    setAdding(true)
+  async function handleAdd(name: string, googlePlaceId: string, websiteUrl: string): Promise<boolean> {
     setAddError('')
-
     const res = await fetch('/api/settings/competitor', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, googlePlaceId, websiteUrl }),
     })
-
     const json = await res.json()
-    setAdding(false)
 
     if (!res.ok) {
-      setAddError(json.upgrade
+      const msg = json.upgrade
         ? `Limite de ${data?.freeLimit ?? 2} concurrents gratuits atteinte. Contactez votre administrateur.`
-        : (json.error ?? 'Erreur inconnue'))
-      return
+        : (json.error ?? 'Erreur inconnue')
+      setAddError(msg)
+      return false
     }
 
-    setName('')
-    setGooglePlaceId('')
-    setWebsiteUrl('')
     setShowForm(false)
     await fetchData()
+    return true
   }
 
   async function handleDelete(id: string) {
     setDeletingId(id)
-    await fetch('/api/settings/competitor', {
+    const res = await fetch('/api/settings/competitor', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),
     })
     setDeletingId(null)
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}))
+      toast.error(json.error || 'Erreur lors de la suppression')
+      return
+    }
+    toast.success('Concurrent supprimé')
     await fetchData()
   }
 
@@ -345,41 +346,10 @@ export default function CompetitorsPageClient() {
         )}
 
         {showForm && (
-          <form onSubmit={handleAdd} className="space-y-3 mt-2 p-4 bg-gray-50 dark:bg-slate-800 rounded-xl">
-            <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1">Nom du concurrent *</label>
-              <input type="text" required value={name} onChange={(e) => setName(e.target.value)}
-                placeholder="Ex : Restaurant Le Lagon"
-                className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1">
-                Google Place ID <span className="font-normal text-gray-400">(recommandé — pour collecter les avis)</span>
-              </label>
-              <input type="text" value={googlePlaceId} onChange={(e) => setGooglePlaceId(e.target.value)}
-                placeholder="ChIJxxxxxxxxxxxxxxx"
-                className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1">
-                Site web <span className="font-normal text-gray-400">(optionnel — pour le score SEO)</span>
-              </label>
-              <input type="url" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)}
-                placeholder="https://concurrent.re"
-                className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
-            </div>
-            <div className="flex gap-2">
-              <button type="submit" disabled={adding}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors">
-                {adding && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                Ajouter
-              </button>
-              <button type="button" onClick={() => { setShowForm(false); setAddError('') }}
-                className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-white transition-colors">
-                Annuler
-              </button>
-            </div>
-          </form>
+          <CompetitorForm
+            onAdd={handleAdd}
+            onCancel={() => { setShowForm(false); setAddError('') }}
+          />
         )}
       </Card>
 
@@ -405,129 +375,16 @@ export default function CompetitorsPageClient() {
           <div>
             <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Fiche par concurrent</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {competitors.map((comp) => {
-                const delta = ownRating != null && comp.google_rating != null ? ownRating - comp.google_rating : null
-                return (
-                  <Card key={comp.id} className="p-5 space-y-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="font-semibold text-gray-900 dark:text-white truncate">{comp.name}</p>
-                        {comp.website_url && (
-                          <a href={comp.website_url} target="_blank" rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-xs text-blue-500 hover:underline mt-0.5">
-                            <Globe className="w-3 h-3" />
-                            {comp.website_url.replace(/https?:\/\//, '').replace(/\/$/, '')}
-                            <ExternalLink className="w-2.5 h-2.5" />
-                          </a>
-                        )}
-                        {comp.opening_hours && (
-                          <p className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
-                            <Clock className="w-3 h-3" />
-                            {comp.opening_hours}
-                          </p>
-                        )}
-                      </div>
-                      {delta != null && (
-                        <span className={`flex items-center gap-0.5 text-xs font-semibold shrink-0 px-2 py-1 rounded-full ${
-                          delta > 0 ? 'bg-green-50 text-green-700' : delta < 0 ? 'bg-red-50 text-red-600' : 'bg-gray-100 text-gray-500'
-                        }`}>
-                          {delta > 0 ? <TrendingDown className="w-3 h-3" /> : delta < 0 ? <TrendingUp className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
-                          {delta > 0 ? `+${delta.toFixed(2)} en votre faveur` : delta < 0 ? `${delta.toFixed(2)} à combler` : 'Égalité'}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10">
-                        <div className="flex items-center gap-1.5">
-                          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                          <span className="text-xs font-medium text-amber-700 dark:text-amber-400">Note Google</span>
-                        </div>
-                        <p className="text-2xl font-bold text-amber-700 dark:text-amber-400">
-                          {comp.google_rating != null ? comp.google_rating.toFixed(1) : '--'}
-                        </p>
-                        <p className="text-xs text-amber-600 dark:text-amber-500">
-                          {comp.google_reviews_count != null ? `${comp.google_reviews_count.toLocaleString('fr-FR')} avis` : 'Aucun avis'}
-                        </p>
-                      </div>
-
-                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-blue-50 dark:bg-blue-500/10">
-                        <div className="flex items-center gap-1.5">
-                          <Gauge className="w-4 h-4 text-blue-500" />
-                          <span className="text-xs font-medium text-blue-700 dark:text-blue-400">Score SEO</span>
-                        </div>
-                        <p className={`text-2xl font-bold ${comp.seo_score == null ? 'text-gray-300' : comp.seo_score >= 70 ? 'text-emerald-600' : comp.seo_score >= 40 ? 'text-orange-500' : 'text-red-500'}`}>
-                          {comp.seo_score ?? '--'}
-                        </p>
-                        <p className="text-xs text-blue-600 dark:text-blue-500">{comp.seo_score == null ? 'En attente' : 'sur 100'}</p>
-                      </div>
-
-                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-purple-50 dark:bg-purple-500/10">
-                        <div className="flex items-center gap-1.5">
-                          <Clock className="w-4 h-4 text-purple-500" />
-                          <span className="text-xs font-medium text-purple-700 dark:text-purple-400">Vitesse site</span>
-                        </div>
-                        <p className={`text-2xl font-bold ${comp.load_time_ms == null ? 'text-gray-300' : comp.load_time_ms < 2000 ? 'text-emerald-600' : comp.load_time_ms < 5000 ? 'text-orange-500' : 'text-red-500'}`}>
-                          {comp.load_time_ms != null ? `${(comp.load_time_ms / 1000).toFixed(1)}s` : '--'}
-                        </p>
-                        <p className="text-xs text-purple-600 dark:text-purple-500">
-                          {comp.load_time_ms == null ? 'En attente' : comp.load_time_ms < 2000 ? 'Rapide' : comp.load_time_ms < 5000 ? 'Moyen' : 'Lent'}
-                        </p>
-                      </div>
-
-                      <div className="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 dark:bg-slate-800">
-                        <div className="flex items-center gap-1.5">
-                          <Camera className="w-4 h-4 text-gray-400" />
-                          <span className="text-xs font-medium text-gray-500">Photos Google</span>
-                        </div>
-                        <p className="text-2xl font-bold text-gray-700 dark:text-white">
-                          {comp.google_photos_count ?? '--'}
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          {comp.google_reviews_count != null ? `${comp.google_reviews_count} avis` : 'Google Business'}
-                        </p>
-                      </div>
-                    </div>
-
-                    {isPremium && (
-                      <div className="border-t border-gray-100 dark:border-slate-700 pt-3 mt-1">
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Analyse Premium</p>
-                        <div className="grid grid-cols-3 gap-2">
-                          <div className="flex flex-col gap-0.5 p-2 rounded-lg bg-[#6C5CE7]/5 dark:bg-[#6C5CE7]/10">
-                            <span className="text-[10px] text-gray-500">Réponses avis</span>
-                            {comp.review_response_rate != null ? (
-                              <span className={`text-sm font-bold ${comp.review_response_rate >= 50 ? 'text-emerald-600' : comp.review_response_rate >= 20 ? 'text-orange-500' : 'text-red-500'}`}>
-                                {comp.review_response_rate.toFixed(0)}%
-                              </span>
-                            ) : <span className="text-sm font-bold text-gray-300">--</span>}
-                          </div>
-                          <div className="flex flex-col gap-0.5 p-2 rounded-lg bg-[#6C5CE7]/5 dark:bg-[#6C5CE7]/10">
-                            <span className="text-[10px] text-gray-500">Avis 30j</span>
-                            {comp.recent_reviews_count != null ? (
-                              <span className="text-sm font-bold text-gray-700 dark:text-white">{comp.recent_reviews_count}</span>
-                            ) : <span className="text-sm font-bold text-gray-300">--</span>}
-                          </div>
-                          <div className="flex flex-col gap-0.5 p-2 rounded-lg bg-[#6C5CE7]/5 dark:bg-[#6C5CE7]/10">
-                            <span className="text-[10px] text-gray-500">PageSpeed</span>
-                            {comp.competitor_seo_score != null ? (
-                              <span className={`text-sm font-bold ${comp.competitor_seo_score >= 70 ? 'text-emerald-600' : comp.competitor_seo_score >= 40 ? 'text-orange-500' : 'text-red-500'}`}>
-                                {comp.competitor_seo_score}
-                              </span>
-                            ) : <span className="text-sm font-bold text-gray-300">--</span>}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {!comp.google_rating && comp.seo_score == null && (
-                      <p className="text-xs text-gray-400 text-center">Données collectées lors du prochain cron hebdomadaire</p>
-                    )}
-                  </Card>
-                )
-              })}
+              {competitors.map((comp) => (
+                <CompetitorCard
+                  key={comp.id}
+                  comp={comp}
+                  ownRating={ownRating}
+                  isPremium={isPremium}
+                />
+              ))}
             </div>
           </div>
-
         </>
       )}
     </div>

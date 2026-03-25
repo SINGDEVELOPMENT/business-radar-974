@@ -9,7 +9,7 @@ interface EmptyStateProps {
   actionHref?: string
 }
 
-export default function EmptyState({ icon: Icon, title, description }: EmptyStateProps) {
+export default function EmptyState({ icon: Icon, title, description, actionLabel, actionHref }: EmptyStateProps) {
   return (
     <Card className="p-8">
       <div className="flex flex-col items-center justify-center text-center py-8">
@@ -18,6 +18,11 @@ export default function EmptyState({ icon: Icon, title, description }: EmptyStat
         </div>
         <h3 className="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-1">{title}</h3>
         <p className="text-sm text-gray-400 dark:text-slate-400 max-w-sm">{description}</p>
+        {actionLabel && actionHref && (
+          <a href={actionHref} className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand hover:bg-brand-light text-white text-sm font-semibold transition-colors">
+            {actionLabel}
+          </a>
+        )}
       </div>
     </Card>
   )

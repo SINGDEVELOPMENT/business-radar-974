@@ -16,17 +16,19 @@ import {
   Trophy,
   BarChart2,
 } from 'lucide-react'
+import { redirect } from 'next/navigation'
 
 export default async function SocialPage() {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('organization_id')
-    .eq('id', user!.id)
+    .eq('id', user.id)
     .single()
 
   const orgId = profile?.organization_id
@@ -117,8 +119,8 @@ export default async function SocialPage() {
               title="Posts collectés"
               value={totalPosts}
               icon={Share2}
-              iconColor="text-[#6C5CE7]"
-              iconBg="bg-[#6C5CE7]/10"
+              iconColor="text-brand"
+              iconBg="bg-brand/10"
             />
             <KpiCard
               title="Engagement total"
@@ -131,8 +133,8 @@ export default async function SocialPage() {
               title="Moy. engagement/post"
               value={avgEngagement.toLocaleString('fr-FR')}
               icon={BarChart2}
-              iconColor="text-[#00CEC9]"
-              iconBg="bg-[#00CEC9]/10"
+              iconColor="text-accent"
+              iconBg="bg-accent/10"
             />
             <KpiCard
               title="Meilleur post"
@@ -153,7 +155,7 @@ export default async function SocialPage() {
 
           {/* Facebook vs Instagram */}
           <Card className="p-5">
-            <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
               <BarChart2 className="w-4 h-4 text-gray-400" />
               Comparatif Facebook vs Instagram
             </h3>
@@ -169,7 +171,7 @@ export default async function SocialPage() {
           {/* Meilleur post */}
           {bestPost && (
             <Card className="p-5 border-amber-200 bg-amber-50/30">
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                 <Trophy className="w-4 h-4 text-amber-500" />
                 Meilleur post
               </h3>
@@ -298,7 +300,7 @@ function PlatformStat({
     <div className="space-y-3">
       <div className="flex items-center gap-2">
         <span className={`inline-block w-3 h-3 rounded-full ${dotClass}`} />
-        <span className="font-medium text-sm text-gray-900">{label}</span>
+        <span className="font-medium text-sm text-gray-900 dark:text-white">{label}</span>
         <Badge variant="secondary" className="ml-auto">
           {stats.posts} posts
         </Badge>
@@ -325,7 +327,7 @@ function StatRow({
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-gray-500">{label}</span>
-      <span className={bold ? 'font-semibold text-gray-900' : 'text-gray-700'}>{value}</span>
+      <span className={bold ? 'font-semibold text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'}>{value}</span>
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Card } from '@/components/ui/card'
 import { User, Mail, Lock, Pencil, Check, X } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface Props {
   fullName: string | null
@@ -72,9 +73,10 @@ export default function ProfileEditCard({ fullName, email }: Props) {
       body: JSON.stringify({ fullName: name }),
     })
     setNameLoading(false)
-    if (!res.ok) { setNameError((await res.json()).error); return }
+    if (!res.ok) { setNameError((await res.json()).error); toast.error('Erreur lors de la mise à jour du nom'); return }
     setNameSuccess(true)
     setEditingProfile(false)
+    toast.success('Nom mis à jour')
     setTimeout(() => setNameSuccess(false), 3000)
   }
 
@@ -85,9 +87,10 @@ export default function ProfileEditCard({ fullName, email }: Props) {
     const supabase = createClient()
     const { error } = await supabase.auth.updateUser({ email: newEmail })
     setEmailLoading(false)
-    if (error) { setEmailError(error.message); return }
+    if (error) { setEmailError(error.message); toast.error('Erreur lors de la mise à jour de l\'email'); return }
     setEmailSuccess(true)
     setEditingEmail(false)
+    toast.success('Email de confirmation envoyé')
   }
 
   async function savePassword() {
@@ -103,10 +106,11 @@ export default function ProfileEditCard({ fullName, email }: Props) {
     }
     const { error } = await supabase.auth.updateUser({ password: newPwd })
     setPwdLoading(false)
-    if (error) { setPwdError(error.message); return }
+    if (error) { setPwdError(error.message); toast.error('Erreur lors du changement de mot de passe'); return }
     setPwdSuccess(true)
     setCurrentPwd(''); setNewPwd(''); setConfirmPwd('')
     setEditingPassword(false)
+    toast.success('Mot de passe mis à jour')
     setTimeout(() => setPwdSuccess(false), 3000)
   }
 
