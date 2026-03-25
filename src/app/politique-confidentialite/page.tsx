@@ -39,16 +39,16 @@ export default function PolitiqueConfidentialitePage() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">1. Responsable du traitement</h2>
             <div className="rounded-lg border border-border bg-muted/30 p-5 space-y-1 text-foreground">
-              <p><strong>Axora Data SAS</strong></p>
-              <p>12 rue Labourdonnais, 97400 Saint-Denis, La Réunion</p>
-              <p>SIRET : 123 456 789 00012</p>
+              <p><strong>SING DEVELOPMENT, micro-entreprise — marque commerciale Axora Data</strong></p>
+              <p>[ADRESSE À COMPLÉTER], 97436 Saint-Leu, La Réunion</p>
+              <p>SIRET : [À COMPLÉTER]</p>
               <p>
                 Email DPO :{' '}
                 <a
-                  href="mailto:contact@axora-data.fr"
+                  href="mailto:contact@singdevelopment.fr"
                   className="text-blue-600 dark:text-blue-400 hover:underline"
                 >
-                  contact@axora-data.fr
+                  contact@singdevelopment.fr
                 </a>
               </p>
             </div>
@@ -57,7 +57,7 @@ export default function PolitiqueConfidentialitePage() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">2. Données collectées</h2>
             <p className="text-foreground/80 mb-4">
-              Dans le cadre de la fourniture de ses services, Axora Data SAS collecte les catégories
+              Dans le cadre de la fourniture de ses services, SING DEVELOPMENT (Axora Data) collecte les catégories
               de données suivantes :
             </p>
             <div className="space-y-3">
@@ -134,7 +134,7 @@ export default function PolitiqueConfidentialitePage() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">4. Sous-traitants et transferts hors UE</h2>
             <p className="text-foreground/80 mb-4">
-              Axora Data SAS fait appel aux sous-traitants suivants, dans le cadre de l&apos;exécution
+              SING DEVELOPMENT (Axora Data) fait appel aux sous-traitants suivants, dans le cadre de l&apos;exécution
               du service. Chaque transfert hors Union Européenne est encadré par des Clauses
               Contractuelles Types (CCT) conformes à la décision de la Commission européenne.
             </p>
@@ -231,10 +231,10 @@ export default function PolitiqueConfidentialitePage() {
               <p>
                 Pour exercer vos droits, contactez-nous à{' '}
                 <a
-                  href="mailto:contact@axora-data.fr"
+                  href="mailto:contact@singdevelopment.fr"
                   className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
                 >
-                  contact@axora-data.fr
+                  contact@singdevelopment.fr
                 </a>
                 . Nous nous engageons à répondre dans un délai d&apos;un mois. En cas de réclamation non
                 résolue, vous pouvez saisir la{' '}
@@ -300,7 +300,7 @@ export default function PolitiqueConfidentialitePage() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">8. Sécurité des données</h2>
             <p className="text-foreground/80">
-              Axora Data SAS met en oeuvre des mesures techniques et organisationnelles appropriées
+              SING DEVELOPMENT (Axora Data) met en oeuvre des mesures techniques et organisationnelles appropriées
               pour protéger vos données contre tout accès non autorisé, perte, destruction ou
               altération. Ces mesures comprennent notamment : chiffrement TLS en transit,
               authentification à deux facteurs disponible, Row Level Security (RLS) en base de données,
@@ -314,7 +314,7 @@ export default function PolitiqueConfidentialitePage() {
           <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
             ← Retour à l&apos;accueil
           </Link>
-          <span>© 2026 Axora Data SAS</span>
+          <span>© 2026 SING DEVELOPMENT — Axora Data</span>
         </div>
       </main>
     </div>

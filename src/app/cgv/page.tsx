@@ -41,9 +41,9 @@ export default function CgvPage() {
             <h2 className="text-xl font-semibold text-foreground mb-3">Article 1 — Objet et champ d&apos;application</h2>
             <p className="text-foreground/80">
               Les présentes Conditions Générales de Vente (ci-après « CGV ») régissent les relations
-              contractuelles entre <strong>Axora Data SAS</strong>, société par actions simplifiée
-              au capital de 1 000 €, immatriculée au RCS de Saint-Denis sous le numéro 123 456 789,
-              dont le siège social est situé 12 rue Labourdonnais, 97400 Saint-Denis, La Réunion
+              contractuelles entre <strong>SING DEVELOPMENT, micro-entreprise — marque commerciale Axora Data</strong>,
+              SIRET : [À COMPLÉTER],
+              dont le siège est situé [ADRESSE À COMPLÉTER], 97436 Saint-Leu, La Réunion
               (ci-après « Axora Data » ou « le Prestataire »), et toute personne morale ou physique
               souscrivant aux services de la plateforme Axora Data (ci-après « le Client »).
             </p>
@@ -107,6 +107,9 @@ export default function CgvPage() {
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Tout le Standard</li>
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Analyse SEO on-page complète</li>
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Core Web Vitals (PageSpeed)</li>
+                  <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> % de réponses aux avis (vous vs concurrents)</li>
+                  <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Avis récents 30 jours par concurrent</li>
+                  <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Score PageSpeed des sites concurrents</li>
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Rapports IA hebdomadaires</li>
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Alertes prioritaires automatiques</li>
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Export PDF & Excel des rapports</li>
@@ -131,7 +134,7 @@ export default function CgvPage() {
             </p>
             <p className="mt-3 text-foreground/80">
               La phase de setup (configuration initiale, paramétrage du dashboard, intégration
-              des APIs) est réalisée dans un délai de 5 à 10 jours ouvrés à compter de la réception
+              des APIs) est réalisée dans un délai de 3 à 5 jours ouvrés à compter de la réception
               des accès nécessaires fournis par le Client.
             </p>
           </section>
@@ -156,7 +159,7 @@ export default function CgvPage() {
               </p>
               <p>
                 <strong>Modes de paiement acceptés :</strong> virement bancaire (IBAN fourni sur
-                facture), chèque à l&apos;ordre d&apos;Axora Data SAS, ou tout autre moyen convenu par écrit.
+                facture), chèque à l&apos;ordre de SING DEVELOPMENT, ou tout autre moyen convenu par écrit.
               </p>
               <p>
                 Tout retard de paiement au-delà de 30 jours entraîne l&apos;application d&apos;une pénalité
@@ -175,10 +178,10 @@ export default function CgvPage() {
                 l&apos;autre des parties avec un préavis de <strong>30 jours calendaires</strong>, notifié
                 par email à{' '}
                 <a
-                  href="mailto:contact@axora-data.fr"
+                  href="mailto:contact@singdevelopment.fr"
                   className="text-blue-600 dark:text-blue-400 hover:underline"
                 >
-                  contact@axora-data.fr
+                  contact@singdevelopment.fr
                 </a>
                 .
               </p>
@@ -200,7 +203,7 @@ export default function CgvPage() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">Article 6 — Obligations du prestataire</h2>
             <p className="text-foreground/80 mb-3">
-              Axora Data SAS s&apos;engage à :
+              SING DEVELOPMENT (Axora Data) s&apos;engage à :
             </p>
             <ul className="space-y-2 text-foreground/80">
               {[
@@ -245,18 +248,18 @@ export default function CgvPage() {
             <div className="space-y-3 text-foreground/80">
               <p>
                 La plateforme Axora Data, son code source, ses algorithmes, ses interfaces, ses
-                designs, ses marques et son logo demeurent la propriété exclusive d&apos;Axora Data SAS.
+                designs, ses marques et son logo demeurent la propriété exclusive d&apos;SING DEVELOPMENT (Axora Data).
                 Le Client bénéficie d&apos;un droit d&apos;utilisation non exclusif, non cessible et non
                 sous-licenciable, limité à la durée du contrat.
               </p>
               <p>
                 Les données collectées par la plateforme pour le compte du Client (avis, métriques
-                sociales, données SEO) appartiennent au Client. Axora Data SAS ne les utilise
+                sociales, données SEO) appartiennent au Client. SING DEVELOPMENT (Axora Data) ne les utilise
                 pas à des fins autres que la fourniture du service.
               </p>
               <p>
                 Les rapports générés par intelligence artificielle (Claude AI) dans le cadre du
-                service sont transmis au Client et lui appartiennent. Axora Data SAS se réserve le
+                service sont transmis au Client et lui appartiennent. SING DEVELOPMENT (Axora Data) se réserve le
                 droit d&apos;utiliser des données agrégées et anonymisées à des fins d&apos;amélioration de ses
                 modèles et algorithmes internes.
               </p>
@@ -267,18 +270,18 @@ export default function CgvPage() {
             <h2 className="text-xl font-semibold text-foreground mb-3">Article 9 — Limitation de responsabilité</h2>
             <div className="space-y-3 text-foreground/80">
               <p>
-                Axora Data SAS fournit ses services avec diligence et selon les règles de l&apos;art,
+                SING DEVELOPMENT (Axora Data) fournit ses services avec diligence et selon les règles de l&apos;art,
                 dans le cadre d&apos;une <strong>obligation de moyens</strong>. La société ne peut garantir
                 une disponibilité continue à 100 %, notamment en raison des indisponibilités
                 possibles des APIs tierces (Google Places, Meta Graph, Anthropic Claude).
               </p>
               <p>
-                Axora Data SAS ne saurait être tenue responsable des dommages indirects (manque à
+                SING DEVELOPMENT (Axora Data) ne saurait être tenue responsable des dommages indirects (manque à
                 gagner, perte de clientèle, atteinte à l&apos;image) découlant de l&apos;utilisation ou de
                 l&apos;impossibilité d&apos;utiliser le service.
               </p>
               <p>
-                En tout état de cause, la responsabilité d&apos;Axora Data SAS est limitée au montant
+                En tout état de cause, la responsabilité d&apos;SING DEVELOPMENT (Axora Data) est limitée au montant
                 total des sommes effectivement versées par le Client au titre de l&apos;abonnement mensuel
                 pendant les <strong>3 derniers mois</strong> précédant l&apos;événement donnant lieu à
                 responsabilité.
@@ -300,11 +303,11 @@ export default function CgvPage() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">Article 11 — Protection des données personnelles</h2>
             <p className="text-foreground/80">
-              Dans le cadre de l&apos;exécution du contrat, Axora Data SAS agit en qualité de
+              Dans le cadre de l&apos;exécution du contrat, SING DEVELOPMENT (Axora Data) agit en qualité de
               <strong> sous-traitant</strong> au sens du RGPD pour les données que le Client lui
               confie concernant ses propres clients et collaborateurs. Un accord de traitement
               des données (DPA) peut être conclu sur demande du Client. Pour les données du
-              Client lui-même, Axora Data SAS agit en qualité de responsable du traitement.
+              Client lui-même, SING DEVELOPMENT (Axora Data) agit en qualité de responsable du traitement.
               Consultez notre{' '}
               <Link
                 href="/politique-confidentialite"
@@ -319,7 +322,7 @@ export default function CgvPage() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">Article 12 — Modifications des CGV</h2>
             <p className="text-foreground/80">
-              Axora Data SAS se réserve le droit de modifier les présentes CGV à tout moment.
+              SING DEVELOPMENT (Axora Data) se réserve le droit de modifier les présentes CGV à tout moment.
               Les modifications entrent en vigueur 30 jours après leur publication sur le site,
               sauf pour les modifications imposées par la loi qui s&apos;appliquent immédiatement.
               Le Client est informé par email de toute modification substantielle. L&apos;utilisation
@@ -343,13 +346,13 @@ export default function CgvPage() {
             <p className="text-foreground/80 text-sm">
               Pour toute question relative aux présentes CGV :{' '}
               <a
-                href="mailto:contact@axora-data.fr"
+                href="mailto:contact@singdevelopment.fr"
                 className="text-blue-600 dark:text-blue-400 hover:underline"
               >
-                contact@axora-data.fr
+                contact@singdevelopment.fr
               </a>
               <br />
-              Axora Data SAS — 12 rue Labourdonnais, 97400 Saint-Denis, La Réunion
+              SING DEVELOPMENT — Axora Data — [ADRESSE À COMPLÉTER], 97436 Saint-Leu, La Réunion
             </p>
           </section>
 
@@ -359,7 +362,7 @@ export default function CgvPage() {
           <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
             ← Retour à l&apos;accueil
           </Link>
-          <span>© 2026 Axora Data SAS</span>
+          <span>© 2026 SING DEVELOPMENT — Axora Data</span>
         </div>
       </main>
     </div>

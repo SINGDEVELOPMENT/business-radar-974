@@ -38,19 +38,17 @@ export default function MentionsLegalesPage() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">Éditeur du site</h2>
             <div className="rounded-lg border border-border bg-muted/30 p-5 space-y-1 text-foreground">
-              <p><strong>Axora Data SAS</strong></p>
-              <p>Société par actions simplifiée au capital de 1 000 €</p>
-              <p>Siège social : 12 rue Labourdonnais, 97400 Saint-Denis, La Réunion</p>
-              <p>SIRET : 123 456 789 00012</p>
-              <p>RCS : Saint-Denis 123 456 789</p>
+              <p><strong>SING DEVELOPMENT, micro-entreprise — marque commerciale Axora Data</strong></p>
+              <p>Siège social : [ADRESSE À COMPLÉTER], 97436 Saint-Leu, La Réunion</p>
+              <p>SIRET : [À COMPLÉTER]</p>
               <p>Code APE : 6311Z — Traitement de données, hébergement et activités connexes</p>
               <p>
                 Email :{' '}
                 <a
-                  href="mailto:contact@axora-data.fr"
+                  href="mailto:contact@singdevelopment.fr"
                   className="text-blue-600 dark:text-blue-400 hover:underline"
                 >
-                  contact@axora-data.fr
+                  contact@singdevelopment.fr
                 </a>
               </p>
             </div>
@@ -59,7 +57,7 @@ export default function MentionsLegalesPage() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">Directeur de la publication</h2>
             <p className="text-foreground/80">
-              Le directeur de la publication est le représentant légal d&apos;Axora Data SAS,
+              Le directeur de la publication est Laurent Singamalom, gérant de SING DEVELOPMENT,
               joignable à l&apos;adresse email indiquée ci-dessus.
             </p>
           </section>
@@ -91,12 +89,12 @@ export default function MentionsLegalesPage() {
             <p className="text-foreground/80">
               L&apos;ensemble du contenu de ce site — textes, images, logos, graphismes, interfaces,
               algorithmes et code source — est protégé par le droit d&apos;auteur et appartient
-              exclusivement à Axora Data SAS ou à ses partenaires.
+              exclusivement à SING DEVELOPMENT (Axora Data) ou à ses partenaires.
             </p>
             <p className="mt-3 text-foreground/80">
               Toute reproduction, représentation, modification, publication ou adaptation de tout ou
               partie du site, par quelque moyen que ce soit, est interdite sans autorisation écrite
-              préalable d&apos;Axora Data SAS. Toute exploitation non autorisée constitue une contrefaçon
+              préalable d&apos;SING DEVELOPMENT (Axora Data). Toute exploitation non autorisée constitue une contrefaçon
               sanctionnée par les articles L.335-2 et suivants du Code de la propriété intellectuelle.
             </p>
           </section>
@@ -120,14 +118,14 @@ export default function MentionsLegalesPage() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">Limitation de responsabilité</h2>
             <p className="text-foreground/80">
-              Axora Data SAS s&apos;efforce de maintenir les informations publiées sur ce site à jour
+              SING DEVELOPMENT (Axora Data) s&apos;efforce de maintenir les informations publiées sur ce site à jour
               et exactes. Cependant, la société ne saurait être tenue responsable des erreurs ou
               omissions, ni des dommages directs ou indirects résultant de l&apos;utilisation des
               informations présentées ou de l&apos;indisponibilité temporaire du service.
             </p>
             <p className="mt-3 text-foreground/80">
               Les liens hypertextes vers des sites tiers sont fournis à titre indicatif.
-              Axora Data SAS n&apos;exerce aucun contrôle sur ces sites et n&apos;en est pas responsable.
+              SING DEVELOPMENT (Axora Data) n&apos;exerce aucun contrôle sur ces sites et n&apos;en est pas responsable.
             </p>
           </section>
 
@@ -145,7 +143,7 @@ export default function MentionsLegalesPage() {
           <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
             ← Retour à l&apos;accueil
           </Link>
-          <span>© 2026 Axora Data SAS</span>
+          <span>© 2026 SING DEVELOPMENT — Axora Data</span>
         </div>
       </main>
     </div>

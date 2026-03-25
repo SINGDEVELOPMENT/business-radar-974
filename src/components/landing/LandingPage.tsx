@@ -657,8 +657,10 @@ export default function LandingPage() {
             <div className="reveal reveal-delay-1 p-8 rounded-2xl border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.02] flex flex-col hover:-translate-y-1 hover:shadow-md transition-all duration-300">
               <p className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-1">{t.pricing.standard.hint}</p>
               <p className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-3">{t.pricing.standard.name}</p>
-              <div className="mb-0.5"><span className="text-4xl font-extrabold text-gray-900 dark:text-white">1 000 €</span><span className="text-gray-400 dark:text-slate-500 text-sm ml-2">{t.pricing.setup}</span></div>
-              <div className="mb-8"><span className="text-xl font-bold text-gray-600 dark:text-slate-300">150 €</span><span className="text-gray-400 dark:text-slate-500 text-sm ml-1">{t.pricing.monthly}</span></div>
+              <div className="mb-0.5"><span className="text-4xl font-extrabold text-gray-900 dark:text-white">1 000 € <span className="text-lg font-bold">HT</span></span><span className="text-gray-400 dark:text-slate-500 text-sm ml-2">{t.pricing.setup}</span></div>
+              <p className="text-xs text-gray-400 dark:text-slate-500 mb-1">(1 085 € TTC)</p>
+              <div className="mb-1"><span className="text-xl font-bold text-gray-600 dark:text-slate-300">150 € HT</span><span className="text-gray-400 dark:text-slate-500 text-sm ml-1">{t.pricing.monthly}</span></div>
+              <p className="text-xs text-gray-400 dark:text-slate-500 mb-6">(162,75 € TTC/mois)</p>
               <ul className="space-y-3 mb-8 flex-1">
                 {t.pricing.standard.features.map((f) => (
                   <li key={f} className="flex items-start gap-2.5 text-base text-gray-600 dark:text-slate-300">
@@ -676,8 +678,10 @@ export default function LandingPage() {
               </div>
               <p className="text-xs font-bold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-1">{t.pricing.premium.hint}</p>
               <p className="text-xs font-bold text-[#6C5CE7] dark:text-[#9B8FF2] uppercase tracking-widest mb-3">{t.pricing.premium.name}</p>
-              <div className="mb-0.5"><span className="text-4xl font-extrabold text-gray-900 dark:text-white">2 000 €</span><span className="text-gray-400 dark:text-slate-500 text-sm ml-2">{t.pricing.setup}</span></div>
-              <div className="mb-8"><span className="text-xl font-bold text-gray-600 dark:text-slate-300">250 €</span><span className="text-gray-400 dark:text-slate-500 text-sm ml-1">{t.pricing.monthly}</span></div>
+              <div className="mb-0.5"><span className="text-4xl font-extrabold text-gray-900 dark:text-white">2 000 € <span className="text-lg font-bold">HT</span></span><span className="text-gray-400 dark:text-slate-500 text-sm ml-2">{t.pricing.setup}</span></div>
+              <p className="text-xs text-gray-400 dark:text-slate-500 mb-1">(2 170 € TTC)</p>
+              <div className="mb-1"><span className="text-xl font-bold text-gray-600 dark:text-slate-300">250 € HT</span><span className="text-gray-400 dark:text-slate-500 text-sm ml-1">{t.pricing.monthly}</span></div>
+              <p className="text-xs text-gray-400 dark:text-slate-500 mb-6">(271,25 € TTC/mois)</p>
               <ul className="space-y-3 mb-8 flex-1">
                 {t.pricing.premium.features.map((f) => (
                   <li key={f} className="flex items-start gap-2.5 text-base text-gray-700 dark:text-slate-300">
@@ -688,6 +692,7 @@ export default function LandingPage() {
               <a href="#contact" className="w-full text-center bg-[#6C5CE7] hover:bg-[#9B8FF2] text-white font-semibold py-3 rounded-xl transition-all text-sm shadow-lg shadow-[#6C5CE7]/20">{t.pricing.premium.cta}</a>
             </div>
           </div>
+          <p className="text-center text-xs text-gray-400 dark:text-slate-500 mt-6">TVA applicable : 8,5 % (La Réunion). Prix TTC calculés sur cette base.</p>
         </div>
       </section>
 
@@ -750,7 +755,7 @@ export default function LandingPage() {
                 <Image src="/logo-white.svg" alt="Axora Data" width={128} height={28} className="h-7 w-auto opacity-90" />
               </div>
               <p className="text-sm leading-relaxed text-gray-400 mb-6">{t.footer.desc}</p>
-              <p className="text-xs text-gray-500">© 2026 Axora Data. {t.footer.rights}</p>
+              <p className="text-xs text-gray-500">© 2026 SING DEVELOPMENT — Axora Data. {t.footer.rights}</p>
             </div>
 
             {/* Col 2 — Produit */}
@@ -782,10 +787,10 @@ export default function LandingPage() {
               <p className="text-xs font-bold text-white uppercase tracking-widest mb-4">{t.footer.colContact}</p>
               <ul className="space-y-2.5">
                 <li>
-                  <a href="mailto:contact@axora-data.fr" className="text-sm text-gray-400 hover:text-white transition-colors">contact@axora-data.fr</a>
+                  <a href="mailto:contact@singdevelopment.fr" className="text-sm text-gray-400 hover:text-white transition-colors">contact@singdevelopment.fr</a>
                 </li>
                 <li>
-                  <span className="text-sm text-gray-400">La Réunion, 97400</span>
+                  <span className="text-sm text-gray-400">Saint-Leu, La Réunion 97436</span>
                 </li>
               </ul>
             </div>

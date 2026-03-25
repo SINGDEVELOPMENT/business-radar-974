@@ -9,7 +9,7 @@ export const T = {
       title2: 'sous surveillance intelligente.',
       sub: 'Axora Data centralise vos avis Google, réseaux sociaux, données SEO et concurrents — et génère chaque mois des recommandations IA actionnables.',
       cta1: 'Voir la démo', cta2: 'Obtenir l\'accès',
-      trust: ['Configuration en 24h', 'Données en temps réel', 'Rapport IA mensuel', 'Aucune compétence technique requise'],
+      trust: ['Configuration en 3-5 jours', 'Données en temps réel', 'Rapport IA mensuel', 'Aucune compétence technique requise'],
     },
     trustBar: {
       text: 'Utilisé par des commerces locaux à La Réunion',
@@ -29,12 +29,12 @@ export const T = {
     solution: {
       label: 'La solution', title1: 'Une plateforme.', title2: 'Visibilité totale.',
       sub: 'Axora Data est la source de vérité unique pour vos performances digitales locales. Tout collecté automatiquement, analysé par IA, livré sous forme de priorités claires.',
-      bullets: ['Toutes vos sources — Google, social, SEO, concurrents — dans un seul tableau de bord.', 'Collecte quotidienne automatisée. Zéro intervention manuelle.', 'Rapport IA mensuel avec recommandations classées par priorité.', 'Opérationnel en 24h. Aucun développeur requis.'],
+      bullets: ['Toutes vos sources — Google, social, SEO, concurrents — dans un seul tableau de bord.', 'Collecte quotidienne automatisée. Zéro intervention manuelle.', 'Rapport IA mensuel avec recommandations classées par priorité.', 'Opérationnel en 5 jours. Aucun développeur requis.'],
     },
     features: {
       label: 'Fonctionnalités', title1: 'Tout ce dont votre business a besoin.', title2: 'Rien de plus.',
       items: [
-        { title: 'Avis Google', desc: 'Collecte et analyse automatiques. Alertes en temps réel sur les avis négatifs avant qu\'ils impactent votre note.' },
+        { title: 'Avis Google', desc: 'Collecte et analyse automatiques de vos avis Google. Suivi de votre note moyenne et de son évolution. Alertes avis négatifs disponibles en plan Premium.' },
         { title: 'Réseaux Sociaux', desc: 'Métriques Facebook et Instagram centralisées. Suivez l\'engagement, la portée et la croissance.' },
         { title: 'Veille Concurrents', desc: 'Benchmark automatique de vos concurrents locaux. Comparez les notes, avis et présence digitale.' },
         { title: 'Audit SEO', desc: 'Audit technique complet : Core Web Vitals, analyse on-page, données structurées, sitemap et robots.txt.' },
@@ -45,13 +45,13 @@ export const T = {
     how: {
       label: 'Comment ça marche', title: 'Opérationnel en 3 étapes.',
       steps: [
-        { num: '01', title: 'Configuration en 24h', desc: 'On configure votre compte avec toutes vos sources : Google My Business, Facebook, Instagram et votre site web. Aucun développeur requis.' },
+        { num: '01', title: 'Configuration en 3-5 jours', desc: 'On configure votre compte avec toutes vos sources : Google My Business, Facebook, Instagram et votre site web. Opérationnel sous 5 jours ouvrés.' },
         { num: '02', title: 'Collecte automatique', desc: 'Axora Data collecte et synchronise vos données chaque jour — avis, métriques, snapshots SEO, concurrents. Entièrement automatique.' },
         { num: '03', title: 'Recommandations IA', desc: 'Chaque mois, un rapport IA complet classe vos priorités. Sachez exactement quoi corriger en premier pour un impact maximal.' },
       ],
     },
     stats: [
-      { value: '< 24h', label: 'Du compte créé aux premières données', sub: 'Sans onboarding fastidieux' },
+      { value: '< 5 jours', label: 'Du compte créé aux premières données', sub: 'Onboarding simple et guidé' },
       { value: '100%', label: 'Collecte de données automatisée', sub: 'Zéro intervention manuelle' },
       { value: '5×', label: 'Plus rapide que de le gérer vous-même', sub: 'Priorités IA, pas des suppositions' },
     ],
@@ -67,8 +67,8 @@ export const T = {
     pricing: {
       label: 'Tarifs', title: 'Prix transparents. Sans surprises.', sub: 'Frais de setup unique + maintenance mensuelle fixe.',
       setup: 'setup', monthly: '/mois',
-      standard: { name: 'Standard', hint: 'Pour commencer', recommended: '', cta: 'Démarrer', features: ['Avis Google et alertes en temps réel', 'Suivi réseaux sociaux (FB + IG)', 'Veille concurrents (2 max)', 'Infos concurrents : horaires, photos, site web', 'Audit SEO de base', 'Score SEO mobile et desktop séparés', 'Vérifications techniques : sitemap, robots.txt, schema', 'Accès dashboard complet', 'Support email'] },
-      premium: { name: 'Premium', hint: 'Pour aller plus loin', recommended: 'RECOMMANDÉ', cta: 'Choisir Premium', features: ['Tout le plan Standard', 'SEO on-page complet (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', '% de réponses aux avis (vous vs concurrents)', 'Avis récents 30 jours par concurrent', 'Score PageSpeed des sites concurrents', 'Rapports IA mensuels complets avec recommandations détaillées', 'Alertes prioritaires avis négatifs', 'Support prioritaire'] },
+      standard: { name: 'Standard', hint: 'Pour commencer', recommended: '', cta: 'Démarrer', features: ['Avis Google et alertes en temps réel', 'Suivi réseaux sociaux (FB + IG)', 'Veille concurrents (2 max)', 'Infos concurrents : horaires, photos, site web', 'Audit SEO de base', 'Score SEO mobile et desktop séparés', 'Vérifications techniques : sitemap, robots.txt, schema', 'Accès dashboard complet', 'Support email', '1 rapport IA mensuel'] },
+      premium: { name: 'Premium', hint: 'Pour aller plus loin', recommended: 'RECOMMANDÉ', cta: 'Choisir Premium', features: ['Tout le plan Standard', 'SEO on-page complet (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', '% de réponses aux avis (vous vs concurrents)', 'Avis récents 30 jours par concurrent', 'Score PageSpeed des sites concurrents', 'Rapports IA hebdomadaires avec recommandations détaillées', 'Alertes prioritaires avis négatifs', 'Export PDF & Excel des rapports', 'Support prioritaire'] },
     },
     contact: {
       label: 'Obtenir l\'accès', title: 'Prêt à voir ce que vos clients disent vraiment ?', sub: 'Remplissez ce formulaire et nous vous recontactons sous 24h.',
@@ -110,7 +110,7 @@ export const T = {
       title2: 'under intelligent surveillance.',
       sub: 'Axora Data centralizes your Google reviews, social media, SEO data and competitors — and generates monthly AI reports with ranked, actionable priorities.',
       cta1: 'See the demo', cta2: 'Get access',
-      trust: ['Setup in 24h', 'Real-time data', 'Monthly AI report', 'No technical skills needed'],
+      trust: ['Setup in 3-5 days', 'Real-time data', 'Monthly AI report', 'No technical skills needed'],
     },
     trustBar: {
       text: 'Trusted by local businesses in Réunion',
@@ -130,12 +130,12 @@ export const T = {
     solution: {
       label: 'The solution', title1: 'One platform.', title2: 'Complete visibility.',
       sub: 'Axora Data is the single source of truth for your local digital performance. Everything collected automatically, analyzed by AI, delivered as clear priorities.',
-      bullets: ['All your sources — Google, social, SEO, competitors — in one dashboard.', 'Automated daily collection. Zero manual work.', 'Monthly AI report with ranked, personalized recommendations.', 'Live in 24h. No developers needed.'],
+      bullets: ['All your sources — Google, social, SEO, competitors — in one dashboard.', 'Automated daily collection. Zero manual work.', 'Monthly AI report with ranked, personalized recommendations.', 'Live in 5 days. No developers needed.'],
     },
     features: {
       label: 'Features', title1: 'Everything your business needs.', title2: 'Nothing it doesn\'t.',
       items: [
-        { title: 'Google Reviews', desc: 'Automatic collection and sentiment analysis. Real-time alerts on negative reviews before they damage your rating.' },
+        { title: 'Google Reviews', desc: 'Automatic collection and analysis of your Google reviews. Track your average rating and its evolution. Negative review alerts available on Premium plan.' },
         { title: 'Social Media', desc: 'Centralized Facebook and Instagram metrics. Track engagement, reach and follower growth over time.' },
         { title: 'Competitor Watch', desc: 'Automatic benchmarking of your local competitors. Compare ratings, review counts and digital presence.' },
         { title: 'SEO Audit', desc: 'Full technical audit: Core Web Vitals, on-page analysis, structured data, sitemap and robots.txt.' },
@@ -146,13 +146,13 @@ export const T = {
     how: {
       label: 'How it works', title: 'Up and running in 3 steps.',
       steps: [
-        { num: '01', title: 'Configure in 24h', desc: 'We set up your account with all your sources: Google My Business, Facebook, Instagram, and your website. No dev work required.' },
+        { num: '01', title: 'Setup in 3-5 days', desc: 'We set up your account with all your sources: Google My Business, Facebook, Instagram, and your website. Up and running within 5 business days.' },
         { num: '02', title: 'Automated collection', desc: 'Axora Data collects and syncs your data every day — reviews, metrics, SEO snapshots, competitor data. Fully hands-free.' },
         { num: '03', title: 'AI recommendations', desc: 'Every month, a full AI report ranks your priorities. Know exactly what to fix first for maximum impact on your visibility.' },
       ],
     },
     stats: [
-      { value: '< 24h', label: 'From sign-up to live data', sub: 'No long onboarding' },
+      { value: '< 5 days', label: 'From sign-up to live data', sub: 'Simple guided onboarding' },
       { value: '100%', label: 'Automated data collection', sub: 'Zero manual intervention' },
       { value: '5×', label: 'Faster than managing it yourself', sub: 'AI priorities, not guesswork' },
     ],
@@ -168,8 +168,8 @@ export const T = {
     pricing: {
       label: 'Pricing', title: 'Transparent pricing. No surprises.', sub: 'One-time setup fee + fixed monthly maintenance.',
       setup: 'setup', monthly: '/month',
-      standard: { name: 'Standard', hint: 'To get started', recommended: '', cta: 'Get started', features: ['Google Reviews & real-time alerts', 'Social media tracking (FB + IG)', 'Competitor monitoring (2 max)', 'Competitor info: hours, photos, website', 'Base SEO audit', 'Mobile & desktop SEO scores', 'Tech checks: sitemap, robots.txt, schema', 'Full dashboard access', 'Email support'] },
-      premium: { name: 'Premium', hint: 'To go further', recommended: 'RECOMMENDED', cta: 'Get Premium', features: ['Everything in Standard', 'Full on-page SEO (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', 'Review response rate (you vs competitors)', 'Recent reviews (last 30 days) per competitor', "Competitors' PageSpeed scores", 'Full monthly AI reports with detailed recommendations', 'Priority alerts on negative reviews', 'Priority support'] },
+      standard: { name: 'Standard', hint: 'To get started', recommended: '', cta: 'Get started', features: ['Google Reviews & real-time alerts', 'Social media tracking (FB + IG)', 'Competitor monitoring (2 max)', 'Competitor info: hours, photos, website', 'Base SEO audit', 'Mobile & desktop SEO scores', 'Tech checks: sitemap, robots.txt, schema', 'Full dashboard access', 'Email support', 'Monthly AI report'] },
+      premium: { name: 'Premium', hint: 'To go further', recommended: 'RECOMMENDED', cta: 'Get Premium', features: ['Everything in Standard', 'Full on-page SEO (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', 'Review response rate (you vs competitors)', 'Recent reviews (last 30 days) per competitor', "Competitors' PageSpeed scores", 'Weekly AI reports with detailed recommendations', 'Priority alerts on negative reviews', 'PDF & Excel report exports', 'Priority support'] },
     },
     contact: {
       label: 'Get access', title: 'Ready to see what your customers really say?', sub: 'Fill in the form below and we\'ll get back to you within 24 hours.',
