@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
         // Audit SEO + PageSpeed
         business.website_url
           ? collectSeoAudit(business.id, business.website_url)
-              .then(s => { result.seo = { statusCode: s.status_code, loadTime: s.load_time_ms } })
+              .then(s => { if ('status_code' in s) result.seo = { statusCode: s.status_code, loadTime: s.load_time_ms } })
               .catch(e => { result.seoError = e instanceof Error ? e.message : 'unknown' })
           : Promise.resolve(),
 
