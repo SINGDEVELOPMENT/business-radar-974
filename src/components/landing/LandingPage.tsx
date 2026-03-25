@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
 import {
-  Star, Share2, Users, Search, Brain, LayoutDashboard,
+  Star, Share2, Users, Search, Brain, LayoutDashboard, Lightbulb,
   ArrowRight, CheckCircle2, X, Zap, BarChart2, Globe, Menu, EyeOff, Clock, ListX,
 } from 'lucide-react'
 import ThemeToggle from '@/components/ui/ThemeToggle'
@@ -247,6 +247,7 @@ export default function LandingPage() {
     { Icon: Search,        iconColor: 'text-accent',  iconBg: 'bg-accent/[0.08] dark:bg-accent/[0.08]', iconBorder: 'border-accent/20 dark:border-accent/20' },
     { Icon: Brain,         iconColor: 'text-brand',   iconBg: 'bg-brand/[0.08] dark:bg-brand/[0.1]', iconBorder: 'border-brand/20 dark:border-brand/20' },
     { Icon: LayoutDashboard, iconColor: 'text-brand', iconBg: 'bg-brand/[0.08] dark:bg-brand/[0.08]', iconBorder: 'border-brand/20 dark:border-brand/20' },
+    { Icon: Lightbulb,       iconColor: 'text-amber-500',  iconBg: 'bg-amber-50 dark:bg-amber-500/[0.1]', iconBorder: 'border-amber-200 dark:border-amber-500/[0.15]' },
   ]
 
   // Problem card icon config
