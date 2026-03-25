@@ -18,6 +18,12 @@ export async function GET() {
   const orgId = profile?.organization_id
   if (!orgId) return NextResponse.json({ error: 'Organisation introuvable' }, { status: 400 })
 
+  // Premium-only
+  const { data: orgPlan } = await supabase.from('organizations').select('plan').eq('id', orgId).single()
+  if (orgPlan?.plan !== 'premium') {
+    return NextResponse.json({ error: 'Export Excel réservé au plan Premium' }, { status: 403 })
+  }
+
   const [{ data: org }, { data: business }] = await Promise.all([
     supabase.from('organizations').select('name').eq('id', orgId).single(),
     supabase.from('businesses').select('id, name, google_rating, google_reviews_count, website_url')

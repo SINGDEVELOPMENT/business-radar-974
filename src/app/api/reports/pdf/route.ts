@@ -41,6 +41,12 @@ export async function GET() {
   const orgId = profile?.organization_id
   if (!orgId) return NextResponse.json({ error: 'Organisation introuvable' }, { status: 400 })
 
+  // Premium-only
+  const { data: orgPlan } = await supabase.from('organizations').select('plan').eq('id', orgId).single()
+  if (orgPlan?.plan !== 'premium') {
+    return NextResponse.json({ error: 'Export PDF réservé au plan Premium' }, { status: 403 })
+  }
+
   const [{ data: org }, { data: report }, { data: business }] = await Promise.all([
     supabase.from('organizations').select('name').eq('id', orgId).single(),
     supabase.from('ai_reports').select('id, content, generated_at').eq('organization_id', orgId)

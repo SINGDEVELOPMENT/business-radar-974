@@ -163,3 +163,28 @@ export interface BusinessData {
   seoIssues: string[]
   seoDetails?: SeoDetails
 }
+
+export interface ContentSuggestion {
+  id: string
+  business_id: string
+  organization_id: string
+  platform: 'facebook' | 'instagram'
+  suggested_text: string
+  hashtags: string[]
+  best_time: string | null
+  reasoning: string | null
+  status: 'pending' | 'used' | 'dismissed'
+  generated_at: string
+}
+
+export interface Alert {
+  id: string
+  organization_id: string
+  business_id: string
+  type: 'negative_review' | 'seo_drop' | 'competitor_change'
+  title: string
+  message: string | null
+  severity: 'low' | 'medium' | 'high'
+  is_read: boolean
+  created_at: string
+}

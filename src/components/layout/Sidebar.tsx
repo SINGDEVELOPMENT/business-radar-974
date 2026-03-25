@@ -12,12 +12,14 @@ import {
   Users,
   Search,
   Brain,
+  Lightbulb,
+  Bell,
   Settings,
   LogOut,
   ShieldCheck,
   Menu,
   X,
-  Bell,
+  Lock,
 } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import ThemeToggle from '@/components/ui/ThemeToggle'
@@ -29,13 +31,17 @@ const navItems = [
   { href: '/dashboard/competitors', label: 'Concurrents', icon: Users },
   { href: '/dashboard/seo', label: 'SEO', icon: Search },
   { href: '/dashboard/reports', label: 'Rapports AI', icon: Brain },
-]
+  { href: '/dashboard/suggestions', label: 'Suggestions', icon: Lightbulb, premium: true },
+  { href: '/dashboard/alerts', label: 'Alertes', icon: Bell, premium: true },
+] as const
 
 interface SidebarProps {
   isSuperAdmin?: boolean
+  plan?: string
 }
 
-export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
+export default function Sidebar({ isSuperAdmin = false, plan = 'standard' }: SidebarProps) {
+  const isPremium = plan === 'premium'
   const pathname = usePathname()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -67,24 +73,30 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
     router.refresh()
   }
 
-  function navLink(href: string, label: string, Icon: React.ElementType) {
+  function navLink(href: string, label: string, Icon: React.ElementType, premiumOnly?: boolean) {
     const isActive =
       href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(href)
+    const locked = premiumOnly && !isPremium
+
     return (
       <Link
         key={href}
-        href={href}
-        onClick={() => setMobileOpen(false)}
+        href={locked ? '#' : href}
+        onClick={(e) => { if (locked) e.preventDefault(); else setMobileOpen(false) }}
+        title={locked ? 'Disponible en Premium' : undefined}
         className={cn(
           'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
-          isActive
-            ? 'bg-brand/20 text-brand-light'
-            : 'text-slate-400 hover:bg-white/[0.06] hover:text-slate-200'
+          locked
+            ? 'text-slate-600 cursor-not-allowed'
+            : isActive
+              ? 'bg-brand/20 text-brand-light'
+              : 'text-slate-400 hover:bg-white/[0.06] hover:text-slate-200'
         )}
       >
-        <Icon className={cn('w-4 h-4 shrink-0', isActive && 'text-brand-light')} />
+        <Icon className={cn('w-4 h-4 shrink-0', isActive && !locked && 'text-brand-light')} />
         <span className="flex-1">{label}</span>
-        {href === '/dashboard/reports' && recentReports > 0 && (
+        {locked && <Lock className="w-3 h-3 text-slate-600" />}
+        {href === '/dashboard/reports' && recentReports > 0 && !locked && (
           <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold leading-none">
             {recentReports}
           </span>
@@ -152,7 +164,7 @@ export default function Sidebar({ isSuperAdmin = false }: SidebarProps) {
               <p className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
                 Navigation
               </p>
-              {navItems.map((item) => navLink(item.href, item.label, item.icon))}
+              {navItems.map((item) => navLink(item.href, item.label, item.icon, 'premium' in item ? item.premium : undefined))}
             </>
           )}
         </nav>

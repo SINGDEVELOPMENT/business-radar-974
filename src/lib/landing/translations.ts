@@ -40,6 +40,7 @@ export const T = {
         { title: 'Audit SEO', desc: 'Audit technique complet : Core Web Vitals, analyse on-page, données structurées, sitemap et robots.txt.' },
         { title: 'Rapports IA', desc: 'Chaque mois, Claude AI analyse toutes vos données et livre des recommandations personnalisées et hiérarchisées pour votre marché local réunionnais.' },
         { title: 'Dashboard 24/7', desc: 'Un seul endroit pour tout surveiller. Accessible depuis n\'importe quel appareil, à tout moment.' },
+        { title: 'Suggestions de contenu', desc: 'L\'IA génère des idées de posts adaptées au marché réunionnais, avec hashtags et créneaux optimaux.' },
       ],
     },
     how: {
@@ -68,7 +69,7 @@ export const T = {
       label: 'Tarifs', title: 'Prix transparents. Sans surprises.', sub: 'Frais de setup unique + maintenance mensuelle fixe.',
       setup: 'setup', monthly: '/mois',
       standard: { name: 'Standard', hint: 'Pour commencer', recommended: '', cta: 'Démarrer', features: ['Surveillance des avis Google et évolution de la note', 'Suivi réseaux sociaux (FB + IG)', 'Veille concurrents (2 max)', 'Infos concurrents : horaires, photos, site web', 'Audit SEO de base', 'Score SEO mobile et desktop séparés', 'Vérifications techniques : sitemap, robots.txt, schema', 'Accès dashboard complet', 'Support email', '1 rapport IA mensuel'] },
-      premium: { name: 'Premium', hint: 'Pour aller plus loin', recommended: 'RECOMMANDÉ', cta: 'Choisir Premium', features: ['Tout le plan Standard', 'SEO on-page complet (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', '% de réponses aux avis (vous vs concurrents)', 'Avis récents 30 jours par concurrent', 'Score PageSpeed des sites concurrents', 'Rapports IA hebdomadaires avec recommandations détaillées', 'Alertes prioritaires avis négatifs', 'Export PDF & Excel des rapports', 'Support prioritaire'] },
+      premium: { name: 'Premium', hint: 'Pour aller plus loin', recommended: 'RECOMMANDÉ', cta: 'Choisir Premium', features: ['Tout le plan Standard', 'SEO on-page complet (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', '% de réponses aux avis (vous vs concurrents)', 'Avis récents 30 jours par concurrent', 'Score PageSpeed des sites concurrents', 'Rapports IA hebdomadaires avec recommandations détaillées', 'Alertes prioritaires avis négatifs', 'Export PDF & Excel des rapports', 'Suggestions de posts IA (Facebook + Instagram)', 'Support prioritaire'] },
     },
     contact: {
       label: 'Obtenir l\'accès', title: 'Prêt à voir ce que vos clients disent vraiment ?', sub: 'Remplissez ce formulaire et nous vous recontactons sous 24h.',
@@ -141,6 +142,7 @@ export const T = {
         { title: 'SEO Audit', desc: 'Full technical audit: Core Web Vitals, on-page analysis, structured data, sitemap and robots.txt.' },
         { title: 'AI Reports', desc: 'Every month, Claude AI analyzes all your data and delivers prioritized, personalized recommendations for your local Réunion market.' },
         { title: 'Live Dashboard', desc: 'One place to monitor everything. Accessible from any device, any time. Always in sync.' },
+        { title: 'Content Suggestions', desc: 'AI generates post ideas tailored to the Réunion market, with optimized hashtags and publishing slots.' },
       ],
     },
     how: {
@@ -169,7 +171,7 @@ export const T = {
       label: 'Pricing', title: 'Transparent pricing. No surprises.', sub: 'One-time setup fee + fixed monthly maintenance.',
       setup: 'setup', monthly: '/month',
       standard: { name: 'Standard', hint: 'To get started', recommended: '', cta: 'Get started', features: ['Google Reviews monitoring & rating trends', 'Social media tracking (FB + IG)', 'Competitor monitoring (2 max)', 'Competitor info: hours, photos, website', 'Base SEO audit', 'Mobile & desktop SEO scores', 'Tech checks: sitemap, robots.txt, schema', 'Full dashboard access', 'Email support', 'Monthly AI report'] },
-      premium: { name: 'Premium', hint: 'To go further', recommended: 'RECOMMENDED', cta: 'Get Premium', features: ['Everything in Standard', 'Full on-page SEO (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', 'Review response rate (you vs competitors)', 'Recent reviews (last 30 days) per competitor', "Competitors' PageSpeed scores", 'Weekly AI reports with detailed recommendations', 'Priority alerts on negative reviews', 'PDF & Excel report exports', 'Priority support'] },
+      premium: { name: 'Premium', hint: 'To go further', recommended: 'RECOMMENDED', cta: 'Get Premium', features: ['Everything in Standard', 'Full on-page SEO (H1/H2/H3, canonical, Open Graph, JSON-LD)', 'Core Web Vitals (LCP, FCP, CLS, TBT, Speed Index)', 'Review response rate (you vs competitors)', 'Recent reviews (last 30 days) per competitor', "Competitors' PageSpeed scores", 'Weekly AI reports with detailed recommendations', 'Priority alerts on negative reviews', 'PDF & Excel report exports', 'AI post suggestions (Facebook + Instagram)', 'Priority support'] },
     },
     contact: {
       label: 'Get access', title: 'Ready to see what your customers really say?', sub: 'Fill in the form below and we\'ll get back to you within 24 hours.',

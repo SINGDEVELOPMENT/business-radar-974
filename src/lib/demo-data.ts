@@ -168,6 +168,78 @@ export const DEMO_COMPETITORS_PREMIUM = [
 export const DEMO_REPORTS_USED = 2
 export const DEMO_REPORTS_LIMIT = 5
 
+// Demo suggestions (Premium)
+export const DEMO_SUGGESTIONS = [
+  {
+    id: '1', platform: 'facebook' as const, status: 'pending' as const,
+    suggested_text: "🌺 Nouvelle semaine, nouvelles saveurs ! Venez découvrir notre carte spéciale péi avec des produits 100% locaux. Qui est partant ? 🙋‍♂️ #LaRéunion #ProduitsPéi",
+    hashtags: ['#LaRéunion', '#ProduitsPéi', '#RestaurantSaintDenis', '#CuisineLocale', '#FaitMaison'],
+    best_time: 'Mardi 18h-20h',
+    reasoning: "Vos posts sur les produits locaux génèrent 3x plus d'engagement. Le mardi soir est votre créneau optimal.",
+    generated_at: '2026-03-24T14:00:00Z',
+  },
+  {
+    id: '2', platform: 'instagram' as const, status: 'pending' as const,
+    suggested_text: "Le soleil se couche sur Saint-Denis et notre terrasse vous attend 🌅 Soirée tapas + cocktails locaux ce vendredi. Réservation en bio ! ✨",
+    hashtags: ['#SunsetVibes', '#SaintDenis974', '#TerrasseReunion', '#Tapas', '#CocktailsCréoles'],
+    best_time: 'Vendredi 12h-14h',
+    reasoning: 'Les posts avec photos de terrasse/coucher de soleil ont un taux de save 2x supérieur. Vendredi midi = anticipation week-end.',
+    generated_at: '2026-03-24T14:00:00Z',
+  },
+  {
+    id: '3', platform: 'facebook' as const, status: 'used' as const,
+    suggested_text: "📊 Saviez-vous que 85% de nos clients recommandent notre restaurant ? Merci pour votre confiance ! Laissez-nous un avis Google si vous avez aimé votre expérience 🙏",
+    hashtags: ['#AvisGoogle', '#MerciClients', '#Confiance', '#Restaurant974'],
+    best_time: 'Dimanche 10h-12h',
+    reasoning: 'Les posts de remerciement client boostent les avis Google de 40%. Dimanche matin = moment détente, bon taux de lecture.',
+    generated_at: '2026-03-22T10:00:00Z',
+  },
+  {
+    id: '4', platform: 'instagram' as const, status: 'pending' as const,
+    suggested_text: "Notre chef prépare un rougail saucisse qui va vous faire voyager 🍛🔥 Recette secrète transmise depuis 3 générations. À découvrir ce midi !",
+    hashtags: ['#RougailSaucisse', '#CuisineCréole', '#ChefPéi', '#Tradition', '#974Island'],
+    best_time: 'Mercredi 11h-12h',
+    reasoning: "Les contenus « coulisses cuisine » sont vos plus performants sur Instagram. Mercredi avant le déjeuner = pic de faim.",
+    generated_at: '2026-03-24T14:00:00Z',
+  },
+  {
+    id: '5', platform: 'facebook' as const, status: 'dismissed' as const,
+    suggested_text: "🎉 C'est la fête de la musique à La Réunion ! Venez profiter de notre soirée live ce samedi avec DJ local + menu spécial. Entrée libre !",
+    hashtags: ['#FêteDeLaMusique', '#SoiréeLive', '#DJReunion', '#Restaurant974', '#SortirALaRéunion'],
+    best_time: 'Jeudi 17h-19h',
+    reasoning: "Annonce événement 2j avant = meilleur taux de conversion. Vos concurrents ne communiquent pas sur cet événement.",
+    generated_at: '2026-03-20T16:00:00Z',
+  },
+]
+
+// Demo alerts (Premium)
+export const DEMO_ALERTS = [
+  {
+    id: '1', type: 'negative_review' as const, severity: 'high' as const,
+    title: 'Avis négatif 1★ — Jean-Pierre M.',
+    message: "Service très lent, plus d'une heure d'attente pour un simple plat. Déçu de cette expérience.",
+    is_read: false, created_at: '2026-03-25T06:30:00Z',
+  },
+  {
+    id: '2', type: 'negative_review' as const, severity: 'medium' as const,
+    title: 'Avis négatif 2★ — Marie L.',
+    message: "Plats corrects mais prix trop élevés pour la quantité. Le rapport qualité-prix n'est pas au rendez-vous.",
+    is_read: false, created_at: '2026-03-24T18:15:00Z',
+  },
+  {
+    id: '3', type: 'seo_drop' as const, severity: 'medium' as const,
+    title: 'Score SEO en baisse — -12 points',
+    message: 'Votre score PageSpeed est passé de 78 à 66. Cause probable : images non optimisées détectées.',
+    is_read: true, created_at: '2026-03-23T09:00:00Z',
+  },
+  {
+    id: '4', type: 'competitor_change' as const, severity: 'low' as const,
+    title: 'Concurrent "Le Lagon Bleu" — note en hausse',
+    message: 'Le Lagon Bleu est passé de 4.1 à 4.3 (+15 avis ce mois). Votre écart se réduit.',
+    is_read: true, created_at: '2026-03-22T14:00:00Z',
+  },
+]
+
 // Historique des rapports pour la démo (filtre année/mois)
 export const DEMO_OLD_REPORTS = [
   {

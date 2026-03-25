@@ -92,10 +92,6 @@ function SkeletonCompetitorCard() {
 function CompetitorsSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="animate-pulse space-y-1">
-        <div className="h-7 w-36 bg-gray-200 dark:bg-gray-700 rounded" />
-        <div className="h-4 w-60 bg-gray-100 dark:bg-gray-800 rounded" />
-      </div>
       <div className="rounded-xl border bg-card p-5 animate-pulse">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -219,9 +215,6 @@ export default function CompetitorsPageClient() {
   if (fetchError) {
     return (
       <div className="space-y-6">
-        <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Concurrents</h1>
-        </div>
         <div className="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg">
           <p className="text-sm text-red-600 dark:text-red-400 font-medium">Erreur de chargement</p>
           <p className="text-xs text-red-500 mt-1">{fetchError}</p>
@@ -259,11 +252,6 @@ export default function CompetitorsPageClient() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-xl font-bold text-gray-900 dark:text-white">Concurrents</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Surveillez et comparez vos concurrents</p>
-      </div>
-
       {/* ── Gestion des concurrents ── */}
       <Card className="p-5">
         <div className="flex items-center justify-between mb-4">

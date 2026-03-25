@@ -29,6 +29,8 @@ export default async function Header({ title, subtitle }: HeaderProps) {
         .single()
     : { data: null }
 
+  const isPremium = org?.plan === 'premium'
+
   const displayName = profile?.full_name ?? user?.email ?? 'Utilisateur'
   const initials = displayName
     .split(' ')
@@ -60,7 +62,7 @@ export default async function Header({ title, subtitle }: HeaderProps) {
 
         <div className="hidden md:flex items-center gap-2">
           <ThemeToggle />
-          <NotificationBell />
+          <NotificationBell isPremium={isPremium} />
         </div>
 
         <HeaderUserMenu

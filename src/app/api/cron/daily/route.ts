@@ -7,7 +7,7 @@ import { collectSeoAudit } from '@/lib/collectors/seo-audit'
 import { collectFacebookPosts } from '@/lib/collectors/facebook'
 import { collectInstagramPosts } from '@/lib/collectors/instagram'
 import { refreshCustomCompetitors, collectCompetitorSeo } from '@/lib/collectors/competitors'
-import { analyzeMonthly } from '@/lib/ai/analyze'
+import { analyzeMonthly, analyzeWeekly } from '@/lib/ai/analyze'
 import type { BusinessData } from '@/types'
 
 // Protégé par le secret partagé avec Vercel Cron (header Authorization: Bearer <CRON_SECRET>)
@@ -150,7 +150,7 @@ export async function GET(request: NextRequest) {
           seoIssues,
         }
 
-        await analyzeMonthly(org.id, businessData, org.api_key_claude ?? undefined)
+        await analyzeWeekly(org.id, businessData, org.api_key_claude ?? undefined)
         weeklyReports.push({ orgId: org.id, bizName: biz.name, ok: true })
       } catch (e) {
         weeklyReports.push({ orgId: org.id, error: e instanceof Error ? e.message : 'unknown' })

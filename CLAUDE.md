@@ -86,6 +86,27 @@ organizations
 
 ---
 
+## Distinction Standard vs Premium
+
+| Fonctionnalité | Standard | Premium |
+|---------------|----------|---------|
+| Avis Google | ✅ | ✅ |
+| Réseaux sociaux (FB + IG) | ✅ | ✅ |
+| Concurrents | 2 max | 5 max |
+| Audit SEO de base | ✅ | ✅ |
+| SEO on-page complet | ❌ | ✅ |
+| Core Web Vitals détaillés | ❌ | ✅ |
+| Rapports AI | 1 mensuel | Hebdomadaires |
+| Rapports manuels | ❌ | 5/mois |
+| Suggestions contenu IA | ❌ | ✅ |
+| Alertes prioritaires | ❌ | ✅ |
+| Export PDF & Excel | ❌ | ✅ |
+| % réponses avis concurrents | ❌ | ✅ |
+| Avis récents 30j concurrents | ❌ | ✅ |
+| PageSpeed concurrents | ❌ | ✅ |
+
+---
+
 ## Schéma Base de Données (référence rapide)
 
 ```sql
@@ -115,6 +136,15 @@ seo_snapshots(id, business_id, url, status_code, load_time_ms, title,
 -- rapports AI
 ai_reports(id, organization_id, report_type [monthly|weekly|alert],
            content JSONB, summary, recommendations JSONB, generated_at)
+
+-- suggestions de contenu IA (Premium)
+content_suggestions(id, business_id, organization_id, platform [facebook|instagram],
+                    suggested_text, hashtags JSONB, best_time, reasoning,
+                    status [pending|used|dismissed], generated_at)
+
+-- alertes (Premium)
+alerts(id, organization_id, business_id, type [negative_review|seo_drop|competitor_change],
+       title, message, severity [low|medium|high], is_read, created_at)
 ```
 
 ---
@@ -137,15 +167,23 @@ business-radar-974/
 │   │   │   ├── competitors/page.tsx      # Comparaison concurrents
 │   │   │   ├── seo/page.tsx              # Audit SEO
 │   │   │   ├── reports/page.tsx          # Rapports AI
+│   │   │   ├── suggestions/page.tsx     # Suggestions contenu IA (Premium)
+│   │   │   ├── alerts/page.tsx          # Alertes prioritaires (Premium)
 │   │   │   └── settings/page.tsx         # Config business + clés API
 │   │   └── api/
 │   │       ├── collect/
-│   │       │   ├── reviews/route.ts
+│   │       │   ├── reviews/route.ts      # + création alertes avis négatifs
 │   │       │   ├── social/route.ts
 │   │       │   ├── seo/route.ts
 │   │       │   └── competitors/route.ts
+│   │       ├── suggestions/
+│   │       │   ├── route.ts              # GET suggestions, PATCH status
+│   │       │   └── generate/route.ts     # POST génération IA (Premium)
+│   │       ├── alerts/route.ts           # GET alertes, PATCH marquer lu
 │   │       ├── analyze/route.ts          # Appel Claude
-│   │       ├── cron/daily/route.ts       # CRON quotidien
+│   │       ├── export/xlsx/route.ts      # Export Excel (Premium)
+│   │       ├── reports/pdf/route.ts      # Export PDF (Premium)
+│   │       ├── cron/daily/route.ts       # CRON quotidien + hebdo Premium
 │   │       └── admin/setup/route.ts      # Onboarding client
 │   ├── components/
 │   │   ├── ui/                           # Composants shadcn/ui (auto-générés)

@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import {
   LayoutDashboard, Star, Share2, Users, Search, Brain,
-  FlaskConical, Sparkles, Menu, X,
+  FlaskConical, Sparkles, Menu, X, Lightbulb, Bell, Lock,
 } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import ThemeToggle from '@/components/ui/ThemeToggle'
@@ -31,6 +31,11 @@ function buildNavItems(base: string) {
     { href: `${base}/reports`, label: 'Rapports AI', icon: Brain },
   ]
 }
+
+const PREMIUM_ONLY_ITEMS = [
+  { label: 'Suggestions', icon: Lightbulb, href: (base: string) => `${base}/suggestions` },
+  { label: 'Alertes', icon: Bell, href: (base: string) => `${base}/alerts` },
+]
 
 function DemoBadge({ variant }: { variant: 'demo' | 'premium' }) {
   if (variant === 'premium') {
@@ -130,6 +135,30 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
               <span>{label}</span>
             </Link>
           ))}
+          <Separator className="bg-white/[0.06] my-2" />
+          <p className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Premium</p>
+          {PREMIUM_ONLY_ITEMS.map(({ label, icon: Icon, href: getHref }) => {
+            if (variant === 'premium') {
+              const href = getHref(base)
+              return (
+                <Link key={label} href={href}
+                  className={cn(
+                    'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                    isActive(href) ? activeClass : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                  )}>
+                  <Icon className="w-4 h-4 shrink-0" />
+                  <span>{label}</span>
+                </Link>
+              )
+            }
+            return (
+              <div key={label} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 cursor-not-allowed select-none" title="Disponible en Premium">
+                <Icon className="w-4 h-4 shrink-0" />
+                <span>{label}</span>
+                <Lock className="w-3 h-3 ml-auto text-slate-600" />
+              </div>
+            )
+          })}
         </nav>
         <div className="px-3 py-4 space-y-2">
           <Separator className="bg-white/[0.06] mb-3" />
@@ -180,6 +209,30 @@ export default function DemoSidebar({ variant, children }: DemoSidebarProps) {
               <span>{label}</span>
             </Link>
           ))}
+          <Separator className="bg-white/[0.06] my-2" />
+          <p className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Premium</p>
+          {PREMIUM_ONLY_ITEMS.map(({ label, icon: Icon, href: getHref }) => {
+            if (variant === 'premium') {
+              const href = getHref(base)
+              return (
+                <Link key={label} href={href} onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                    isActive(href) ? activeClass : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                  )}>
+                  <Icon className="w-4 h-4 shrink-0" />
+                  <span>{label}</span>
+                </Link>
+              )
+            }
+            return (
+              <div key={label} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 cursor-not-allowed select-none">
+                <Icon className="w-4 h-4 shrink-0" />
+                <span>{label}</span>
+                <Lock className="w-3 h-3 ml-auto text-slate-600" />
+              </div>
+            )
+          })}
         </nav>
         <div className="px-6 py-4">
           <Link href="/login" className="text-sm font-medium text-brand-light hover:text-brand">Se connecter →</Link>

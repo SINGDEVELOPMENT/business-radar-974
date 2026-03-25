@@ -113,6 +113,7 @@ export default function CgvPage() {
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Rapports IA hebdomadaires</li>
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Alertes prioritaires automatiques</li>
                   <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Export PDF & Excel des rapports</li>
+                  <li className="flex gap-2"><span className="text-green-500 shrink-0">✓</span> Suggestions de contenu IA (posts réseaux sociaux Facebook + Instagram)</li>
                 </ul>
               </div>
             </div>

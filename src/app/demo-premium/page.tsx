@@ -4,9 +4,9 @@ import { useState, useMemo } from 'react'
 import KpiCard from '@/components/dashboard/KpiCard'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Star, MessageSquare, TrendingUp, Activity, Brain, Calendar, ArrowRight, Lightbulb, FileDown } from 'lucide-react'
+import { Star, MessageSquare, TrendingUp, Activity, Brain, Calendar, ArrowRight, Lightbulb, FileDown, Bell, AlertTriangle, Facebook, Instagram, Clock } from 'lucide-react'
 import Link from 'next/link'
-import { DEMO_BUSINESS, DEMO_REVIEWS, DEMO_SOCIAL_POSTS, DEMO_SEO_LATEST, DEMO_OLD_REPORTS } from '@/lib/demo-data'
+import { DEMO_BUSINESS, DEMO_REVIEWS, DEMO_SOCIAL_POSTS, DEMO_SEO_LATEST, DEMO_OLD_REPORTS, DEMO_ALERTS, DEMO_SUGGESTIONS } from '@/lib/demo-data'
 import type { AiRecommendation } from '@/types'
 import ScoreCircle from '@/components/ui/ScoreCircle'
 
@@ -86,6 +86,83 @@ export default function DemoPremiumPage() {
           iconColor="text-purple-600"
           iconBg="bg-purple-50"
         />
+      </div>
+
+      {/* Section Alertes — prévisualisation */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
+            <Bell className="w-4 h-4" />
+            Alertes récentes
+          </h2>
+          <Link href="/demo-premium/alerts" className="text-xs text-blue-500 hover:text-blue-400 transition-colors flex items-center gap-1">
+            Voir tout <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+        <div className="space-y-2">
+          {DEMO_ALERTS.filter(a => !a.is_read).slice(0, 2).map(alert => {
+            const severityBar = alert.severity === 'high' ? 'bg-red-500' : alert.severity === 'medium' ? 'bg-amber-500' : 'bg-slate-400'
+            const severityBadge = alert.severity === 'high'
+              ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800'
+              : 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800'
+            const severityLabel = alert.severity === 'high' ? 'Haute' : 'Moyenne'
+            return (
+              <Card key={alert.id} className="p-0 overflow-hidden">
+                <div className="flex">
+                  <div className={`w-1 shrink-0 ${severityBar}`} />
+                  <div className="flex-1 px-4 py-3 min-w-0 flex items-start gap-3">
+                    <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0 mt-1.5" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{alert.title}</p>
+                        <Badge className={`ml-auto text-[10px] px-1.5 py-0 border ${severityBadge} hover:${severityBadge}`}>{severityLabel}</Badge>
+                      </div>
+                      <p className="text-xs text-gray-500 dark:text-slate-400 line-clamp-1">{alert.message}</p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            )
+          })}
+        </div>
+        {DEMO_ALERTS.filter(a => !a.is_read).length > 2 && (
+          <p className="text-xs text-gray-400 mt-2 text-center">
+            +{DEMO_ALERTS.filter(a => !a.is_read).length - 2} autre{DEMO_ALERTS.filter(a => !a.is_read).length - 2 > 1 ? 's' : ''} alerte{DEMO_ALERTS.filter(a => !a.is_read).length - 2 > 1 ? 's' : ''} —{' '}
+            <Link href="/demo-premium/alerts" className="text-blue-500 hover:text-blue-400">voir tout</Link>
+          </p>
+        )}
+      </div>
+
+      {/* Section Suggestions IA — prévisualisation */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
+            <Lightbulb className="w-4 h-4" />
+            Suggestions de contenu
+          </h2>
+          <Link href="/demo-premium/suggestions" className="text-xs text-blue-500 hover:text-blue-400 transition-colors flex items-center gap-1">
+            Voir tout <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {DEMO_SUGGESTIONS.filter(s => s.status === 'pending').slice(0, 2).map(s => {
+            const isFb = s.platform === 'facebook'
+            return (
+              <Card key={s.id} className="p-4 space-y-2">
+                <div className="flex items-center gap-2">
+                  {isFb
+                    ? <Badge className="gap-1 bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800 hover:bg-blue-50 text-[11px]"><Facebook className="w-3 h-3" />Facebook</Badge>
+                    : <Badge className="gap-1 bg-pink-50 text-pink-700 border-pink-200 dark:bg-pink-950/40 dark:text-pink-300 dark:border-pink-800 hover:bg-pink-50 text-[11px]"><Instagram className="w-3 h-3" />Instagram</Badge>
+                  }
+                  <span className="text-[10px] text-gray-400 dark:text-slate-500 ml-auto flex items-center gap-1">
+                    <Clock className="w-3 h-3" />{s.best_time}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-700 dark:text-slate-300 line-clamp-2 leading-relaxed">{s.suggested_text}</p>
+              </Card>
+            )
+          })}
+        </div>
       </div>
 
       {/* Section Rapports AI avec filtres */}

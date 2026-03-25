@@ -8,19 +8,28 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const { data: { user } } = await supabase.auth.getUser()
 
   let isSuperAdmin = false
+  let plan = 'standard'
   if (user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('role')
+      .select('role, organization_id')
       .eq('id', user.id)
       .single()
     isSuperAdmin = profile?.role === 'superadmin'
+    if (profile?.organization_id) {
+      const { data: org } = await supabase
+        .from('organizations')
+        .select('plan')
+        .eq('id', profile.organization_id)
+        .single()
+      plan = org?.plan ?? 'standard'
+    }
   }
 
   return (
     <AuthGuard>
       <div className="flex min-h-screen bg-gray-50 dark:bg-slate-950">
-        <Sidebar isSuperAdmin={isSuperAdmin} />
+        <Sidebar isSuperAdmin={isSuperAdmin} plan={plan} />
         <div className="flex-1 md:ml-64 min-w-0 flex flex-col min-h-screen">
           <main className="flex-1 p-4 md:p-6">
             {children}
